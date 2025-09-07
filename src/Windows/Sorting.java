@@ -1,6 +1,7 @@
 package Windows;
 
 import org.jetbrains.annotations.NotNull;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
@@ -20,12 +21,13 @@ public class Sorting extends JPanel {
     private JButton startButton;
     private JLabel label;
     private JSlider slider;
+    private final Runnable[] sortingAlgorithms = new Runnable[]{this::selectionSort, this::insertionSort, this::bubbleSort, this::quickSort};
     private int WIDTH, HEIGHT, MAX_ELEMENTS = 5;
     private boolean isStart = true;
     private volatile boolean paused = false;
     private Thread thread;
     private Window myParent = SwingUtilities.getWindowAncestor(this);
-    private final Runnable[] sortingAlgorithms = new Runnable[]{this::selectionSort, this::insertionSort, this::bubbleSort, this::quickSort};
+
     public Sorting(int width, int height, String menuOption) {
         //setBlock
         {
@@ -36,7 +38,7 @@ public class Sorting extends JPanel {
                     map.clear();
                     map.put("Successfully Sorted Elements", Color.GREEN);
                     map.put("Current Comparison", Color.RED);
-                    map.put("Finished Windows.Sorting", Color.CYAN);
+                    map.put("Finished Sorting", Color.CYAN);
                     legend = new LegendDialog(myParent, "Legend: Insertion Sort", map);
                     legend.setVisible(true);
                     choice = 1;
@@ -45,14 +47,18 @@ public class Sorting extends JPanel {
                     map.clear();
                     map.put("Successfully Sorted Elements", Color.GREEN);
                     map.put("Current Comparison", Color.RED);
-                    map.put("Finished Windows.Sorting", Color.CYAN);
+                    map.put("Finished Sorting", Color.CYAN);
                     legend = new LegendDialog(myParent, "Legend: Bubble Sort", map);
                     legend.setVisible(true);
                     choice = 2;
                     break;
                 case "Quick Sort":
-                    map.put("Pivot Selected",Color.YELLOW);
-                    legend=new LegendDialog(myParent,"Legend: Quick Sort",map);
+                    map.put("Pivot Selected", Color.GREEN);
+                    map.put("Start Element",Color.YELLOW);
+                    map.put("End Element",Color.ORANGE);
+                    map.put("Swap Elements",Color.RED);
+                    map.put("Finished Sorting",Color.CYAN);
+                    legend = new LegendDialog(myParent, "Legend: Quick Sort", map);
                     legend.setVisible(true);
                     choice = 3;
                     break;
@@ -62,7 +68,7 @@ public class Sorting extends JPanel {
                     map.put("Current Minimum", Color.BLUE);
                     map.put("Comparisons", Color.YELLOW);
                     map.put("Next Minimum", Color.RED);
-                    map.put("Finished Windows.Sorting", Color.CYAN);
+                    map.put("Finished Sorting", Color.CYAN);
                     legend = new LegendDialog(myParent, "Legend: Selection Sort", map);
                     legend.setVisible(true);
                 default:
@@ -172,7 +178,7 @@ public class Sorting extends JPanel {
         }
     }
 
-    private void swap(ArrayBlock block1, ArrayBlock block2) {
+    private void swapBlocks(ArrayBlock block1, ArrayBlock block2) {
         int temp = block1.height;
         block1.height = block2.height;
         block2.height = temp;
@@ -224,7 +230,7 @@ public class Sorting extends JPanel {
                         Thread.sleep(500);
                     }
                 }
-                swap(blocks.get(idx), current);
+                swapBlocks(blocks.get(idx), current);
                 blocks.get(idx).color = Color.WHITE;
                 current.color = Color.WHITE;
                 repaint();
@@ -304,7 +310,7 @@ public class Sorting extends JPanel {
                         blocks.get(j).color =
                                 blocks.get(j + 1).color = Color.RED;
                         repaint();
-                        swap(blocks.get(j), blocks.get(j + 1));
+                        swapBlocks(blocks.get(j), blocks.get(j + 1));
                         Thread.sleep(300);
                         swapped = true;
                     }
@@ -323,42 +329,88 @@ public class Sorting extends JPanel {
     }
 
     private void quickSort() {
-        if (isSorted()) return;
-        try {
-            quickSortHelper(0, blocks.size() - 1);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        quickSortHelper(blocks, 0, blocks.size() - 1);
         returnCtrl();
     }
 
-    private void quickSortHelper(int low, int high) throws InterruptedException {
-        if (low < high) {
-            int pi = partition(low, high);
-            quickSortHelper(low, pi - 1);
-            quickSortHelper(pi + 1, high);
-        }
+    private void swapHeights(ArrayList<ArrayBlock> arrayList, int idx0, int idx1) {
+        int temp = arrayList.get(idx1).height;
+        arrayList.get(idx1).height = arrayList.get(idx0).height;
+        arrayList.get(idx0).height = temp;
     }
 
-    private int partition(int low, int high) throws InterruptedException {
-        quickReset();
-        ArrayBlock pivot = blocks.get(high);
-        pivot.color = Color.YELLOW; // highlight pivot
+    private void quickSortHelper(ArrayList<ArrayBlock> arrayList, int low, int high) {
+
+        if (low >= high) return;
+
+        int start = low;
+        int end = high;
+        int pivotHeight = arrayList.get((start + end) / 2).height;
+        ArrayBlock pivotBlock = arrayList.get((start + end) / 2);
+
+        // Highlight pivot
+        pivotBlock.color = Color.GREEN;
         repaint();
-        Thread.sleep(500);
-        int i = low - 1;
-        for (int j = low; j < high; j++) {
-            if (blocks.get(j).height < pivot.height) {
-                i++;
-                swap(blocks.get(i), blocks.get(j));
+        sleep();
 
-            }
-            blocks.get(j).color = Color.WHITE; // reset
+        while (start <= end) {
+            // Highlight comparison on left
+            arrayList.get(start).color = Color.YELLOW;
             repaint();
+            sleep();
+            while (arrayList.get(start).height < pivotHeight) {
+                arrayList.get(start).color = Color.WHITE; // reset
+                start++;
+                arrayList.get(start).color = Color.YELLOW;
+                repaint();
+                sleep();
+            }
+
+            // Highlight comparison on right
+            arrayList.get(end).color = Color.ORANGE;
+            repaint();
+            sleep();
+            while (arrayList.get(end).height > pivotHeight) {
+                arrayList.get(end).color = Color.WHITE; // reset
+                end--;
+                arrayList.get(end).color = Color.ORANGE;
+                repaint();
+                sleep();
+            }
+
+            if (start <= end) {
+                // Highlight swap
+                arrayList.get(start).color = Color.RED;
+                arrayList.get(end).color = Color.RED;
+                repaint();
+                sleep();
+
+                swapHeights(arrayList, start, end);
+
+                arrayList.get(start).color = Color.WHITE;
+                arrayList.get(end).color = Color.WHITE;
+                start++;
+                end--;
+            }
         }
-        swap(blocks.get(i + 1), pivot);
-        return i + 1;
+
+        // Reset pivot highlight
+        pivotBlock.color = Color.WHITE;
+        repaint();
+        sleep();
+
+        if (low < end) quickSortHelper(arrayList, low, end);
+        if (start < high) quickSortHelper(arrayList, start, high);
     }
+
+    private void sleep() {
+        try {
+            Thread.sleep(500); // adjust speed
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+
 
     private void quickReset() {
         for (int i = 0; i < blocks.size(); i++) {
