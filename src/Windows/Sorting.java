@@ -11,6 +11,7 @@ import java.util.Random;
 
 //TODO: Idea is to enable users to enter max size and it has random numbers in an array
 public class Sorting extends JPanel {
+    private final int SLEEP_TIME=500;
     private static final int SPACING = 25;
     private final int LIMIT = 50;
     private final int widthX = 20, spacingX = 10;
@@ -188,20 +189,19 @@ public class Sorting extends JPanel {
         if (isSorted()) {
             return;
         }
-        try {
             for (int i = 0, success; i < blocks.size(); i++) {
                 quickReset();
                 for (success = 0; success < i; success++) {
                     blocks.get(success).color = Color.GREEN;
                     repaint();
-                    Thread.sleep(100);
+                    sleep();
                 }
                 ArrayBlock current = blocks.get(i);
                 int minimum = current.height;
                 int idx = i;
                 current.color = Color.BLUE;
                 repaint();
-                Thread.sleep(1000);
+                sleep();
                 for (int j = i + 1; j < blocks.size(); j++) {
                     ArrayBlock comparison = blocks.get(j);
                     int compHeight = comparison.height;
@@ -218,28 +218,25 @@ public class Sorting extends JPanel {
                         if (shadeRed) {
                             comparison.color = Color.RED;
                             repaint();
-                            Thread.sleep(500);
+                            sleep();
                         } else {
                             comparison.color = Color.YELLOW;
                             repaint();
-                            Thread.sleep(500);
+                            sleep();
                         }
                     } else {
                         comparison.color = Color.YELLOW;
                         repaint();
-                        Thread.sleep(500);
+                        sleep();
                     }
                 }
                 swapBlocks(blocks.get(idx), current);
                 blocks.get(idx).color = Color.WHITE;
                 current.color = Color.WHITE;
                 repaint();
-                Thread.sleep(500);
+                sleep();
             }
             returnCtrl();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 
     void returnCtrl() {
@@ -252,7 +249,6 @@ public class Sorting extends JPanel {
     }
 
     private void insertionSort() {
-        try {
             if (isSorted()) return;
             for (int i = 1; i < blocks.size(); i++) {
                 for (int a = 0; a < i; a++) {
@@ -266,20 +262,20 @@ public class Sorting extends JPanel {
                     if (shadeGreen) {
                         blocks.get(a).color = Color.GREEN;
                         repaint();
-                        Thread.sleep(100);
+                        sleep();
                     }
                 }
                 int keyHeight = blocks.get(i).height;   // keep the value
                 int j = i - 1;
                 blocks.get(i).color = Color.BLUE; // current key
                 repaint();
-                Thread.sleep(1000);
+                sleep();
                 //Blue is for current key, RED is for shifting elements such as j+1 and j each time
                 while (j >= 0 && blocks.get(j).height > keyHeight) {
                     blocks.get(j + 1).height = blocks.get(j).height;
                     blocks.get(j + 1).color = blocks.get(j).color = Color.RED; // shifting element
                     repaint();
-                    Thread.sleep(500);
+                    sleep();
                     blocks.get(j + 1).color = blocks.get(j).color = Color.WHITE; // shifting element
                     repaint();
                     j--;
@@ -289,20 +285,17 @@ public class Sorting extends JPanel {
                 blocks.get(j + 1).height = keyHeight;
             }
             returnCtrl();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 
     private void bubbleSort() {
         int i, j;
         boolean swapped;
-        try {
+
             for (i = 0; i < blocks.size() - 1; i++) {
                 for (int k = blocks.size() - 1; k >= blocks.size() - i && i != 0; k--) {
                     blocks.get(k).color = Color.GREEN;
                     repaint();
-                    Thread.sleep(300);
+                    sleep();
                 }
                 swapped = false;
                 for (j = 0; j < blocks.size() - i - 1; j++) {
@@ -311,7 +304,7 @@ public class Sorting extends JPanel {
                                 blocks.get(j + 1).color = Color.RED;
                         repaint();
                         swapBlocks(blocks.get(j), blocks.get(j + 1));
-                        Thread.sleep(300);
+                        sleep();
                         swapped = true;
                     }
                     blocks.get(j).color =
@@ -322,9 +315,7 @@ public class Sorting extends JPanel {
                     break;
                 }
             }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+
         returnCtrl();
     }
 
@@ -405,7 +396,7 @@ public class Sorting extends JPanel {
 
     private void sleep() {
         try {
-            Thread.sleep(500); // adjust speed
+            Thread.sleep(SLEEP_TIME);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
