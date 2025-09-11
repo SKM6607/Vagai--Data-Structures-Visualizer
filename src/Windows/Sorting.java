@@ -1,5 +1,7 @@
 package Windows;
 
+import Windows.Interfaces.GridInterface;
+import Windows.Interfaces.SortingAlgorithmsInterface;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -10,11 +12,8 @@ import java.util.Map;
 import java.util.Random;
 
 //TODO: Idea is to enable users to enter max size and it has random numbers in an array
-public class Sorting extends JPanel {
-    private final int SLEEP_TIME=500;
-    private static final int SPACING = 25;
-    private final int LIMIT = 50;
-    private final int widthX = 20, spacingX = 10;
+public class Sorting extends JPanel implements SortingAlgorithmsInterface, GridInterface {
+    private final int widthX = 20;
     private final ArrayList<ArrayBlock> blocks = new ArrayList<>();
     private final int choice;
     private final String currentAlgorithm;
@@ -23,18 +22,18 @@ public class Sorting extends JPanel {
     private JLabel label;
     private JSlider slider;
     private final Runnable[] sortingAlgorithms = new Runnable[]{this::selectionSort, this::insertionSort, this::bubbleSort, this::quickSort};
-    private int WIDTH, HEIGHT, MAX_ELEMENTS = 5;
+    private int WIDTH=width, HEIGHT=height, MAX_ELEMENTS = 5;
     private boolean isStart = true;
     private volatile boolean paused = false;
     private Thread thread;
-    private Window myParent = SwingUtilities.getWindowAncestor(this);
     private final JDialog legend;
     public Sorting(int width, int height, String menuOption) {
         //setBlock
         {
             currentAlgorithm = menuOption;
+            Window myParent = SwingUtilities.getWindowAncestor(this);
             switch (menuOption) {
-                case "Insertion Sort":
+                case INSERTION_SORTING:
                     map.clear();
                     map.put("Successfully Sorted Elements", Color.GREEN);
                     map.put("Current Comparison", Color.RED);
@@ -42,7 +41,7 @@ public class Sorting extends JPanel {
                     legend = new LegendDialog(myParent, "Legend: Insertion Sort", map);
                     choice = 1;
                     break;
-                case "Bubble Sort":
+                case BUBBLE_SORT:
                     map.clear();
                     map.put("Successfully Sorted Elements", Color.GREEN);
                     map.put("Current Comparison", Color.RED);
@@ -50,7 +49,7 @@ public class Sorting extends JPanel {
                     legend = new LegendDialog(myParent, "Legend: Bubble Sort", map);
                     choice = 2;
                     break;
-                case "Quick Sort":
+                case QUICK_SORT:
                     map.put("Pivot Selected", Color.GREEN);
                     map.put("Start Element",Color.YELLOW);
                     map.put("End Element",Color.ORANGE);
@@ -59,7 +58,7 @@ public class Sorting extends JPanel {
                     legend = new LegendDialog(myParent, "Legend: Quick Sort", map);
                     choice = 3;
                     break;
-                case "Selection Sort":
+                case SELECTION_SORTING:
                     map.clear();
                     map.put("Successfully Sorted Elements", Color.GREEN);
                     map.put("Current Minimum", Color.BLUE);
@@ -79,11 +78,10 @@ public class Sorting extends JPanel {
         add(getUserPanel(), BorderLayout.WEST);
         setBackground(Color.BLACK);
     }
-
-
     private void initAnimation() {
         blocks.clear();
         Random random = new Random();
+        int spacingX = 10;
         int startX = -spacingX + 5;
         for (int i = 0; i < MAX_ELEMENTS; i++) {
             int randomRange = random.nextInt(10, 500);
@@ -91,13 +89,13 @@ public class Sorting extends JPanel {
         }
         repaint();
     }
-
     private @NotNull JPanel getUserPanel() {
         GridLayout layout = new GridLayout(1, 4);
         label = new JLabel("Current Array Elements: 5");
         label.setOpaque(true);
         label.setForeground(Color.WHITE);
         label.setBackground(Color.BLACK);
+        int LIMIT = 50;
         slider = new JSlider(0, LIMIT, MAX_ELEMENTS);
         slider.addChangeListener(_ -> {
             isStart = true;
@@ -157,7 +155,8 @@ public class Sorting extends JPanel {
         drawElements(g);
     }
 
-    private void drawGrid(Graphics2D g) {
+    @Override
+     public void drawGrid(Graphics2D g) {
         Color set = new Color(33, 33, 33);
         g.setColor(set);
         for (int i = 0; i < WIDTH; i += SPACING) {
@@ -289,7 +288,6 @@ public class Sorting extends JPanel {
     private void bubbleSort() {
         int i, j;
         boolean swapped;
-
             for (i = 0; i < blocks.size() - 1; i++) {
                 for (int k = blocks.size() - 1; k >= blocks.size() - i && i != 0; k--) {
                     blocks.get(k).color = Color.GREEN;
@@ -314,7 +312,6 @@ public class Sorting extends JPanel {
                     break;
                 }
             }
-
         returnCtrl();
     }
 
@@ -395,7 +392,7 @@ public class Sorting extends JPanel {
 
     private void sleep() {
         try {
-            Thread.sleep(SLEEP_TIME);
+            Thread.sleep(500); // adjust speed
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
