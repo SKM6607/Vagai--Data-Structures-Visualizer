@@ -7,7 +7,7 @@ public interface LinkedListInterface extends DefaultWindowsInterface{
         public final String address="0x"+Integer.toHexString(System.identityHashCode(this));
         public String nextAddress;
         public VisualNode nextNode;
-        VisualNode(int data, int x, int y) {
+        public VisualNode(int data, int x, int y) {
             this.data=data;
             this.xPos=x;
             this.yPos=y;
