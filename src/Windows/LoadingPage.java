@@ -1,13 +1,18 @@
 package Windows;
 
+import Windows.Interfaces.DefaultWindowsInterface;
+
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 
-public class LoadingPage extends JPanel {
+public class LoadingPage extends JPanel implements DefaultWindowsInterface {
     public final Font newFont;
     private final JButton startButton;
+    public JButton returnControlOfLoadButton(){
+        return startButton;
+    }
     public LoadingPage() {
         int width=Toolkit.getDefaultToolkit().getScreenSize().width;
         int height=Toolkit.getDefaultToolkit().getScreenSize().height;
@@ -33,8 +38,5 @@ public class LoadingPage extends JPanel {
         g.setColor(Color.WHITE);
         g.setFont(newFont.deriveFont(36f));
         g.drawString("VAGAI- Algorithms Demonstrator", getWidth()/5, getHeight()/6);
-    }
-    public JButton returnControlOfLoadButton(){
-        return startButton;
     }
 }
