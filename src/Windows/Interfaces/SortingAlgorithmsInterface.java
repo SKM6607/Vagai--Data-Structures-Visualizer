@@ -5,7 +5,7 @@ public interface SortingAlgorithmsInterface extends DefaultWindowsInterface{
     String LINKED_LIST = "Linked List";
     String INSERTION_SORTING = "Insertion Sort";
     String SELECTION_SORTING = "Selection Sort";
-    String BUBBLE_SORT = "Bubble Sort";
-    String QUICK_SORT = "Quick Sort";
-    String[] IDENTIFIER_ARRAY = {SELECTION_SORTING, INSERTION_SORTING, BUBBLE_SORT, QUICK_SORT};
+    String BUBBLE_SORTING = "Bubble Sort";
+    String QUICK_SORTING = "Quick Sort";
+    String[] IDENTIFIER_ARRAY = {SELECTION_SORTING, INSERTION_SORTING, BUBBLE_SORTING, QUICK_SORTING};
 }

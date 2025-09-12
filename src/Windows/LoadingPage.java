@@ -1,11 +1,13 @@
 package Windows;
 
+import Windows.Interfaces.DefaultWindowsInterface;
+
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 
-public class LoadingPage extends JPanel {
+public class LoadingPage extends JPanel implements DefaultWindowsInterface {
     public final Font newFont;
     private final JButton startButton;
     public JButton returnControlOfLoadButton(){

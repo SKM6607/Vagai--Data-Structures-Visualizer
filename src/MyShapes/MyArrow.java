@@ -12,7 +12,8 @@ public class MyArrow {
     }
     public void draw(Graphics2D g,int x,int y,Color color) {
         g.setColor(color);
-        g.drawLine(x,y,x+length,y);
-        g.fillPolygon(new Polygon(new int[]{x+length,x+length+size,x+length+size,x+length+2*size},new int[]{y,y+size,y-size,y},4));
+        g.drawLine(x,y,x+=length,y);
+        g.fillPolygon(new Polygon(new int[]{x+size,x,x},new int[]{y,y+size,y-size},3));
+        g.setColor(Color.WHITE);
     }
 }

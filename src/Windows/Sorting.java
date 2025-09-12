@@ -41,7 +41,7 @@ public class Sorting extends JPanel implements SortingAlgorithmsInterface, GridI
                     legend = new LegendDialog(myParent, "Legend: Insertion Sort", map);
                     choice = 1;
                     break;
-                case BUBBLE_SORT:
+                case BUBBLE_SORTING:
                     map.clear();
                     map.put("Successfully Sorted Elements", Color.GREEN);
                     map.put("Current Comparison", Color.RED);
@@ -49,7 +49,7 @@ public class Sorting extends JPanel implements SortingAlgorithmsInterface, GridI
                     legend = new LegendDialog(myParent, "Legend: Bubble Sort", map);
                     choice = 2;
                     break;
-                case QUICK_SORT:
+                case QUICK_SORTING:
                     map.put("Pivot Selected", Color.GREEN);
                     map.put("Start Element",Color.YELLOW);
                     map.put("End Element",Color.ORANGE);

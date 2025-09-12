@@ -1,56 +1,168 @@
 package Windows;
 
 import MyShapes.MyArrow;
+import Windows.Interfaces.DefaultWindowsInterface;
+import Windows.Interfaces.GridInterface;
+import Windows.Interfaces.LinkedListLightWeightInterface;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
 
-public class LinkedList extends JPanel {
-    private static int width = Toolkit.getDefaultToolkit().getScreenSize().width;
-    private static final int height = Toolkit.getDefaultToolkit().getScreenSize().height;
-    private final MyArrow arrow;
-    private final int nodeLength = 350, nodeHeight = 200;
-    private final int SPACING = 25;
-    private final JButton[] button = new JButton[2];
-    ArrayList<Node> nodes = new ArrayList<>();
-    private JPanel mainPanel;
-    private final JButton append;
-    private  final JButton pop;
-    private final JTextField inputText;
-    public LinkedList() {
-        nodes.add(new Node(0, width / 2 - nodeLength / 2, height / 2 - nodeHeight / 2, true));
-        //setBlock
-        {
-            GridLayout layout = new GridLayout(1, 2,0,10);
-            button[0] = new JButton("Append");
-            button[1] = new JButton("Delete");
-            arrow = new MyArrow(nodeLength / 2, 20);
-            inputText = appendTextInput();
-            append = new JButton("APPEND");
-            pop = new JButton("POP");
-            append.setFont(getFont().deriveFont(15f));
-            pop.setFont(getFont().deriveFont(15f));
-            JPanel sidePanel = new JPanel(layout);
-            sidePanel.add(inputText);
-            sidePanel.add(append);
-            sidePanel.setBackground(Color.BLACK);
-            mainPanel=new JPanel(new GridLayout(2,1,5,10));
-            mainPanel.add(sidePanel);
-            mainPanel.add(pop);
-            mainPanel.setBackground(Color.BLACK);
-            mainPanel.setPreferredSize(new Dimension(350,75));
+class LinkedListVisual extends JPanel implements LinkedListLightWeightInterface, GridInterface {
+    public static final int nodeSpacing = (3 * nodeWidth) / 2 + SPACING;
+    private static final MyArrow arrow = new MyArrow(nodeWidth / 2, 20);
+    VisualNode head = new VisualNode(0, width / 4, height / 2 - nodeHeight);
+    private int dynamicWidth = width;
+    private int size = 1;
+
+    LinkedListVisual() {
+        setPreferredSize(new Dimension(width, height));
+        setBackground(Color.BLACK);
+    }
+
+    @Override
+    protected void paintComponent(Graphics g1) {
+        super.paintComponent(g1);
+        Graphics2D g = (Graphics2D) g1;
+        drawGrid(g);
+        VisualNode temp = head;
+        while (temp != null) {
+            drawNode(g, temp);
+            temp = temp.nextNode;
         }
-        append.addActionListener(_ -> {
-            InputVerifier verifier = inputText.getInputVerifier();
-            if (verifier.verify(inputText)) {
-                addNode(Integer.parseInt(inputText.getText()));
-                inputText.setText("");
+    }
+
+    @Override
+    public void drawGrid(@NotNull Graphics2D g) {
+        g.setStroke(new BasicStroke(1f));
+        for (int i = 0; i < height; i += SPACING) {
+            g.drawLine(0, i, dynamicWidth, i);
+        }
+        for (int i = 0; i < dynamicWidth; i += SPACING) {
+            g.drawLine(i, 0, i, height);
+        }
+    }
+
+    @Override
+    public void append(int value) {
+        VisualNode newNode = new VisualNode(value, head.xPos + size * nodeSpacing, head.yPos);
+        VisualNode temp = head;
+        while (temp.nextNode != null) {
+            temp = temp.nextNode;
+        }
+        temp.nextAddress = newNode.address;
+        temp.nextNode = newNode;
+        size++;
+        resize();
+    }
+
+    private void resize() {
+        int targetWidth = calculateSize() + 8 * SPACING;
+        targetWidth = Math.max(width, targetWidth);
+        if (Math.abs(dynamicWidth - targetWidth) > nodeSpacing / 2) {
+            dynamicWidth = targetWidth;
+            setPreferredSize(new Dimension(dynamicWidth, height));
+            revalidate();
+        }
+    }
+
+    public void setCamCentered(JScrollPane scrollPane) {
+        JViewport viewport = scrollPane.getViewport();
+        Rectangle rectangle = viewport.getViewRect();
+        viewport.setViewPosition(new Point(
+                 ((calculateSize()- rectangle.width/2)), height/2
+        ));
+        scrollPane.setViewport(viewport);
+    }
+
+    @Override
+    public void pop() {
+        if (size == 1) return;
+        VisualNode temp = head, prev = head;
+        while (temp.nextNode != null) {
+            prev = temp;
+            temp = temp.nextNode;
+        }
+        prev.nextNode = null;
+        prev.nextAddress = null;
+        size--;
+        calculateSize();
+    }
+
+    @Override
+    public int sizeLL() {
+        return size;
+    }
+
+    protected int calculateSize() {
+        return head.xPos + size * nodeSpacing;
+    }
+
+    @Override
+    public void drawNode(Graphics2D g, VisualNode node) {
+        int x = node.xPos;
+        int y = node.yPos;
+        int value = node.data;
+        g.setColor(Color.WHITE);
+        g.fillRect(x, y, nodeWidth, nodeHeight);
+        g.setStroke(new BasicStroke(4f));
+        g.setColor(Color.BLACK);
+        g.drawLine(x + nodeWidth / 2, y, x + nodeWidth / 2, y + nodeHeight);
+        g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 30));
+        g.drawString(String.valueOf(value), x + (float) nodeWidth / 4, y + nodeWidth / 3.5f);
+        g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
+        g.drawString((node.isLast()) ? "NULL" : node.nextAddress, x + nodeWidth / 1.5f, y + nodeWidth / 3.5f);
+        g.setColor(Color.WHITE);
+        g.drawString(node.address, x + nodeWidth / 3, y - SPACING);
+        if (!node.isLast()) arrow.draw(g, x + nodeWidth, y + nodeHeight / 2, Color.YELLOW);
+    }
+}
+
+public class LinkedList extends JPanel implements DefaultWindowsInterface {
+    private final JTextField textField;
+
+    //TODO: GET VISUAL PANEL SCROLLABLE WORKING
+    public LinkedList() {
+        JLayeredPane layeredPane = new JLayeredPane();
+        Font font = new Font(Font.SANS_SERIF, Font.BOLD, 20);
+        LinkedListVisual visualPanel = new LinkedListVisual();
+        JScrollPane wrapper = new JScrollPane(visualPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        JPanel mainPanel = new JPanel();
+        JButton[] basicButtons = new JButton[2];
+        layeredPane.setPreferredSize(new Dimension(width, height));
+        wrapper.setBounds(0, 0, width, height);
+        layeredPane.add(wrapper, JLayeredPane.DEFAULT_LAYER);
+        mainPanel.setLayout(new GridLayout(2, 1, 10, 10));
+        mainPanel.setBackground(new Color(0, 0, 0, 180));
+        mainPanel.setBounds(width / 2 - 150, height - 200, 300, 100);
+        {
+            basicButtons[0] = new JButton("APPEND");
+            basicButtons[1] = new JButton("POP");
+            basicButtons[0].setFont(font);
+            basicButtons[1].setFont(font);
+            textField = appendTextInput();
+            JPanel subPanel = new JPanel(new GridLayout(1, 2, 10, 0));
+            subPanel.setBackground(Color.BLACK);
+            subPanel.add(textField);
+            subPanel.add(basicButtons[0]);
+            mainPanel.add(subPanel);
+            mainPanel.add(basicButtons[1]);
+        }
+        layeredPane.add(mainPanel, JLayeredPane.PALETTE_LAYER);
+        add(layeredPane);
+        basicButtons[0].addActionListener(_ -> {
+            if (verifyTextField(textField)) {
+                visualPanel.append(Integer.parseInt(textField.getText()));
+                visualPanel.setCamCentered(wrapper);
+                visualPanel.repaint();
             }
         });
-        repaint();
-        setBackground(Color.BLACK);
+        basicButtons[1].addActionListener(_ -> {
+            visualPanel.pop();
+            visualPanel.setCamCentered(wrapper);
+            visualPanel.repaint();
+        });
     }
 
     private static @NotNull JTextField appendTextInput() {
@@ -67,94 +179,12 @@ public class LinkedList extends JPanel {
                 }
             }
         });
-        textField.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 15));
         return textField;
     }
 
-    @Override
-    protected void paintComponent(Graphics g1) {
-        super.paintComponent(g1);
-        Graphics2D g = (Graphics2D) g1;
-        drawGrid(g);
-        for (Node node : nodes) {
-            drawNode(g, node);
-        }
+    private static boolean verifyTextField(JTextField textField) {
+        InputVerifier verifier = textField.getInputVerifier();
+        return verifier.verify(textField);
     }
 
-    void drawGrid(Graphics2D g) {
-        g.setStroke(new BasicStroke(1f));
-        for (int i = 0; i < height; i += SPACING) {
-            g.drawLine(0, i, width, i);
-        }
-        for (int i = 0; i < width; i += SPACING) {
-            g.drawLine(i, 0, i, height);
-        }
-    }
-
-    void drawNode(Graphics2D g, Node node) {
-        int x = node.x;
-        int y = node.y;
-        int value = node.data;
-        g.setColor(Color.WHITE);
-        g.fillRect(x, y, nodeLength, nodeHeight);
-        g.setStroke(new BasicStroke(4f));
-        g.setColor(Color.BLACK);
-        g.drawLine(x + nodeLength / 2, y, x + nodeLength / 2, y + nodeHeight);
-        g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 30));
-        g.drawString(String.valueOf(value), x + (float) nodeLength / 4, y + nodeLength / 3.5f);
-        g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
-        g.drawString((node.nextAddr == null) ? "NULL" : node.nextAddr, x + nodeLength / 1.5f, y + nodeLength / 3.5f);
-        g.setColor(Color.WHITE);
-        g.drawString(node.ownAddress, x + nodeLength / 3, y - SPACING);
-        if (!node.isLast) arrow.draw(g, x + nodeLength, y + nodeHeight / 2, Color.YELLOW);
-    }
-
-    void addNode(int value) {
-        int x = nodes.getLast().x + 3*nodeLength/2 +SPACING;
-        int y = nodes.getLast().y;
-        Node node = new Node(value, x, y, true);
-        nodes.getLast().isLast = false;
-        nodes.getLast().next = node;
-        nodes.getLast().nextAddr = node.ownAddress;
-        nodes.add(node);
-        int startX=nodes.getLast().x+ 2*nodeLength;
-        if (startX > getPreferredSize().width) {
-            width=startX;
-            setPreferredSize(new Dimension(startX, getPreferredSize().height));
-        }
-        SwingUtilities.invokeLater(()-> {
-            Rectangle newNormal = new Rectangle(node.x, node.y, 2 * nodeLength, nodeHeight);
-            newNormal.x = node.x - (getParent().getWidth() - nodeLength) / 2;
-            newNormal.width = getParent().getWidth();
-            scrollRectToVisible(newNormal);
-        });
-        try {
-            Thread.sleep(200);
-            repaint();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-    }
-    @NotNull
-    public JPanel returnPanel(){
-        return mainPanel;
-    }
-    private static final class Node {
-        public final String ownAddress;
-        public int x, y;
-        public boolean isLast = false;
-        public String nextAddr;
-        public Node next;
-        private int data;
-
-        Node(int data, int x, int y, boolean isLast) {
-            this.data = data;
-            this.x = x;
-            this.y = y;
-            this.next = null;
-            nextAddr = null;
-            this.isLast = isLast;
-            ownAddress = "0x" + Integer.toHexString(System.identityHashCode(this));
-        }
-    }
 }
