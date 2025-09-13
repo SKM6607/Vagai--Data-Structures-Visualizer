@@ -20,7 +20,7 @@
 ---
 
 ## About
-VAGAI (**VagaiPaduthal** transl. **Sorting**) is a Java-based application that renders real-time, intuitive visualizations of common sorting algorithms in two dimensions. Its goal is to make algorithmic behavior transparent and accessible to learners and enthusiasts alike.
+VAGAI (**VagaiPaduthal** transl. **Windows.Sorting**) is a Java-based application that renders real-time, intuitive visualizations of common sorting algorithms in two dimensions. Its goal is to make algorithmic behavior transparent and accessible to learners and enthusiasts alike.
 
 ---
 
@@ -33,7 +33,7 @@ VAGAI (**VagaiPaduthal** transl. **Sorting**) is a Java-based application that r
 
 ## Demo
 - **This is the start screen**
-<img src="ReadmeImages/DemoWelcomePage.png"></img>
+<img src="ReadmeImages/DemoWelcomePageNew.png"></img>
 -**This is the Selection Sort Screen with Legend**
 <img src="ReadmeImages/SelectionSort.png"></img>
 - **The following is the Insertion Sort Screen with Legend**

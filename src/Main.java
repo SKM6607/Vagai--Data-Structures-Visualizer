@@ -62,10 +62,6 @@ public class Main implements SortingAlgorithmsInterface {
                 window.dispose();
             }
         }
-        try {
-            Thread.sleep(10);
-        } catch (InterruptedException _) {
-        }
     }
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {

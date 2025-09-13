@@ -1,12 +1,8 @@
 package MyShapes;
-
 import java.awt.*;
-
 public class MyArrow {
-    private int x, y,length, size;
-    private Color color;
+    private int length, size;
     public MyArrow(int length,int size) {
-        this.x=this.y=0;
         this.size=size;
         this.length=length;
     }
