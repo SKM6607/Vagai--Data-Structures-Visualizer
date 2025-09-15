@@ -1,13 +1,13 @@
 package Windows;
-
 import MyShapes.MyArrow;
 import Windows.Interfaces.DefaultWindowsInterface;
 import Windows.Interfaces.GridInterface;
 import Windows.Interfaces.LinkedListLightWeightInterface;
 import org.jetbrains.annotations.NotNull;
-
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 class LinkedListVisual extends JPanel implements LinkedListLightWeightInterface, GridInterface {
     public static final int nodeSpacing = (3 * nodeWidth) / 2 + SPACING;
@@ -57,6 +57,11 @@ class LinkedListVisual extends JPanel implements LinkedListLightWeightInterface,
         resize();
     }
 
+    @Override
+    public Dimension getPreferredSize(){
+        return new Dimension(dynamicWidth,height);
+    }
+
     private void resize() {
         int targetWidth = calculateSize() + 8 * SPACING;
         targetWidth = Math.max(width, targetWidth);
@@ -64,6 +69,7 @@ class LinkedListVisual extends JPanel implements LinkedListLightWeightInterface,
             dynamicWidth = targetWidth;
             setPreferredSize(new Dimension(dynamicWidth, height));
             revalidate();
+            repaint();
         }
     }
 
@@ -71,8 +77,9 @@ class LinkedListVisual extends JPanel implements LinkedListLightWeightInterface,
         JViewport viewport = scrollPane.getViewport();
         Rectangle rectangle = viewport.getViewRect();
         viewport.setViewPosition(new Point(
-                 ((calculateSize()- rectangle.width/2)), height/2
+                 (Math.max(rectangle.width/2,calculateSize()- rectangle.width/2)), height/2
         ));
+        resize();
         scrollPane.setViewport(viewport);
     }
 
@@ -87,7 +94,7 @@ class LinkedListVisual extends JPanel implements LinkedListLightWeightInterface,
         prev.nextNode = null;
         prev.nextAddress = null;
         size--;
-        calculateSize();
+
     }
 
     @Override
@@ -96,7 +103,7 @@ class LinkedListVisual extends JPanel implements LinkedListLightWeightInterface,
     }
 
     protected int calculateSize() {
-        return head.xPos + size * nodeSpacing;
+        return head.xPos + sizeLL() * nodeSpacing;
     }
 
     @Override
@@ -112,7 +119,7 @@ class LinkedListVisual extends JPanel implements LinkedListLightWeightInterface,
         g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 30));
         g.drawString(String.valueOf(value), x + (float) nodeWidth / 4, y + nodeWidth / 3.5f);
         g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
-        g.drawString((node.isLast()) ? "NULL" : node.nextAddress, x + nodeWidth / 1.5f, y + nodeWidth / 3.5f);
+        g.drawString((node.isLast()) ? "NULL" : node.nextAddress, x + nodeWidth / 1.75f, y + nodeHeight/2f);
         g.setColor(Color.WHITE);
         g.drawString(node.address, x + nodeWidth / 3, y - SPACING);
         if (!node.isLast()) arrow.draw(g, x + nodeWidth, y + nodeHeight / 2, Color.YELLOW);
@@ -121,13 +128,14 @@ class LinkedListVisual extends JPanel implements LinkedListLightWeightInterface,
 
 public class LinkedList extends JPanel implements DefaultWindowsInterface {
     private final JTextField textField;
-
+    private static final Font font =  new Font(Font.SANS_SERIF, Font.BOLD, 20);
     //TODO: GET VISUAL PANEL SCROLLABLE WORKING
     public LinkedList() {
         JLayeredPane layeredPane = new JLayeredPane();
-        Font font = new Font(Font.SANS_SERIF, Font.BOLD, 20);
         LinkedListVisual visualPanel = new LinkedListVisual();
-        JScrollPane wrapper = new JScrollPane(visualPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        JScrollPane wrapper = new JScrollPane(visualPanel);
+        wrapper.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+        wrapper.getHorizontalScrollBar().setUnitIncrement(35);
         JPanel mainPanel = new JPanel();
         JButton[] basicButtons = new JButton[2];
         layeredPane.setPreferredSize(new Dimension(width, height));
@@ -135,13 +143,26 @@ public class LinkedList extends JPanel implements DefaultWindowsInterface {
         layeredPane.add(wrapper, JLayeredPane.DEFAULT_LAYER);
         mainPanel.setLayout(new GridLayout(2, 1, 10, 10));
         mainPanel.setBackground(new Color(0, 0, 0, 180));
-        mainPanel.setBounds(width / 2 - 150, height - 200, 300, 100);
+        mainPanel.setBounds(width / 2 - 170, height -200, 300, 100);
         {
             basicButtons[0] = new JButton("APPEND");
             basicButtons[1] = new JButton("POP");
-            basicButtons[0].setFont(font);
-            basicButtons[1].setFont(font);
             textField = appendTextInput();
+            {
+                basicButtons[0].setFont(font);
+                basicButtons[1].setFont(font);
+                basicButtons[0].setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                basicButtons[1].setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                basicButtons[0].setBackground(new Color(0, 18, 121));
+                basicButtons[0].setOpaque(true);
+                basicButtons[0].setForeground(Color.WHITE);
+                basicButtons[1].setBackground(new Color(0, 18, 121));
+                basicButtons[1].setOpaque(true);
+                basicButtons[1].setForeground(Color.WHITE);
+                textField.setBackground(new Color(0, 18, 121));
+                textField.setOpaque(true);
+                textField.setForeground(Color.WHITE);
+            }
             JPanel subPanel = new JPanel(new GridLayout(1, 2, 10, 0));
             subPanel.setBackground(Color.BLACK);
             subPanel.add(textField);
@@ -151,9 +172,36 @@ public class LinkedList extends JPanel implements DefaultWindowsInterface {
         }
         layeredPane.add(mainPanel, JLayeredPane.PALETTE_LAYER);
         add(layeredPane);
+        textField.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                if (verifyTextField(textField) && e.getKeyChar()=='\n'){
+                    visualPanel.append(Integer.parseInt(textField.getText()));
+                    textField.setText("");
+                    visualPanel.setCamCentered(wrapper);
+                    visualPanel.repaint();
+                }
+                if(e.getKeyChar()==127){
+                    visualPanel.pop();
+                    visualPanel.setCamCentered(wrapper);
+                    visualPanel.repaint();
+                }
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+
+            }
+        });
         basicButtons[0].addActionListener(_ -> {
             if (verifyTextField(textField)) {
                 visualPanel.append(Integer.parseInt(textField.getText()));
+                textField.setText("");
                 visualPanel.setCamCentered(wrapper);
                 visualPanel.repaint();
             }
@@ -167,6 +215,9 @@ public class LinkedList extends JPanel implements DefaultWindowsInterface {
 
     private static @NotNull JTextField appendTextInput() {
         JTextField textField = new JTextField();
+        textField.setFont(font);
+        textField.setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
+        textField.setHorizontalAlignment(JTextField.CENTER);
         textField.setToolTipText("Value for the next node (Integer)");
         textField.setInputVerifier(new InputVerifier() {
             @Override
