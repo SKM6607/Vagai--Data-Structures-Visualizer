@@ -1,3 +1,4 @@
+import QRImage.QRCodeDisplayer;
 import Sound.BackgroundMusic;
 import Windows.Interfaces.SortingAlgorithmsInterface;
 import Windows.LegendDialog;
@@ -7,7 +8,6 @@ import Windows.Sorting;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Arrays;
 
 public class Main implements SortingAlgorithmsInterface {
     static final Thread backgroundMusicThread = new Thread(new BackgroundMusic("src/Sound/Granius.wav"));
@@ -21,6 +21,8 @@ public class Main implements SortingAlgorithmsInterface {
     private static final LoadingPage loadingPage = new LoadingPage();
     private static final Sorting sortingPanel = new Sorting(width, height, SELECTION_SORTING);
     private static final LinkedList linkedListPanel=new LinkedList();
+    private static JFrame jFrame;
+    private static QRCodeDisplayer qrCode;
     static {
         menuBarMain.setBorderPainted(false);
         menuBarMain.setVisible(false);
@@ -66,6 +68,7 @@ public class Main implements SortingAlgorithmsInterface {
             cardLayout.show(cardPanel, LINKED_LIST);
         });
         loadingPage.returnControlOfLoadButton().addActionListener(_ -> {
+            closeQRWindow();
             menuBarMain.setVisible(true);
             cardLayout.show(cardPanel, SELECTION_SORTING);
             sortingPanel.invokeLegend();
@@ -78,9 +81,20 @@ public class Main implements SortingAlgorithmsInterface {
             }
         }
     }
+    private static void closeQRWindow() {
+        for (Window window : Window.getWindows()) {
+            if (window instanceof QRCodeDisplayer) {
+                window.dispose();
+            }
+        }
+    }
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            JFrame jFrame = new JFrame("VAGAI");
+            jFrame = new JFrame("VAGAI");
+            {
+                qrCode=new QRCodeDisplayer(jFrame);
+                qrCode.setVisible(true);
+            }
             jFrame.setSize(width,height);
             jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             jFrame.setBackground(themeColorBG);
