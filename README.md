@@ -1,4 +1,4 @@
-# VAGAI — Algorithms Demonstrator
+# VAGAI — Algorithms Demonstrator - 0.0.1
 
 ### A simple 2D graphical demonstration of popular sorting algorithms — visually appealing and self-explanatory.
 
@@ -13,10 +13,8 @@
     - [Installation](#installation)
     - [Usage](#usage)
 - [Supported Algorithms](#supported-algorithms)
-- [Project Structure](#project-structure)
-- [Contributing](#contributing)
-- [License](#license)
-
+- [Current Versions](#version)
+- [Class Diagram](#class-diagram)
 ---
 
 ## About
@@ -34,7 +32,13 @@ VAGAI (**VagaiPaduthal** transl. **Windows.Sorting**) is a Java-based applicatio
 ## Demo
 - **This is the start screen**
 <img src="ReadmeImages/DemoWelcomePageNew.png"></img>
--**This is the Selection Sort Screen with Legend**
+- <div style="text-align: center;margin-bottom: 50px;margin-top: 50px;">version 0.0.0 changed(UI colors and some functionalities)</div>
+-*Sorting Screen since version 0.0.1*
+<img src="ReadmeImages/NewSortingVersion_0.0.1.png"></img>
+-*Added: Linked List functionalities since version 0.0.1*
+<img src="ReadmeImages/NewLinkedListVersion_0.0.1.png"></img>
+<div style="text-align: center;">OLDER VERSION 0.0.0</div>
+- **This is the Selection Sort Screen with Legend**
 <img src="ReadmeImages/SelectionSort.png"></img>
 - **The following is the Insertion Sort Screen with Legend**
 <img src="ReadmeImages/InsertionSort.png"></img>
@@ -52,3 +56,9 @@ VAGAI (**VagaiPaduthal** transl. **Windows.Sorting**) is a Java-based applicatio
 1. **Clone the repository**  
 2. **Have an IDE like IntelliJ if you are aiming to learn JAVA Swing**
 
+### Version
+***Current Version: 0.0.1***
+
+### Class Diagram
+- <div style="text-align: center; margin-bottom: 50px;">Project Classes</div>
+<img src="ReadmeImages/classDiagram.png"></img>
