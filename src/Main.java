@@ -22,18 +22,33 @@ public class Main implements SortingAlgorithmsInterface {
     private static final Sorting sortingPanel = new Sorting(width, height, SELECTION_SORTING);
     private static final LinkedList linkedListPanel=new LinkedList();
     static {
+        menuBarMain.setBorderPainted(false);
         menuBarMain.setVisible(false);
+        menuBarMain.setForeground(foreGroundBG);
+        menuBarMain.setBackground(themeColorBG);
+        sortingMenu.setForeground(foreGroundBG);
+        sortingMenu.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         for (int i = 0; i < sortingMenuItems.length; i++) {
             sortingMenuItems[i] = new JMenuItem(IDENTIFIER_ARRAY[i]);
             cardPanel.add(new Sorting(width,height , IDENTIFIER_ARRAY[i]), IDENTIFIER_ARRAY[i]);
-            sortingMenu.add(sortingMenuItems[i]);
+            sortingMenu.
+                    add(sortingMenuItems[i]).
+                    setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            sortingMenuItems[i].setBackground(themeColorBG);
+            sortingMenuItems[i].setForeground(foreGroundBG);
             sortingMenuItems[i].setFont(new Font(Font.SANS_SERIF, Font.BOLD, 18));
         }
         cardPanel.add(linkedListPanel,LINKED_LIST);
         cardPanel.add(loadingPage, DEFAULT);
         linkedListMenuItem.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 18));
-        linkedListMenu.add(linkedListMenuItem);
+        linkedListMenu.setBackground(themeColorBG);
+        linkedListMenu.setForeground(foreGroundBG);
+        linkedListMenuItem.setBackground(themeColorBG);
+        linkedListMenuItem.setForeground(foreGroundBG);
+        linkedListMenu.add(linkedListMenuItem).setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        linkedListMenu.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         menuBarMain.add(sortingMenu);
+        menuBarMain.add(Box.createHorizontalStrut(15));
         menuBarMain.add(linkedListMenu);
         sortingMenu.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 18));
         linkedListMenu.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 18));
@@ -68,6 +83,8 @@ public class Main implements SortingAlgorithmsInterface {
             JFrame jFrame = new JFrame("VAGAI");
             jFrame.setSize(width,height);
             jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            jFrame.setBackground(themeColorBG);
+            jFrame.setForeground(foreGroundBG);
             backgroundMusicThread.start();
             jFrame.add(cardPanel, BorderLayout.CENTER);
             jFrame.setLayout(cardLayout);
