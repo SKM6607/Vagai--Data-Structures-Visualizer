@@ -6,6 +6,8 @@ import Windows.Interfaces.GridInterface.SPACING
 import Windows.Interfaces.LinkedListInterface.VisualNode
 import Windows.Interfaces.StackLightWeightInterface
 import java.awt.*
+import java.awt.event.KeyEvent
+import java.awt.event.KeyListener
 import javax.swing.*
 
 open class StackWindow : JPanel(), StackLightWeightInterface, GridInterface {
@@ -138,14 +140,19 @@ open class StackWindow : JPanel(), StackLightWeightInterface, GridInterface {
 }
 
 class StackWindowUsable : JPanel(), DefaultWindowsInterface {
+    private val myHeight= DefaultWindowsInterface.height;
+    private val myWidth= DefaultWindowsInterface.width
     private lateinit var textField: JTextField
     private lateinit var pushButton: JButton
     private lateinit var popButton: JButton
     private val font=Font(Font.SANS_SERIF, Font.BOLD, 20)
+    private val visualStackWindow = StackWindow()
     init {
-        val layeredPane = JLayeredPane()
-        val visualStackWindow = StackWindow()
-        val mainPane = JPanel();
+        layout= BorderLayout()
+        val layeredPane = JLayeredPane().apply {
+            preferredSize= Dimension(myWidth,myHeight)
+        }
+        val mainPanel = JPanel(GridLayout(2,1,5,5));
         val scrollPane = JScrollPane(
             visualStackWindow,
             JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
@@ -161,6 +168,7 @@ class StackWindowUsable : JPanel(), DefaultWindowsInterface {
                 it.addActionListener {
                     if (textField.inputVerifier.verify(textField)) {
                         visualStackWindow.push(textField.text.toInt())
+                        textField.text=""
                     }
                 }
             }
@@ -174,7 +182,21 @@ class StackWindowUsable : JPanel(), DefaultWindowsInterface {
                 }
             }
         }
-
+        val subPanel= JPanel(GridLayout(1,2,5,5));
+        {
+            layeredPane.preferredSize = Dimension(myWidth, myHeight)
+            scrollPane.setBounds(0, 0, myWidth, myHeight)
+            subPanel.add(textField)
+            subPanel.add(pushButton)
+            mainPanel.background= Color(0,0,0,180)
+            mainPanel.add(subPanel)
+            mainPanel.add(popButton)
+            mainPanel.setBounds(myWidth / 2 - 170, myHeight - 200, 300, 100)
+            layeredPane.add(visualStackWindow, JLayeredPane.DEFAULT_LAYER)
+            layeredPane.add(mainPanel, JLayeredPane.PALETTE_LAYER)
+            mainPanel.setBounds(myWidth / 2 - 170, myHeight -200, 300, 100)
+        }
+        add(layeredPane, BorderLayout.CENTER)
     }
 
     private fun textInput(): JTextField {
@@ -195,6 +217,23 @@ class StackWindowUsable : JPanel(), DefaultWindowsInterface {
                     }
                 }
             }
+            it.addKeyListener(object: KeyListener{
+                override fun keyTyped(e: KeyEvent?) {
+                    if(it.inputVerifier.verify(it) && e?.keyChar=='\n'){
+                        visualStackWindow.push(it.text.toInt())
+                    }
+                    if(e?.keyChar== 127.toChar()){
+                        visualStackWindow.pop()
+                    }
+                }
+
+                //Discarded
+                override fun keyPressed(e: KeyEvent?) {
+                }
+                override fun keyReleased(e: KeyEvent?) {
+                }
+
+            })
         }
     }
 }
@@ -203,7 +242,7 @@ fun main() {
     SwingUtilities.invokeLater {
         val jFrame = JFrame("Stack Window")
         jFrame.also {
-            it.add(StackWindowUsable())
+            it.add(StackWindow())
             it.size = Dimension(DefaultWindowsInterface.width, DefaultWindowsInterface.height)
             it.defaultCloseOperation = JFrame.EXIT_ON_CLOSE
             it.isVisible = true
