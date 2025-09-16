@@ -129,7 +129,6 @@ class LinkedListVisual extends JPanel implements LinkedListLightWeightInterface,
 public class LinkedList extends JPanel implements DefaultWindowsInterface {
     private final JTextField textField;
     private static final Font font =  new Font(Font.SANS_SERIF, Font.BOLD, 20);
-    //TODO: GET VISUAL PANEL SCROLLABLE WORKING
     public LinkedList() {
         JLayeredPane layeredPane = new JLayeredPane();
         LinkedListVisual visualPanel = new LinkedListVisual();

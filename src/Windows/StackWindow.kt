@@ -1,14 +1,12 @@
 package Windows
-
+//TODO SCROLLING MECHANISMS
 import Windows.Interfaces.DefaultWindowsInterface
 import Windows.Interfaces.GridInterface
 import Windows.Interfaces.GridInterface.SPACING
 import Windows.Interfaces.LinkedListInterface.VisualNode
 import Windows.Interfaces.StackLightWeightInterface
 import java.awt.*
-import javax.swing.JFrame
-import javax.swing.JPanel
-import javax.swing.SwingUtilities
+import javax.swing.*
 
 open class StackWindow : JPanel(), StackLightWeightInterface, GridInterface {
     val myWidth = StackLightWeightInterface.width;
@@ -37,15 +35,15 @@ open class StackWindow : JPanel(), StackLightWeightInterface, GridInterface {
         val g: Graphics2D = g1 as Graphics2D
         drawGrid(g)
         drawBasket(g)
-        var temp: VisualNode=top
-        while (temp!=null){
-            drawNode(g,temp)
-            temp=temp.nextNode
+        var temp: VisualNode = top
+        while (temp != null) {
+            drawNode(g, temp)
+            temp = temp.nextNode
         }
     }
 
     override fun push(value: Int) {
-        val newNode = VisualNode(value, top.xPos, top.yPos - nodeHeight -10)
+        val newNode = VisualNode(value, top.xPos, top.yPos - nodeHeight - 10)
         newNode.nextNode = top;
         newNode.nextAddress = top.address
         top = newNode
@@ -77,7 +75,7 @@ open class StackWindow : JPanel(), StackLightWeightInterface, GridInterface {
     }
 
     override fun drawGrid(g: Graphics2D) {
-        g.color= Color(0x1C233D)
+        g.color = Color(0x1C233D)
         for (i in 0..myWidth step SPACING + 5) {
             g.drawLine(i, 0, i, myHeight)
         }
@@ -98,18 +96,19 @@ open class StackWindow : JPanel(), StackLightWeightInterface, GridInterface {
             it.drawString("Data: ${node.data}", node.xPos + nodeWidth / 6, node.yPos + nodeHeight / 2 + 10)
             it.drawLine(node.xPos + nodeWidth / 2, node.yPos + 5, node.xPos + nodeWidth / 2, node.yPos + nodeHeight - 5)
             it.drawString(
-               "Next Address: ${
-                  when (node.nextAddress) {
-                      null -> "NULL"
-                      else -> {
-                          node.nextAddress
-                      }
-                  }
-              }",
-               node.xPos + 9 * nodeWidth / 15,
-               node.yPos + nodeHeight / 2 + 10)
+                "Next Address: ${
+                    when (node.nextAddress) {
+                        null -> "NULL"
+                        else -> {
+                            node.nextAddress
+                        }
+                    }
+                }",
+                node.xPos + 9 * nodeWidth / 15,
+                node.yPos + nodeHeight / 2 + 10
+            )
             it.color = Color.WHITE
-            it.font=it.font.deriveFont(10)
+            it.font = it.font.deriveFont(10)
             it.drawString("${node.address}  ----->", 50, node.yPos + nodeHeight / 2 + 10)
             it.color = oldColor
             it.stroke = resetStroke
@@ -138,11 +137,73 @@ open class StackWindow : JPanel(), StackLightWeightInterface, GridInterface {
     }
 }
 
+class StackWindowUsable : JPanel(), DefaultWindowsInterface {
+    private lateinit var textField: JTextField
+    private lateinit var pushButton: JButton
+    private lateinit var popButton: JButton
+    private val font=Font(Font.SANS_SERIF, Font.BOLD, 20)
+    init {
+        val layeredPane = JLayeredPane()
+        val visualStackWindow = StackWindow()
+        val mainPane = JPanel();
+        val scrollPane = JScrollPane(
+            visualStackWindow,
+            JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER
+        );
+        {
+            textField = textInput()
+            pushButton = JButton("PUSH").also {
+                it.background= DefaultWindowsInterface.themeColorBG
+                it.foreground= Color.WHITE
+                it.cursor= Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)
+                it.font=font
+                it.addActionListener {
+                    if (textField.inputVerifier.verify(textField)) {
+                        visualStackWindow.push(textField.text.toInt())
+                    }
+                }
+            }
+            popButton = JButton("POP").also {
+                it.cursor= Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)
+                it.font=font
+                it.foreground= Color.WHITE
+                it.background=DefaultWindowsInterface.themeColorBG
+                it.addActionListener {
+                    visualStackWindow.pop();
+                }
+            }
+        }
+
+    }
+
+    private fun textInput(): JTextField {
+        return JTextField().also {
+            it.cursor = Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR)
+            it.font =font
+            it.background=DefaultWindowsInterface.themeColorBG
+            it.foreground= Color.WHITE
+            it.horizontalAlignment = JTextField.CENTER
+            it.toolTipText = "Value of the next block (Int): "
+            it.inputVerifier = object : InputVerifier() {
+                override fun verify(input: JComponent?): Boolean {
+                    return try {
+                        (input as? JTextField)?.text?.toInt()
+                        true
+                    } catch (e: NumberFormatException) {
+                        false
+                    }
+                }
+            }
+        }
+    }
+}
+
 fun main() {
     SwingUtilities.invokeLater {
         val jFrame = JFrame("Stack Window")
         jFrame.also {
-            it.add(StackWindow())
+            it.add(StackWindowUsable())
             it.size = Dimension(DefaultWindowsInterface.width, DefaultWindowsInterface.height)
             it.defaultCloseOperation = JFrame.EXIT_ON_CLOSE
             it.isVisible = true
