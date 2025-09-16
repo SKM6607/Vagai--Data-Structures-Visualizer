@@ -2,7 +2,7 @@ package Windows.Interfaces;
 public interface LinkedListInterface extends DefaultWindowsInterface{
     int nodeWidth=350;
     int nodeHeight=200;
-    final class VisualNode {
+    class VisualNode {
         public int xPos,yPos,data;
         public final String address="0x"+Integer.toHexString(System.identityHashCode(this));
         public String nextAddress;
