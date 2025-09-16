@@ -4,7 +4,7 @@ import Windows.LegendDialog;
 import Windows.LinkedList;
 import Windows.LoadingPage;
 import Windows.Sorting;
-import QRImage.QRCodeDisplayer;
+import Windows.QRImage.QRCodeDisplayer;
 import javax.swing.*;
 import java.awt.*;
 
