@@ -100,6 +100,10 @@ public class Main implements MacroInterface {
             cardLayout.show(cardPanel, SELECTION_SORTING);
             sortingPanel.invokeLegend();
         });
+        stackMenuItem.addActionListener(_->{
+            closeChildWindows();
+            cardLayout.show(cardPanel,STACK);
+        });
         updateDialogMenuItem.addActionListener(_->{
             closeChildWindows();
             new UpdateDialog(null);
