@@ -1,8 +1,12 @@
-package Windows.Interfaces;
+package Windows.interfaces;
 
-public interface SortingAlgorithmsInterface extends DefaultWindowsInterface{
-    String DEFAULT = "LoadingPage";
+public interface MacroInterface extends DefaultWindowsInterface{
+    String MORE="More";
+    String UPDATE_DIALOG="Update Dialog";
     String LINKED_LIST = "Linked List";
+    String DEFAULT = "LoadingPage";
+    String STACK= "Stack";
+    String SORTING_ALGORITHMS="Sorting Algorithms";
     String INSERTION_SORTING = "Insertion Sort";
     String SELECTION_SORTING = "Selection Sort";
     String BUBBLE_SORTING = "Bubble Sort";

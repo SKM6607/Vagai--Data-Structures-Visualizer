@@ -1,7 +1,7 @@
 package Windows;
-
-import Windows.Interfaces.GridInterface;
-import Windows.Interfaces.SortingAlgorithmsInterface;
+import Windows.interfaces.GridInterface;
+import Windows.interfaces.MacroInterface;
+import Windows.dialogs.LegendDialog;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -10,9 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
-
-//TODO: Idea is to enable users to enter max size and it has random numbers in an array
-public class Sorting extends JPanel implements SortingAlgorithmsInterface, GridInterface {
+public class Sorting extends JPanel implements MacroInterface, GridInterface {
     private final int widthX = 20;
     private final ArrayList<ArrayBlock> blocks = new ArrayList<>();
     private final int choice;
@@ -76,7 +74,7 @@ public class Sorting extends JPanel implements SortingAlgorithmsInterface, GridI
             initAnimation();
         }
         add(getUserPanel(), BorderLayout.WEST);
-        setBackground(Color.BLACK);
+        setBackground(new Color(0xA0F29));
     }
     private void initAnimation() {
         blocks.clear();
@@ -157,14 +155,15 @@ public class Sorting extends JPanel implements SortingAlgorithmsInterface, GridI
 
     @Override
      public void drawGrid(Graphics2D g) {
-        Color set = new Color(33, 33, 33);
-        g.setColor(set);
+        Color set = g.getColor();
+        g.setColor(new Color(0x1C233D));
         for (int i = 0; i < WIDTH; i += SPACING) {
             g.drawLine(i, 0, i, HEIGHT);
         }
         for (int i = 0; i < HEIGHT; i += SPACING) {
             g.drawLine(0, i, WIDTH, i);
         }
+        g.setColor(set);
     }
 
     void drawElements(Graphics2D g) {

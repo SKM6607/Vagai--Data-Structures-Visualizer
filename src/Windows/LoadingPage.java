@@ -1,5 +1,5 @@
 package Windows;
-import Windows.Interfaces.DefaultWindowsInterface;
+import Windows.interfaces.DefaultWindowsInterface;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;

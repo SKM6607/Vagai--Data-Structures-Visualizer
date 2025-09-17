@@ -1,4 +1,4 @@
-package Windows.Interfaces;
+package Windows.interfaces;
 
 import java.awt.*;
 

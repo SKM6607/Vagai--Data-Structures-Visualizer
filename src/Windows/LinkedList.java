@@ -1,8 +1,8 @@
 package Windows;
 import MyShapes.MyArrow;
-import Windows.Interfaces.DefaultWindowsInterface;
-import Windows.Interfaces.GridInterface;
-import Windows.Interfaces.LinkedListLightWeightInterface;
+import Windows.interfaces.DefaultWindowsInterface;
+import Windows.interfaces.GridInterface;
+import Windows.interfaces.LinkedListLightWeightInterface;
 import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 import java.awt.*;
@@ -18,7 +18,7 @@ class LinkedListVisual extends JPanel implements LinkedListLightWeightInterface,
 
     LinkedListVisual() {
         setPreferredSize(new Dimension(width, height));
-        setBackground(Color.BLACK);
+        setBackground(new  Color(0xA0F29));
     }
 
     @Override
@@ -35,6 +35,8 @@ class LinkedListVisual extends JPanel implements LinkedListLightWeightInterface,
 
     @Override
     public void drawGrid(@NotNull Graphics2D g) {
+        Color older=g.getColor();
+        g.setColor(new Color(0x1C233D));
         g.setStroke(new BasicStroke(1f));
         for (int i = 0; i < height; i += SPACING) {
             g.drawLine(0, i, dynamicWidth, i);
@@ -42,6 +44,7 @@ class LinkedListVisual extends JPanel implements LinkedListLightWeightInterface,
         for (int i = 0; i < dynamicWidth; i += SPACING) {
             g.drawLine(i, 0, i, height);
         }
+        g.setColor(older);
     }
 
     @Override
@@ -111,10 +114,10 @@ class LinkedListVisual extends JPanel implements LinkedListLightWeightInterface,
         int x = node.xPos;
         int y = node.yPos;
         int value = node.data;
-        g.setColor(Color.WHITE);
+        g.setColor(new Color(0x1E3A8A));
         g.fillRect(x, y, nodeWidth, nodeHeight);
         g.setStroke(new BasicStroke(4f));
-        g.setColor(Color.BLACK);
+        g.setColor(new Color(0xFFD700));
         g.drawLine(x + nodeWidth / 2, y, x + nodeWidth / 2, y + nodeHeight);
         g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 30));
         g.drawString(String.valueOf(value), x + (float) nodeWidth / 4, y + nodeWidth / 3.5f);

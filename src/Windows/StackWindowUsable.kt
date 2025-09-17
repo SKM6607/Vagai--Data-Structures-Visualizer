@@ -1,10 +1,10 @@
 package Windows
 //TODO SCROLLING MECHANISMS
-import Windows.Interfaces.DefaultWindowsInterface
-import Windows.Interfaces.GridInterface
-import Windows.Interfaces.GridInterface.SPACING
-import Windows.Interfaces.LinkedListInterface.VisualNode
-import Windows.Interfaces.StackLightWeightInterface
+import Windows.interfaces.DefaultWindowsInterface
+import Windows.interfaces.GridInterface
+import Windows.interfaces.GridInterface.SPACING
+import Windows.interfaces.LinkedListInterface.VisualNode
+import Windows.interfaces.StackLightWeightInterface
 import java.awt.*
 import java.awt.event.KeyEvent
 import java.awt.event.KeyListener
@@ -256,17 +256,6 @@ class StackWindowUsable : JPanel(), DefaultWindowsInterface {
                 }
 
             })
-        }
-    }
-}
-
-fun main() {
-    SwingUtilities.invokeLater {
-        JFrame("Stack Window").apply {
-            add(StackWindowUsable())
-            size = Dimension(DefaultWindowsInterface.width, DefaultWindowsInterface.height)
-            defaultCloseOperation = JFrame.EXIT_ON_CLOSE
-            isVisible = true
         }
     }
 }
