@@ -10,26 +10,23 @@ import java.awt.event.KeyEvent
 import java.awt.event.KeyListener
 import javax.swing.*
 
-open class StackWindow : JPanel(), StackLightWeightInterface, GridInterface {
-    val myWidth = StackLightWeightInterface.width;
-    val myHeight = StackLightWeightInterface.height;
+class StackWindow : JPanel(), StackLightWeightInterface, GridInterface {
+    private val myWidth = StackLightWeightInterface.width;
+    private val myHeight = StackLightWeightInterface.height;
     private var top: VisualNode
     private var size = 1
-    val nodeHeight = 80
-    var nodeWidth = 100
-    val startX = returnClosest(myWidth / 5, myWidth / 3, SPACING + 5)
-    val endX = returnClosest(myWidth - 2 * nodeWidth, myWidth - nodeWidth, SPACING + 5)
-    val startY = nodeHeight * 2
-    val endY = returnClosest(myHeight - nodeHeight, myHeight, SPACING + 5)
-
+    private val nodeHeight = 80
+    private var nodeWidth = 100
+    private val startX = returnClosest(myWidth / 5, myWidth / 3, SPACING + 5)
+    private val endX = returnClosest(myWidth - 2 * nodeWidth, myWidth - nodeWidth, SPACING + 5)
+    private val startY = nodeHeight * 2
+    private val endY = returnClosest(myHeight - 4*nodeHeight, myHeight-3*nodeHeight, SPACING + 5)
+    private var dynamicHeight=startY
     init {
         nodeWidth = endX - startX - 60
-        top = VisualNode(0, startX + 30, (myHeight - 2 * nodeHeight))
+        top = VisualNode(0, startX + 30, endY- nodeHeight-SPACING)
         background = Color(0xA0F29)
         preferredSize = Dimension(myWidth, myHeight)
-        push(3)
-        push(5)
-        pop()
     }
 
     protected override fun paintComponent(g1: Graphics) {
@@ -38,9 +35,30 @@ open class StackWindow : JPanel(), StackLightWeightInterface, GridInterface {
         drawGrid(g)
         drawBasket(g)
         var temp: VisualNode = top
+        resize()
         while (temp != null) {
             drawNode(g, temp)
             temp = temp.nextNode
+        }
+    }
+
+    private fun resize() {
+        if (top.yPos < dynamicHeight) {
+            dynamicHeight -= 8 * nodeHeight
+            // Update preferred size so JScrollPane knows content grew
+            preferredSize = Dimension(myWidth, dynamicHeight + 2 * nodeHeight)
+            revalidate()
+            repaint()
+        }
+    }
+
+    fun setCamCentered(scrollPane: JScrollPane) {
+        SwingUtilities.invokeLater {
+            val viewport = scrollPane.viewport
+            // Align viewport so the newest "top" node is visible
+            val y = top.yPos.coerceAtLeast(0)
+            val x = 0
+            viewport.viewPosition = Point(x, y)
         }
     }
 
@@ -86,7 +104,7 @@ open class StackWindow : JPanel(), StackLightWeightInterface, GridInterface {
         }
     }
 
-    final override fun drawNode(g: Graphics2D, node: VisualNode) {
+    override fun drawNode(g: Graphics2D, node: VisualNode) {
         val oldColor = g.color
         val resetStroke = g.stroke
         g.also {
@@ -126,103 +144,106 @@ open class StackWindow : JPanel(), StackLightWeightInterface, GridInterface {
         return startPoint
     }
 
-    final override fun drawBasket(g: Graphics2D) {
+    override fun drawBasket(g: Graphics2D) {
         val stroke = g.stroke
         val color = g.color
         g.stroke = BasicStroke(15f)
         g.color = DefaultWindowsInterface.themeColorBG
-        g.drawLine(startX, startY, startX, endY)
+        g.drawLine(startX, dynamicHeight, startX, endY)
         g.drawLine(startX, endY, endX, endY)
-        g.drawLine(endX, endY, endX, startY)
+        g.drawLine(endX, endY, endX, dynamicHeight)
         g.stroke = stroke
         g.color = color
     }
 }
 
 class StackWindowUsable : JPanel(), DefaultWindowsInterface {
-    private val myHeight= DefaultWindowsInterface.height;
-    private val myWidth= DefaultWindowsInterface.width
-    private lateinit var textField: JTextField
-    private lateinit var pushButton: JButton
-    private lateinit var popButton: JButton
-    private val font=Font(Font.SANS_SERIF, Font.BOLD, 20)
-    private val visualStackWindow = StackWindow()
+    private val myHeight = DefaultWindowsInterface.height;
+    private val myWidth = DefaultWindowsInterface.width
+    private var textField: JTextField
+    private var pushButton: JButton
+    private var popButton: JButton
+    private val font = Font(Font.SANS_SERIF, Font.BOLD, 20)
+    private val visualStackWindow = StackWindow().apply {
+        preferredSize= Dimension(myWidth,myHeight)
+    }
     init {
-        layout= BorderLayout()
+        layout = BorderLayout()
         val layeredPane = JLayeredPane().apply {
-            preferredSize= Dimension(myWidth,myHeight)
+            preferredSize = Dimension(myWidth, myHeight)
         }
-        val mainPanel = JPanel(GridLayout(2,1,5,5));
         val scrollPane = JScrollPane(
             visualStackWindow,
             JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
             JScrollPane.HORIZONTAL_SCROLLBAR_NEVER
         );
-        {
-            textField = textInput()
-            pushButton = JButton("PUSH").also {
-                it.background= DefaultWindowsInterface.themeColorBG
-                it.foreground= Color.WHITE
-                it.cursor= Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)
-                it.font=font
-                it.addActionListener {
-                    if (textField.inputVerifier.verify(textField)) {
-                        visualStackWindow.push(textField.text.toInt())
-                        textField.text=""
-                    }
+        textField = textInput()
+        pushButton = JButton("PUSH").apply{
+           background = DefaultWindowsInterface.themeColorBG
+           foreground = Color.WHITE
+           cursor = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)
+           font = this@StackWindowUsable.font
+           addActionListener {
+                if (textField.inputVerifier.verify(textField)) {
+                    visualStackWindow.push(textField.text.toInt())
+                    textField.text = ""
+                    visualStackWindow.setCamCentered(scrollPane)
                 }
-            }
-            popButton = JButton("POP").also {
-                it.cursor= Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)
-                it.font=font
-                it.foreground= Color.WHITE
-                it.background=DefaultWindowsInterface.themeColorBG
-                it.addActionListener {
-                    visualStackWindow.pop();
-                }
-            }
+           }
+            size= Dimension(100,50)
         }
-        val subPanel= JPanel(GridLayout(1,2,5,5));
-        {
-            layeredPane.preferredSize = Dimension(myWidth, myHeight)
-            scrollPane.setBounds(0, 0, myWidth, myHeight)
-            subPanel.add(textField)
-            subPanel.add(pushButton)
-            mainPanel.background= Color(0,0,0,180)
-            mainPanel.add(subPanel)
-            mainPanel.add(popButton)
-            mainPanel.setBounds(myWidth / 2 - 170, myHeight - 200, 300, 100)
-            layeredPane.add(visualStackWindow, JLayeredPane.DEFAULT_LAYER)
-            layeredPane.add(mainPanel, JLayeredPane.PALETTE_LAYER)
-            mainPanel.setBounds(myWidth / 2 - 170, myHeight -200, 300, 100)
+        popButton = JButton("POP").apply {
+            cursor = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)
+            font = this@StackWindowUsable.font
+            foreground = Color.WHITE
+            background = Color.BLACK
+            addActionListener {
+                visualStackWindow.pop();
+                visualStackWindow.setCamCentered(scrollPane)
+            }
+            size= Dimension(200,50)
         }
-        add(layeredPane, BorderLayout.CENTER)
+        scrollPane.setBounds(0, 0, myWidth, myHeight)
+        val mainPanel = JPanel().apply {
+            layout= BorderLayout()
+            val subPanel = JPanel(GridLayout(1, 2, 5, 5)).apply {
+                add(textField)
+                add(pushButton)
+            }
+           add(subPanel, BorderLayout.NORTH)
+           add(popButton, BorderLayout.SOUTH)
+           setBounds(myWidth / 2 - 150, myHeight - 200, 200, 100)
+        }
+        layeredPane.add(scrollPane)
+        this.add(layeredPane, BorderLayout.CENTER)
+        this.add(mainPanel, BorderLayout.SOUTH)
     }
 
     private fun textInput(): JTextField {
-        return JTextField().also {
-            it.cursor = Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR)
-            it.font =font
-            it.background=DefaultWindowsInterface.themeColorBG
-            it.foreground= Color.WHITE
-            it.horizontalAlignment = JTextField.CENTER
-            it.toolTipText = "Value of the next block (Int): "
-            it.inputVerifier = object : InputVerifier() {
+        return JTextField().apply {
+            size= Dimension(100,50)
+            cursor = Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR)
+            font = this@StackWindowUsable.font
+            background = DefaultWindowsInterface.themeColorBG
+            foreground = Color.WHITE
+            horizontalAlignment = JTextField.CENTER
+            toolTipText = "Value of the next block (Int): "
+            inputVerifier = object : InputVerifier() {
                 override fun verify(input: JComponent?): Boolean {
                     return try {
                         (input as? JTextField)?.text?.toInt()
                         true
-                    } catch (e: NumberFormatException) {
+                    } catch (_: NumberFormatException) {
                         false
                     }
                 }
             }
-            it.addKeyListener(object: KeyListener{
+            addKeyListener(object : KeyListener {
                 override fun keyTyped(e: KeyEvent?) {
-                    if(it.inputVerifier.verify(it) && e?.keyChar=='\n'){
-                        visualStackWindow.push(it.text.toInt())
+                    if (inputVerifier!!.verify(this@apply) && e?.keyChar == '\n') {
+                        visualStackWindow.push(text.toInt())
                     }
-                    if(e?.keyChar== 127.toChar()){
+                    if (e?.keyChar == 127.toChar()) {
                         visualStackWindow.pop()
                     }
                 }
@@ -230,6 +251,7 @@ class StackWindowUsable : JPanel(), DefaultWindowsInterface {
                 //Discarded
                 override fun keyPressed(e: KeyEvent?) {
                 }
+
                 override fun keyReleased(e: KeyEvent?) {
                 }
 
@@ -240,12 +262,11 @@ class StackWindowUsable : JPanel(), DefaultWindowsInterface {
 
 fun main() {
     SwingUtilities.invokeLater {
-        val jFrame = JFrame("Stack Window")
-        jFrame.also {
-            it.add(StackWindow())
-            it.size = Dimension(DefaultWindowsInterface.width, DefaultWindowsInterface.height)
-            it.defaultCloseOperation = JFrame.EXIT_ON_CLOSE
-            it.isVisible = true
+        JFrame("Stack Window").apply {
+            add(StackWindowUsable())
+            size = Dimension(DefaultWindowsInterface.width, DefaultWindowsInterface.height)
+            defaultCloseOperation = JFrame.EXIT_ON_CLOSE
+            isVisible = true
         }
     }
 }
