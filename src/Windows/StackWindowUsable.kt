@@ -9,6 +9,7 @@ import java.awt.*
 import java.awt.event.KeyEvent
 import java.awt.event.KeyListener
 import javax.swing.*
+import kotlin.math.abs
 
 class StackWindow : JPanel(), StackLightWeightInterface, GridInterface {
     private val myWidth = StackLightWeightInterface.width;
@@ -35,7 +36,6 @@ class StackWindow : JPanel(), StackLightWeightInterface, GridInterface {
         drawGrid(g)
         drawBasket(g)
         var temp: VisualNode = top
-        resize()
         while (temp != null) {
             drawNode(g, temp)
             temp = temp.nextNode
@@ -43,30 +43,34 @@ class StackWindow : JPanel(), StackLightWeightInterface, GridInterface {
     }
 
     private fun resize() {
-        if (top.yPos < dynamicHeight) {
-            dynamicHeight -= 8 * nodeHeight
-            // Update preferred size so JScrollPane knows content grew
-            preferredSize = Dimension(myWidth, dynamicHeight + 2 * nodeHeight)
+        dynamicHeight=top.yPos-8*nodeHeight
+        if (top.yPos > dynamicHeight) {
+            preferredSize = Dimension(myWidth, dynamicHeight)
             revalidate()
             repaint()
         }
     }
 
     fun setCamCentered(scrollPane: JScrollPane) {
-        SwingUtilities.invokeLater {
-            val viewport = scrollPane.viewport
-            // Align viewport so the newest "top" node is visible
-            val y = top.yPos.coerceAtLeast(0)
-            val x = 0
-            viewport.viewPosition = Point(x, y)
-        }
+        resize()
+        val viewport = scrollPane.viewport
+        val rectangle = viewport.viewRect
+
+        // Keep the view aligned relative to dynamicHeight (bottom alignment)
+        val x = rectangle.x
+        val y = (dynamicHeight - rectangle.height).coerceAtLeast(0)
+
+        viewport.viewPosition = Point(x, y)
     }
+
+
 
     override fun push(value: Int) {
         val newNode = VisualNode(value, top.xPos, top.yPos - nodeHeight - 10)
         newNode.nextNode = top;
         newNode.nextAddress = top.address
         top = newNode
+        resize()
         size++
         repaint()
     }
@@ -82,6 +86,7 @@ class StackWindow : JPanel(), StackLightWeightInterface, GridInterface {
         //TODO: POSITION CHANGE
         top = temp
         size--
+        resize()
         repaint()
         return retData
     }

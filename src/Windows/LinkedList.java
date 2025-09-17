@@ -18,7 +18,7 @@ class LinkedListVisual extends JPanel implements LinkedListLightWeightInterface,
 
     LinkedListVisual() {
         setPreferredSize(new Dimension(width, height));
-        setBackground(new  Color(0xA0F29));
+        setBackground(new Color(0xA0F29));
     }
 
     @Override
