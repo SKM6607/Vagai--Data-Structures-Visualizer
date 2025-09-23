@@ -148,23 +148,11 @@ public class Sorting extends JPanel implements MacroInterface, GridInterface {
         {
             g1.setColor(Color.BLACK);
             g1.fillRect(0, 0, WIDTH, HEIGHT);
-            drawGrid(g);
+            drawGrid(g,new Color(0x1C233D));
         }
         drawElements(g);
     }
 
-    @Override
-     public void drawGrid(Graphics2D g) {
-        Color set = g.getColor();
-        g.setColor(new Color(0x1C233D));
-        for (int i = 0; i < WIDTH; i += SPACING) {
-            g.drawLine(i, 0, i, HEIGHT);
-        }
-        for (int i = 0; i < HEIGHT; i += SPACING) {
-            g.drawLine(0, i, WIDTH, i);
-        }
-        g.setColor(set);
-    }
 
     void drawElements(Graphics2D g) {
         g.setColor(Color.WHITE);

@@ -21,8 +21,6 @@ class LegendDialog(parent: Window?, title: String?, legend:Map<String, Color>): 
             add(createDialogBox(entry.key,entry.value))
         }
         pack()
-        location.x= DefaultWindowsInterface.width/2
-        location.y= DefaultWindowsInterface.height/2
         isResizable=false
         isAlwaysOnTop=true
         setLocationRelativeTo(parent)

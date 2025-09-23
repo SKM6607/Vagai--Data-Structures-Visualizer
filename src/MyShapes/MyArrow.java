@@ -7,9 +7,11 @@ public class MyArrow {
         this.length=length;
     }
     public void draw(Graphics2D g,int x,int y,Color color) {
+        Color oldColor=g.getColor();
+        int endX=x+length;
         g.setColor(color);
-        g.drawLine(x,y,x+=length,y);
-        g.fillPolygon(new Polygon(new int[]{x+size,x,x},new int[]{y,y+size,y-size},3));
-        g.setColor(Color.WHITE);
+        g.drawLine(x,y,endX,y);
+        g.fillPolygon(new Polygon(new int[]{endX+size,endX,endX},new int[]{y,y+size,y-size},3));
+        g.setColor(oldColor);
     }
 }

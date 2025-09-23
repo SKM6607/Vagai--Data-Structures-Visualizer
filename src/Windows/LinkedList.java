@@ -8,7 +8,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-
 class LinkedListVisual extends JPanel implements LinkedListLightWeightInterface, GridInterface {
     public static final int nodeSpacing = (3 * nodeWidth) / 2 + SPACING;
     private static final MyArrow arrow = new MyArrow(nodeWidth / 2, 20);
@@ -25,7 +24,7 @@ class LinkedListVisual extends JPanel implements LinkedListLightWeightInterface,
     protected void paintComponent(Graphics g1) {
         super.paintComponent(g1);
         Graphics2D g = (Graphics2D) g1;
-        drawGrid(g);
+        drawGrid(g,new Color(0x1C233D));
         VisualNode temp = head;
         while (temp != null) {
             drawNode(g, temp);
@@ -33,19 +32,6 @@ class LinkedListVisual extends JPanel implements LinkedListLightWeightInterface,
         }
     }
 
-    @Override
-    public void drawGrid(@NotNull Graphics2D g) {
-        Color older=g.getColor();
-        g.setColor(new Color(0x1C233D));
-        g.setStroke(new BasicStroke(1f));
-        for (int i = 0; i < height; i += SPACING) {
-            g.drawLine(0, i, dynamicWidth, i);
-        }
-        for (int i = 0; i < dynamicWidth; i += SPACING) {
-            g.drawLine(i, 0, i, height);
-        }
-        g.setColor(older);
-    }
 
     @Override
     public void append(int value) {
@@ -80,7 +66,7 @@ class LinkedListVisual extends JPanel implements LinkedListLightWeightInterface,
         JViewport viewport = scrollPane.getViewport();
         Rectangle rectangle = viewport.getViewRect();
         viewport.setViewPosition(new Point(
-                 (Math.max(rectangle.width/2,calculateSize()- rectangle.width/2)), height/2
+                 Math.max(rectangle.width/2,calculateSize()- rectangle.width/2), height/2
         ));
         resize();
         scrollPane.setViewport(viewport);
