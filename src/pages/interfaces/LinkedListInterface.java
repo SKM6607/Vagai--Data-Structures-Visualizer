@@ -1,4 +1,4 @@
-package Windows.interfaces;
+package pages.interfaces;
 public interface LinkedListInterface extends DefaultWindowsInterface{
     int nodeWidth=350;
     int nodeHeight=200;

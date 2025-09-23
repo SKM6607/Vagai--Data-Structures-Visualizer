@@ -1,11 +1,11 @@
-package Windows
+package pages
 //TODO SCROLLING MECHANISMS
-import MyShapes.MyArrow
-import Windows.interfaces.DefaultWindowsInterface
-import Windows.interfaces.GridInterface
-import Windows.interfaces.GridInterface.SPACING
-import Windows.interfaces.LinkedListInterface.VisualNode
-import Windows.interfaces.StackLightWeightInterface
+import pages.interfaces.DefaultWindowsInterface
+import pages.interfaces.GridInterface
+import pages.interfaces.GridInterface.SPACING
+import pages.interfaces.LinkedListInterface.VisualNode
+import pages.interfaces.StackLightWeightInterface
+import shapes.MyArrow
 import java.awt.*
 import java.awt.event.KeyEvent
 import java.awt.event.KeyListener
@@ -24,6 +24,7 @@ class StackWindow : JPanel(), StackLightWeightInterface, GridInterface {
     private var startY = nodeHeight * 2
     private var endY = returnClosest(myHeight - 4 * nodeHeight, myHeight - 3 * nodeHeight, SPACING + 5)
     private var dynamicHeight = startY
+    private var stopPop = false
 
     init {
         nodeWidth = endX - startX - 60
@@ -32,6 +33,7 @@ class StackWindow : JPanel(), StackLightWeightInterface, GridInterface {
         preferredSize = Dimension(myWidth, myHeight)
     }
 
+    @Suppress("SENSELESS_COMPARISON")
     protected override fun paintComponent(g1: Graphics) {
         super.paintComponent(g1);
         val g: Graphics2D = g1 as Graphics2D
@@ -44,28 +46,8 @@ class StackWindow : JPanel(), StackLightWeightInterface, GridInterface {
         }
     }
 
-    private fun shiftElements() {
-        val shiftY = nodeHeight * 4
-        var temp = top
-        while (temp != null) {
-            temp.yPos += shiftY
-            temp = temp.nextNode
-        }
-    }
-
-    private fun resize() {
-        if (top.yPos % width < 50) {
-            endY += nodeHeight * 4
-            shiftElements()
-        }
-        // Ensure the panel grows so the JScrollPane can actually scroll
-        preferredSize = Dimension(myWidth, endY + nodeHeight * 2)
-        revalidate()
-        repaint()
-    }
-
+    @Suppress("SpellCheckingInspection")
     fun setCamCentered(scrollPane: JScrollPane) {
-        resize()
         val viewport = scrollPane.viewport
         val viewRect = viewport.viewRect
         val currentX = viewRect.x
@@ -78,19 +60,67 @@ class StackWindow : JPanel(), StackLightWeightInterface, GridInterface {
         viewport.viewPosition = Point(currentX, clampedY)
     }
 
+    override fun drawGrid(g: Graphics2D, color: Color?) {
+        val retColor = g.color
+        g.color = color
+        run {
+            var i = 0
+            while (i < DefaultWindowsInterface.width) {
+                g.drawLine(i, 0, i, preferredSize.height)
+                i += SPACING
+            }
+        }
+        var i = 0
+        while (i < preferredSize.height) {
+            g.drawLine(0, i, DefaultWindowsInterface.width, i)
+            i += SPACING
+        }
+        g.color = retColor
+    }
+
+    @Suppress("SENSELESS_COMPARISON")
+    private fun shiftElements() {
+        val shiftY = nodeHeight * 4
+        var temp = top
+        while (temp != null) {
+            temp.yPos += shiftY
+            temp = temp.nextNode
+        }
+    }
+
+    private fun resizePush() {
+        if (top.yPos % myHeight < 20 ) {
+            endY += nodeHeight * 4
+            shiftElements()
+        }
+        preferredSize = Dimension(myWidth, endY + nodeHeight * 2)
+        revalidate()
+        repaint()
+    }
 
     override fun push(value: Int) {
+        size++
+        resizePush()
+        stopPop = false
         val newNode = VisualNode(value, top.xPos, top.yPos - nodeHeight - 10)
         newNode.nextNode = top;
         newNode.nextAddress = top.address
         top = newNode
-        resize()
-        size++
-        repaint()
     }
 
     override fun pop(): Int {
-        if (sizeSt() == 1) {
+        if (stopPop) {
+            dynamicHeight=myHeight
+            preferredSize= Dimension(myWidth,myHeight)
+            this.scrollRectToVisible(Rectangle(preferredSize))
+            repaint()
+            return top.data;
+        }
+        if (sizeSt() == 1 && !stopPop) {
+            stopPop = true
+            dynamicHeight -= nodeHeight * 2
+            top.yPos -= nodeHeight * 2
+            endY -= nodeHeight * 2
             return top.data
         }
         val retData = top.data
@@ -100,9 +130,18 @@ class StackWindow : JPanel(), StackLightWeightInterface, GridInterface {
         //TODO: POSITION CHANGE
         top = temp
         size--
-        resize()
-        repaint()
+        resizePop()
         return retData
+    }
+
+    private fun resizePop() {
+        if (preferredSize.height % top.yPos > 100 && sizeSt() > 1) {
+            dynamicHeight = top.yPos - nodeHeight * 2
+        }
+        preferredSize = Dimension(myWidth, endY)
+        this.scrollRectToVisible(Rectangle(preferredSize))
+        revalidate()
+        repaint()
     }
 
     override fun peek(): Int {
@@ -175,7 +214,7 @@ class StackWindow : JPanel(), StackLightWeightInterface, GridInterface {
 class StackWindowUsable : JPanel(), DefaultWindowsInterface {
     private val myHeight = DefaultWindowsInterface.height;
     private val myWidth = DefaultWindowsInterface.width
-    private lateinit var scrollPane: JScrollPane
+    private var scrollPane: JScrollPane
     private var textField: JTextField
     private var pushButton: JButton
     private var popButton: JButton

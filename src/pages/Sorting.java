@@ -1,7 +1,7 @@
-package Windows;
-import Windows.interfaces.GridInterface;
-import Windows.interfaces.MacroInterface;
-import Windows.dialogs.LegendDialog;
+package pages;
+import pages.interfaces.GridInterface;
+import pages.interfaces.MacroInterface;
+import pages.dialogs.LegendDialog;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;

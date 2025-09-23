@@ -1,6 +1,5 @@
-package Windows.dialogs
+package pages.dialogs
 
-import Windows.interfaces.DefaultWindowsInterface
 import java.awt.Color
 import java.awt.Dimension
 import java.awt.Font

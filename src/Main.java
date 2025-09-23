@@ -1,9 +1,9 @@
-import Sound.BackgroundMusic;
-import Windows.*;
-import Windows.dialogs.UpdateDialog;
-import Windows.interfaces.MacroInterface;
-import Windows.dialogs.LegendDialog;
-import Windows.dialogs.QRCodeDisplayer;
+import sound.BackgroundMusic;
+import pages.*;
+import pages.dialogs.UpdateDialog;
+import pages.interfaces.MacroInterface;
+import pages.dialogs.LegendDialog;
+import pages.dialogs.QRCodeDisplayer;
 import javax.swing.*;
 import java.awt.*;
 

@@ -1,6 +1,5 @@
-package Windows.dialogs
+package pages.dialogs
 
-import Windows.interfaces.DefaultWindowsInterface
 import org.jetbrains.annotations.NotNull
 import java.awt.Color
 import java.awt.FlowLayout

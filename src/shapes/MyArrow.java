@@ -1,4 +1,4 @@
-package MyShapes;
+package shapes;
 import java.awt.*;
 public class MyArrow {
     private int length, size;

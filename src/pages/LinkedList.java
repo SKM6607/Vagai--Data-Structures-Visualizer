@@ -1,8 +1,8 @@
-package Windows;
-import MyShapes.MyArrow;
-import Windows.interfaces.DefaultWindowsInterface;
-import Windows.interfaces.GridInterface;
-import Windows.interfaces.LinkedListLightWeightInterface;
+package pages;
+import shapes.MyArrow;
+import pages.interfaces.DefaultWindowsInterface;
+import pages.interfaces.GridInterface;
+import pages.interfaces.LinkedListLightWeightInterface;
 import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 import java.awt.*;

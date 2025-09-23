@@ -1,5 +1,5 @@
-package Windows.dialogs
-import Windows.interfaces.DefaultWindowsInterface
+package pages.dialogs
+import pages.interfaces.DefaultWindowsInterface
 import java.awt.Dimension
 import java.awt.Image
 import java.awt.Window

@@ -1,4 +1,4 @@
-package Windows.interfaces;
+package pages.interfaces;
 
 public interface MacroInterface extends DefaultWindowsInterface{
     String MORE="More";

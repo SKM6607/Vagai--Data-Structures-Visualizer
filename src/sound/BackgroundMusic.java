@@ -1,4 +1,4 @@
-package Sound;
+package sound;
 import javax.sound.sampled.*;
 import java.io.File;
 public class BackgroundMusic implements Runnable {
