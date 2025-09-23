@@ -1,4 +1,4 @@
-# VAGAI — Algorithms Demonstrator - 0.0.1
+# Tharavarithal— Algorithms Demonstrator - 0.0.1
 
 ### A simple 2D graphical demonstration of popular sorting algorithms — visually appealing and self-explanatory.
 
@@ -18,7 +18,7 @@
 ---
 
 ## About
-VAGAI (**VagaiPaduthal** transl. **Windows.Sorting**) is a Java-based application that renders real-time, intuitive visualizations of common sorting algorithms in two dimensions. Its goal is to make algorithmic behavior transparent and accessible to learners and enthusiasts alike.
+Tharavarithal(**Tharavu+Arithal** transl. **Data+Learning**) is a Java-based application that renders real-time, intuitive visualizations of common sorting algorithms in two dimensions. Its goal is to make algorithmic behavior transparent and accessible to learners and enthusiasts alike.
 
 ---
 
