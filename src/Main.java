@@ -147,7 +147,11 @@ public class Main implements MacroInterface {
         }
         linkedListMenuItem.addActionListener(_ -> {
             closeChildWindows();
-            cardLayout.show(cardPanel, LINKED_LIST);
+            cardLayout.show(cardPanel, "Linked List");
+        });
+        cycleDetectionMenuItem.addActionListener(_ -> {
+            closeChildWindows();
+            cardLayout.show(cardPanel, "Cycle Detection");
         });
         loadingPage.returnControlOfLoadButton().addActionListener(_ -> {
             closeQRWindow();
