@@ -95,7 +95,7 @@ public class Sorting extends JPanel implements MacroInterface, GridInterface {
         label.setBackground(Color.BLACK);
         int LIMIT = 50;
         slider = new JSlider(0, LIMIT, MAX_ELEMENTS);
-        slider.addChangeListener(_ -> {
+        slider.addChangeListener(e -> {
             isStart = true;
             label.setText(String.format("Current Array Elements: %d", slider.getValue()));
             MAX_ELEMENTS = slider.getValue();
