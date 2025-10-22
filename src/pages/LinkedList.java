@@ -136,16 +136,37 @@ class LinkedListVisual extends JPanel implements LinkedListLightWeightInterface,
 
     @Override
     public void pop() {
-        if (size == 1) return;
+        if (size == 1 || isAnimating) return;
+        
         VisualNode temp = head, prev = head;
         while (temp.nextNode != null) {
             prev = temp;
             temp = temp.nextNode;
         }
+        
+        final VisualNode nodeToRemove = temp;
         prev.nextNode = null;
         prev.nextAddress = null;
         size--;
-
+        
+        // Smooth fade-out animation
+        animatePop(nodeToRemove);
+    }
+    
+    private void animatePop(VisualNode node) {
+        isAnimating = true;
+        Timer timer = new Timer(15, null);
+        timer.addActionListener(e -> {
+            if (node.yPos > -nodeHeight) {
+                node.yPos -= 12;
+                repaint();
+            } else {
+                isAnimating = false;
+                timer.stop();
+                repaint();
+            }
+        });
+        timer.start();
     }
 
     @Override
