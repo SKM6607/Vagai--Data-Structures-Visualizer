@@ -74,7 +74,10 @@ class LinkedListVisual extends JPanel implements LinkedListLightWeightInterface,
 
     @Override
     public void append(int value) {
-        VisualNode newNode = new VisualNode(value, head.xPos + size * nodeSpacing, head.yPos);
+        if (isAnimating) return;
+        
+        int targetX = head.xPos + size * nodeSpacing;
+        VisualNode newNode = new VisualNode(value, targetX, -nodeHeight);
         VisualNode temp = head;
         while (temp.nextNode != null) {
             temp = temp.nextNode;
@@ -83,6 +86,26 @@ class LinkedListVisual extends JPanel implements LinkedListLightWeightInterface,
         temp.nextNode = newNode;
         size++;
         resize();
+        
+        // Smooth drop animation
+        animateAppend(newNode, head.yPos);
+    }
+    
+    private void animateAppend(VisualNode node, int targetY) {
+        isAnimating = true;
+        Timer timer = new Timer(15, null);
+        timer.addActionListener(e -> {
+            if (node.yPos < targetY) {
+                node.yPos += 12;
+                repaint();
+            } else {
+                node.yPos = targetY;
+                isAnimating = false;
+                timer.stop();
+                repaint();
+            }
+        });
+        timer.start();
     }
 
     @Override
