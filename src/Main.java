@@ -13,6 +13,7 @@ public class Main implements MacroInterface {
     private static final JMenu sortingMenu = new JMenu(SORTING_ALGORITHMS);
     private static final JMenu linkedListMenu = new JMenu(LINKED_LIST);
     private static final JMenu stackMenu = new JMenu(STACK);
+    private static final JMenu queueMenu = new JMenu(QUEUE);
     private static final JMenu updateDialog=new JMenu(MORE);
     private static final JMenuItem[] sortingMenuItems = new JMenuItem[4];
     private static final JMenuItem linkedListMenuItem = new JMenuItem(LINKED_LIST);
