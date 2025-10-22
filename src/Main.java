@@ -161,7 +161,19 @@ public class Main implements MacroInterface {
         });
         stackMenuItem.addActionListener(_->{
             closeChildWindows();
-            cardLayout.show(cardPanel,STACK);
+            cardLayout.show(cardPanel, STACK);
+        });
+        simpleQueueMenuItem.addActionListener(_ -> {
+            closeChildWindows();
+            cardLayout.show(cardPanel, "Simple Queue");
+        });
+        circularQueueMenuItem.addActionListener(_ -> {
+            closeChildWindows();
+            cardLayout.show(cardPanel, "Circular Queue");
+        });
+        priorityQueueMenuItem.addActionListener(_ -> {
+            closeChildWindows();
+            cardLayout.show(cardPanel, "Priority Queue");
         });
         updateDialogMenuItem.addActionListener(_->{
             closeChildWindows();
