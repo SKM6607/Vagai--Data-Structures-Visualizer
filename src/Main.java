@@ -28,7 +28,11 @@ public class Main implements MacroInterface {
     private static final LoadingPage loadingPage = new LoadingPage();
     private static final Sorting sortingPanel = new Sorting(width, height, SELECTION_SORTING);
     private static final LinkedList linkedListPanel=new LinkedList();
+    private static final LinkedListCycleDetection cycleDetectionPanel = new LinkedListCycleDetection();
     private static final StackWindowUsable stackWindow=new StackWindowUsable();
+    private static final SimpleQueueWindow simpleQueueWindow = new SimpleQueueWindow();
+    private static final CircularQueueWindow circularQueueWindow = new CircularQueueWindow();
+    private static final PriorityQueueWindow priorityQueueWindow = new PriorityQueueWindow();
     private static JFrame jFrame;
     private static QRCodeDisplayer qrCode;
     private static final Font menuFont=new Font(Font.SANS_SERIF, Font.BOLD, 18);
