@@ -16,8 +16,12 @@ public class Main implements MacroInterface {
     private static final JMenu queueMenu = new JMenu(QUEUE);
     private static final JMenu updateDialog=new JMenu(MORE);
     private static final JMenuItem[] sortingMenuItems = new JMenuItem[4];
-    private static final JMenuItem linkedListMenuItem = new JMenuItem(LINKED_LIST);
+    private static final JMenuItem linkedListMenuItem = new JMenuItem("Linked List");
+    private static final JMenuItem cycleDetectionMenuItem = new JMenuItem("Cycle Detection");
     private static final JMenuItem stackMenuItem=new JMenuItem(STACK);
+    private static final JMenuItem simpleQueueMenuItem = new JMenuItem("Simple Queue");
+    private static final JMenuItem circularQueueMenuItem = new JMenuItem("Circular Queue");
+    private static final JMenuItem priorityQueueMenuItem = new JMenuItem("Priority Queue");
     private static final JMenuItem updateDialogMenuItem=new JMenuItem(UPDATE_DIALOG);
     private static final CardLayout cardLayout = new CardLayout();
     private static final JPanel cardPanel = new JPanel(cardLayout);
