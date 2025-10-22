@@ -124,7 +124,7 @@ public class Sorting extends JPanel implements MacroInterface, GridInterface {
 
     private @NotNull JButton getButton(JSlider slider) {
         JButton startButton = new JButton("Start");
-        startButton.addActionListener(_ -> {
+        startButton.addActionListener(e -> {
             if (isStart) {
                 thread = new Thread(sortingAlgorithms[choice]);
                 slider.setEnabled(false);
