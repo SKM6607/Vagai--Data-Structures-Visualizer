@@ -120,13 +120,19 @@ public class Main implements MacroInterface {
         stackMenu.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         linkedListMenu.add(linkedListMenuItem).setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         linkedListMenu.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        queueMenu.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        
+        // Add menus to menu bar
         menuBarMain.add(sortingMenu);
         menuBarMain.add(Box.createHorizontalStrut(15));
         menuBarMain.add(linkedListMenu);
         menuBarMain.add(Box.createHorizontalStrut(15));
         menuBarMain.add(stackMenu);
         menuBarMain.add(Box.createHorizontalStrut(15));
+        menuBarMain.add(queueMenu);
+        menuBarMain.add(Box.createHorizontalStrut(15));
         menuBarMain.add(updateDialog);
+        
         sortingMenu.setFont(menuFont);
         linkedListMenu.setFont(menuFont);
         stackMenu.setFont(menuFont);
