@@ -1,20 +1,20 @@
 package pages
-//TODO SCROLLING MECHANISMS
 import pages.interfaces.DefaultWindowsInterface
 import pages.interfaces.GridInterface
 import pages.interfaces.GridInterface.SPACING
 import pages.interfaces.LinkedListInterface.VisualNode
 import pages.interfaces.StackLightWeightInterface
 import shapes.MyArrow
+import utils.AnimationHelper
 import java.awt.*
 import java.awt.event.KeyEvent
 import java.awt.event.KeyListener
 import javax.swing.*
 
 class StackWindow : JPanel(), StackLightWeightInterface, GridInterface {
-    private val myWidth = StackLightWeightInterface.width;
-    private val myHeight = StackLightWeightInterface.height;
-    private val myArrow = MyArrow(80, 12);
+    private val myWidth = StackLightWeightInterface.width
+    private val myHeight = StackLightWeightInterface.height
+    private val myArrow = MyArrow(80, 12)
     private var top: VisualNode
     private var size = 1
     private val nodeHeight = 80
@@ -25,6 +25,8 @@ class StackWindow : JPanel(), StackLightWeightInterface, GridInterface {
     private var endY = returnClosest(myHeight - 4 * nodeHeight, myHeight - 3 * nodeHeight, SPACING + 5)
     private var dynamicHeight = startY
     private var stopPop = false
+    private var isAnimating = false
+    private val animationSpeed = 15
 
     init {
         nodeWidth = endX - startX - 60
