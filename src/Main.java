@@ -139,43 +139,43 @@ public class Main implements MacroInterface {
     }
     static {
         for (JMenuItem item : sortingMenuItems) {
-            item.addActionListener(_ -> {
+            item.addActionListener(e -> {
                 closeChildWindows();
                 cardLayout.show(cardPanel, item.getText());
                 new Sorting(width,height,item.getText()).invokeLegend();
             });
         }
-        linkedListMenuItem.addActionListener(_ -> {
+        linkedListMenuItem.addActionListener(e -> {
             closeChildWindows();
             cardLayout.show(cardPanel, "Linked List");
         });
-        cycleDetectionMenuItem.addActionListener(_ -> {
+        cycleDetectionMenuItem.addActionListener(e -> {
             closeChildWindows();
             cardLayout.show(cardPanel, "Cycle Detection");
         });
-        loadingPage.returnControlOfLoadButton().addActionListener(_ -> {
+        loadingPage.returnControlOfLoadButton().addActionListener(e -> {
             closeQRWindow();
             menuBarMain.setVisible(true);
             cardLayout.show(cardPanel, SELECTION_SORTING);
             sortingPanel.invokeLegend();
         });
-        stackMenuItem.addActionListener(_->{
+        stackMenuItem.addActionListener(e -> {
             closeChildWindows();
             cardLayout.show(cardPanel, STACK);
         });
-        simpleQueueMenuItem.addActionListener(_ -> {
+        simpleQueueMenuItem.addActionListener(e -> {
             closeChildWindows();
             cardLayout.show(cardPanel, "Simple Queue");
         });
-        circularQueueMenuItem.addActionListener(_ -> {
+        circularQueueMenuItem.addActionListener(e -> {
             closeChildWindows();
             cardLayout.show(cardPanel, "Circular Queue");
         });
-        priorityQueueMenuItem.addActionListener(_ -> {
+        priorityQueueMenuItem.addActionListener(e -> {
             closeChildWindows();
             cardLayout.show(cardPanel, "Priority Queue");
         });
-        updateDialogMenuItem.addActionListener(_->{
+        updateDialogMenuItem.addActionListener(e -> {
             closeChildWindows();
             new UpdateDialog(null);
         });
