@@ -31,7 +31,18 @@ class LinkedListVisual extends JPanel implements LinkedListLightWeightInterface,
             temp = temp.nextNode;
         }
     }
-
+    @Override
+    public void drawGrid(Graphics2D g, Color color){
+        Color retColor=g.getColor();
+        g.setColor(color);
+        for (int i = 0; i < dynamicWidth; i+=SPACING) {
+            g.drawLine(i,0,i,height);
+        }
+        for (int i = 0; i < height; i+=SPACING) {
+            g.drawLine(0,i,dynamicWidth,i);
+        }
+        g.setColor(retColor);
+    }
 
     @Override
     public void append(int value) {

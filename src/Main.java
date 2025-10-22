@@ -6,7 +6,7 @@ import pages.dialogs.LegendDialog;
 import pages.dialogs.QRCodeDisplayer;
 import javax.swing.*;
 import java.awt.*;
-
+//NOT WORKING VERSION
 public class Main implements MacroInterface {
     static final Thread backgroundMusicThread = new Thread(new BackgroundMusic("src/Sound/Granius.wav"));
     private static final JMenuBar menuBarMain = new JMenuBar();
