@@ -219,38 +219,61 @@ class StackWindow : JPanel(), StackLightWeightInterface, GridInterface {
     override fun drawNode(g: Graphics2D, node: VisualNode) {
         val oldColor = g.color
         val resetStroke = g.stroke
-        g.also {
-            it.color = Color(0x1E3A8A)
-            it.fillRect(node.xPos, node.yPos, nodeWidth, nodeHeight)
-            it.color = Color(0xFFD700)
-            it.font = Font(Font.SANS_SERIF, Font.BOLD, 30)
-            it.stroke = BasicStroke(6f)
-            it.drawString("Data: ${node.data}", node.xPos + nodeWidth / 6, node.yPos + nodeHeight / 2 + 10)
-            it.drawLine(node.xPos + nodeWidth / 2, node.yPos + 5, node.xPos + nodeWidth / 2, node.yPos + nodeHeight - 5)
-            it.drawString(
-                "Next Address: ${
-                    when (node.nextAddress) {
-                        null -> "NULL"
-                        else -> {
-                            node.nextAddress
-                        }
-                    }
-                }",
-                node.xPos + 9 * nodeWidth / 15,
-                node.yPos + nodeHeight / 2 + 10
-            )
-            it.color = Color.WHITE
-            it.font = it.font.deriveFont(10)
-            it.drawString("${node.address}", 30, node.yPos + nodeHeight / 2 + 10)
-            myArrow.draw(
-                g,
-                g.getFontMetrics(it.font).stringWidth(node.address) + 35,
-                node.yPos + nodeHeight / 2,
-                Color(0xFFD700)
-            )
-            it.color = oldColor
-            it.stroke = resetStroke
-        }
+        
+        // Draw shadow for depth
+        g.color = Color(0, 0, 0, 50)
+        g.fillRoundRect(node.xPos + 4, node.yPos + 4, nodeWidth, nodeHeight, 10, 10)
+        
+        // Draw main node with rounded corners
+        g.color = Color(0x1E3A8A)
+        g.fillRoundRect(node.xPos, node.yPos, nodeWidth, nodeHeight, 10, 10)
+        
+        // Draw border
+        g.color = Color(0xFFD700)
+        g.stroke = BasicStroke(4f)
+        g.drawRoundRect(node.xPos, node.yPos, nodeWidth, nodeHeight, 10, 10)
+        
+        // Draw vertical divider
+        g.stroke = BasicStroke(3f)
+        g.drawLine(node.xPos + nodeWidth / 2, node.yPos + 5, node.xPos + nodeWidth / 2, node.yPos + nodeHeight - 5)
+        
+        // Draw data section
+        g.font = Font(Font.SANS_SERIF, Font.BOLD, 26)
+        g.color = Color.WHITE
+        val dataStr = "${node.data}"
+        val fm = g.getFontMetrics(g.font)
+        g.drawString(dataStr, node.xPos + nodeWidth / 4 - fm.stringWidth(dataStr) / 2, node.yPos + nodeHeight / 2 + 10)
+        
+        // Draw label
+        g.font = Font(Font.SANS_SERIF, Font.PLAIN, 12)
+        g.color = Color(0xFFD700)
+        g.drawString("Data", node.xPos + nodeWidth / 4 - 15, node.yPos + 20)
+        
+        // Draw next address
+        g.font = Font(Font.SANS_SERIF, Font.BOLD, 14)
+        g.color = Color.WHITE
+        val nextAddr = if (node.nextAddress == null) "NULL" else node.nextAddress!!.substring(0, minOf(6, node.nextAddress!!.length))
+        g.drawString(nextAddr, node.xPos + 3 * nodeWidth / 5 - 10, node.yPos + nodeHeight / 2 + 10)
+        
+        g.font = Font(Font.SANS_SERIF, Font.PLAIN, 12)
+        g.color = Color(0xFFD700)
+        g.drawString("Next", node.xPos + 3 * nodeWidth / 5 - 5, node.yPos + 20)
+        
+        // Draw address pointer
+        g.color = Color.WHITE
+        g.font = Font(Font.SANS_SERIF, Font.PLAIN, 11)
+        val shortAddr = node.address.substring(0, minOf(8, node.address.length))
+        g.drawString(shortAddr, 30, node.yPos + nodeHeight / 2 + 5)
+        
+        myArrow.draw(
+            g,
+            g.getFontMetrics(g.font).stringWidth(shortAddr) + 35,
+            node.yPos + nodeHeight / 2,
+            Color(0xFFD700)
+        )
+        
+        g.color = oldColor
+        g.stroke = resetStroke
     }
 
     private fun returnClosest(startPoint: Int, endPoint: Int, divisor: Int): Int {
