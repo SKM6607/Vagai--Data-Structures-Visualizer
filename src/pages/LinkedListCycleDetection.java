@@ -395,6 +395,60 @@ class CycleDetectionVisual extends JPanel implements GridInterface {
         timer.start();
     }
     
+    public void detectCycleBrent() {
+        if (nodes.isEmpty()) return;
+        if (detectionRunning) {
+            JOptionPane.showMessageDialog(this, "Detection already running!", "Info", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+        
+        detectionRunning = true;
+        currentAlgorithm = "Brent's Cycle Detection";
+        detectionResult = "";
+        visitedNodes.clear();
+        slowPointer = nodes.get(0);
+        fastPointer = nodes.get(0);
+        
+        final int[] power = {1};
+        final int[] lambda = {1};
+        
+        Timer timer = new Timer(animationSpeed, null);
+        timer.addActionListener(e -> {
+            // Move fast pointer
+            if (fastPointer.nextNode != null) {
+                fastPointer = fastPointer.nextNode;
+            } else {
+                detectionResult = "NO CYCLE FOUND";
+                slowPointer = null;
+                fastPointer = null;
+                detectionRunning = false;
+                timer.stop();
+                repaint();
+                return;
+            }
+            
+            // Check if they meet
+            if (slowPointer == fastPointer) {
+                detectionResult = "CYCLE FOUND! (Brent's Algorithm) at node " + slowPointer.data;
+                detectionRunning = false;
+                timer.stop();
+                repaint();
+                return;
+            }
+            
+            // Check if power needs to be updated
+            if (lambda[0] == power[0]) {
+                slowPointer = fastPointer;
+                power[0] *= 2;
+                lambda[0] = 0;
+            }
+            
+            lambda[0]++;
+            repaint();
+        });
+        timer.start();
+    }
+    
     public void reset() {
         detectionRunning = false;
         currentAlgorithm = "";
