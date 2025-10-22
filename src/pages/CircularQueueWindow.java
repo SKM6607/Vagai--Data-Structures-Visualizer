@@ -262,6 +262,19 @@ class CircularQueueVisual extends JPanel implements GridInterface {
     public void setAnimationSpeed(int speed) {
         this.animationSpeed = speed;
     }
+    
+    @Override
+    public void drawGrid(Graphics2D g, Color color) {
+        Color retColor = g.getColor();
+        g.setColor(color);
+        for (int i = 0; i < width; i += SPACING) {
+            g.drawLine(i, 0, i, height);
+        }
+        for (int i = 0; i < height; i += SPACING) {
+            g.drawLine(0, i, width, i);
+        }
+        g.setColor(retColor);
+    }
 }
 
 public class CircularQueueWindow extends JPanel implements DefaultWindowsInterface {
