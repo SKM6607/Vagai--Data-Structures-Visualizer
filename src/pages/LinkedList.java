@@ -327,7 +327,7 @@ public class LinkedList extends JPanel implements DefaultWindowsInterface {
 
             }
         });
-        basicButtons[0].addActionListener(_ -> {
+        basicButtons[0].addActionListener(e -> {
             if (verifyTextField(textField)) {
                 visualPanel.append(Integer.parseInt(textField.getText()));
                 textField.setText("");
@@ -335,7 +335,7 @@ public class LinkedList extends JPanel implements DefaultWindowsInterface {
                 visualPanel.repaint();
             }
         });
-        basicButtons[1].addActionListener(_ -> {
+        basicButtons[1].addActionListener(e -> {
             visualPanel.pop();
             visualPanel.setCamCentered(wrapper);
             visualPanel.repaint();
