@@ -55,19 +55,59 @@ public class Main implements MacroInterface {
             sortingMenuItems[i].setForeground(foreGroundBG);
             sortingMenuItems[i].setFont(menuFont);
         }
+        // Add menu items to their respective menus
         stackMenu.add(stackMenuItem);
-        cardPanel.add(linkedListPanel,LINKED_LIST);
+        linkedListMenu.add(linkedListMenuItem);
+        linkedListMenu.add(cycleDetectionMenuItem);
+        queueMenu.add(simpleQueueMenuItem);
+        queueMenu.add(circularQueueMenuItem);
+        queueMenu.add(priorityQueueMenuItem);
+        
+        // Add panels to card layout
+        cardPanel.add(linkedListPanel, "Linked List");
+        cardPanel.add(cycleDetectionPanel, "Cycle Detection");
         cardPanel.add(loadingPage, DEFAULT);
         cardPanel.add(stackWindow, STACK);
+        cardPanel.add(simpleQueueWindow, "Simple Queue");
+        cardPanel.add(circularQueueWindow, "Circular Queue");
+        cardPanel.add(priorityQueueWindow, "Priority Queue");
+        
+        // Style menu items
         linkedListMenuItem.setFont(menuFont);
+        cycleDetectionMenuItem.setFont(menuFont);
         stackMenuItem.setFont(menuFont);
+        simpleQueueMenuItem.setFont(menuFont);
+        circularQueueMenuItem.setFont(menuFont);
+        priorityQueueMenuItem.setFont(menuFont);
+        
+        // Style menus
         linkedListMenu.setBackground(themeColorBG);
         linkedListMenu.setForeground(foreGroundBG);
+        queueMenu.setBackground(themeColorBG);
+        queueMenu.setForeground(foreGroundBG);
+        queueMenu.setFont(menuFont);
+        
+        // Style menu items colors
         linkedListMenuItem.setBackground(themeColorBG);
         linkedListMenuItem.setForeground(foreGroundBG);
+        cycleDetectionMenuItem.setBackground(themeColorBG);
+        cycleDetectionMenuItem.setForeground(foreGroundBG);
         stackMenuItem.setBackground(themeColorBG);
         stackMenuItem.setForeground(foreGroundBG);
+        simpleQueueMenuItem.setBackground(themeColorBG);
+        simpleQueueMenuItem.setForeground(foreGroundBG);
+        circularQueueMenuItem.setBackground(themeColorBG);
+        circularQueueMenuItem.setForeground(foreGroundBG);
+        priorityQueueMenuItem.setBackground(themeColorBG);
+        priorityQueueMenuItem.setForeground(foreGroundBG);
+        
+        // Set cursors
+        linkedListMenuItem.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        cycleDetectionMenuItem.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         stackMenuItem.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        simpleQueueMenuItem.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        circularQueueMenuItem.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        priorityQueueMenuItem.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         updateDialog.setBackground(themeColorBG);
         updateDialog.setForeground(foreGroundBG);
         updateDialog.setFont(menuFont);
