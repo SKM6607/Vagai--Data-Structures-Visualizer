@@ -37,15 +37,28 @@ class StackWindow : JPanel(), StackLightWeightInterface, GridInterface {
 
     @Suppress("SENSELESS_COMPARISON")
     protected override fun paintComponent(g1: Graphics) {
-        super.paintComponent(g1);
+        super.paintComponent(g1)
         val g: Graphics2D = g1 as Graphics2D
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
+        g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY)
         drawGrid(g, Color(0x1C233D))
+        drawTitle(g)
         drawBasket(g)
         var temp: VisualNode = top
         while (temp != null) {
             drawNode(g, temp)
             temp = temp.nextNode
         }
+    }
+    
+    private fun drawTitle(g: Graphics2D) {
+        g.color = Color.WHITE
+        g.font = Font(Font.SANS_SERIF, Font.BOLD, 28)
+        g.drawString("Stack Visualization (LIFO)", myWidth / 2 - 170, 40)
+        
+        g.font = Font(Font.SANS_SERIF, Font.BOLD, 18)
+        g.color = Color(0xFFD700)
+        g.drawString("Size: $size", myWidth / 2 - 40, 70)
     }
 
     @Suppress("SpellCheckingInspection")
