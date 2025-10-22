@@ -545,18 +545,21 @@ public class LinkedListCycleDetection extends JPanel implements DefaultWindowsIn
         cyclePanel.add(removeCycleBtn);
         
         // Detection buttons
-        JPanel detectionPanel = new JPanel(new GridLayout(1, 3, 5, 5));
+        JPanel detectionPanel = new JPanel(new GridLayout(1, 4, 5, 5));
         detectionPanel.setBackground(new Color(0, 18, 121));
         
         JButton floydBtn = createButton("FLOYD'S ALGORITHM", new Color(0, 100, 0));
+        JButton brentBtn = createButton("BRENT'S ALGORITHM", new Color(0, 80, 120));
         JButton hashSetBtn = createButton("HASHSET METHOD", new Color(0, 0, 139));
         JButton resetBtn = createButton("RESET", new Color(139, 0, 0));
         
         floydBtn.addActionListener(e -> visualPanel.detectCycleFloyd());
+        brentBtn.addActionListener(e -> visualPanel.detectCycleBrent());
         hashSetBtn.addActionListener(e -> visualPanel.detectCycleHashSet());
         resetBtn.addActionListener(e -> visualPanel.reset());
         
         detectionPanel.add(floydBtn);
+        detectionPanel.add(brentBtn);
         detectionPanel.add(hashSetBtn);
         detectionPanel.add(resetBtn);
         
