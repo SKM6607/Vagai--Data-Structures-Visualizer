@@ -121,7 +121,7 @@ public class Sorting extends JPanel implements MacroInterface, GridInterface {
         return returnPanel;
     }
 
-    private @NotNull JButton getButton(JSlider slider) {
+    private JButton getButton(JSlider slider) {
         JButton startButton = new JButton("Start");
         startButton.addActionListener(e -> {
             if (isStart) {
