@@ -25,12 +25,39 @@ class LinkedListVisual extends JPanel implements LinkedListLightWeightInterface,
     protected void paintComponent(Graphics g1) {
         super.paintComponent(g1);
         Graphics2D g = (Graphics2D) g1;
-        drawGrid(g,new Color(0x1C233D));
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        
+        drawGrid(g, new Color(0x1C233D));
+        drawTitle(g);
+        
         VisualNode temp = head;
         while (temp != null) {
             drawNode(g, temp);
             temp = temp.nextNode;
         }
+    }
+    
+    private void drawTitle(Graphics2D g) {
+        g.setColor(Color.WHITE);
+        g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 28));
+        g.drawString("Linked List Visualization", width / 2 - 180, 50);
+        
+        g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 18));
+        g.setColor(new Color(0xFFD700));
+        g.drawString("Size: " + size, width / 2 - 30, 80);
+        
+        // Draw HEAD pointer
+        g.setColor(Color.GREEN);
+        g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
+        g.drawString("HEAD", head.xPos + nodeWidth / 2 - 25, head.yPos - 40);
+        
+        // Draw arrow to head
+        g.setStroke(new BasicStroke(3f));
+        g.drawLine(head.xPos + nodeWidth / 2, head.yPos - 35, head.xPos + nodeWidth / 2, head.yPos - 10);
+        int[] xPoints = {head.xPos + nodeWidth / 2, head.xPos + nodeWidth / 2 - 8, head.xPos + nodeWidth / 2 + 8};
+        int[] yPoints = {head.yPos - 10, head.yPos - 20, head.yPos - 20};
+        g.fillPolygon(xPoints, yPoints, 3);
     }
     @Override
     public void drawGrid(Graphics2D g, Color color){
