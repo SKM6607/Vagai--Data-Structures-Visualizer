@@ -86,7 +86,7 @@ public class Sorting extends JPanel implements MacroInterface, GridInterface {
         }
         repaint();
     }
-    private @NotNull JPanel getUserPanel() {
+    private JPanel getUserPanel() {
         GridLayout layout = new GridLayout(1, 4);
         label = new JLabel("Current Array Elements: 5");
         label.setOpaque(true);
