@@ -2,7 +2,6 @@ package pages;
 import pages.interfaces.GridInterface;
 import pages.interfaces.MacroInterface;
 import pages.dialogs.LegendDialog;
-import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
