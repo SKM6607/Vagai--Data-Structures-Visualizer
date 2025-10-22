@@ -114,13 +114,36 @@ class StackWindow : JPanel(), StackLightWeightInterface, GridInterface {
     }
 
     override fun push(value: Int) {
+        if (isAnimating) return
+        
         size++
         resizePush()
         stopPop = false
-        val newNode = VisualNode(value, top.xPos, top.yPos - nodeHeight - 10)
-        newNode.nextNode = top;
+        
+        val newNode = VisualNode(value, top.xPos, -nodeHeight)
+        newNode.nextNode = top
         newNode.nextAddress = top.address
+        val oldTop = top
         top = newNode
+        
+        // Smooth animation for push
+        animatePush(newNode, oldTop.yPos - nodeHeight - 10)
+    }
+    
+    private fun animatePush(node: VisualNode, targetY: Int) {
+        isAnimating = true
+        val timer = Timer(animationSpeed) {
+            if (node.yPos < targetY) {
+                node.yPos += 12
+                repaint()
+            } else {
+                node.yPos = targetY
+                isAnimating = false
+                (it.source as Timer).stop()
+                repaint()
+            }
+        }
+        timer.start()
     }
 
     override fun pop(): Int {
