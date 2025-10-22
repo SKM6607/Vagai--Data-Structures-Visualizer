@@ -147,29 +147,55 @@ class StackWindow : JPanel(), StackLightWeightInterface, GridInterface {
     }
 
     override fun pop(): Int {
+        if (isAnimating) return top.data
+        
         if (stopPop) {
-            dynamicHeight=myHeight
-            preferredSize= Dimension(myWidth,myHeight)
+            dynamicHeight = myHeight
+            preferredSize = Dimension(myWidth, myHeight)
             this.scrollRectToVisible(Rectangle(preferredSize))
             repaint()
-            return top.data;
+            return top.data
         }
+        
         if (sizeSt() == 1 && !stopPop) {
             stopPop = true
             dynamicHeight -= nodeHeight * 2
-            top.yPos -= nodeHeight * 2
+            animatePop(top, -nodeHeight * 3, true)
             endY -= nodeHeight * 2
             return top.data
         }
+        
         val retData = top.data
+        val nodeToRemove = top
         top.nextAddress = null
         val temp = top.nextNode
         top.nextNode = null
-        //TODO: POSITION CHANGE
         top = temp
         size--
-        resizePop()
+        
+        // Smooth animation for pop
+        animatePop(nodeToRemove, -nodeHeight * 2, false)
+        
         return retData
+    }
+    
+    private fun animatePop(node: VisualNode, targetY: Int, isSingleElement: Boolean) {
+        isAnimating = true
+        val timer = Timer(animationSpeed) {
+            if (node.yPos > targetY) {
+                node.yPos -= 12
+                repaint()
+            } else {
+                node.yPos = targetY
+                isAnimating = false
+                (it.source as Timer).stop()
+                if (!isSingleElement) {
+                    resizePop()
+                }
+                repaint()
+            }
+        }
+        timer.start()
     }
 
     private fun resizePop() {
