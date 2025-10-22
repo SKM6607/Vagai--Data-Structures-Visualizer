@@ -341,7 +341,7 @@ public class LinkedList extends JPanel implements DefaultWindowsInterface {
         });
     }
 
-    private static @NotNull JTextField appendTextInput() {
+    private static JTextField appendTextInput() {
         JTextField textField = new JTextField();
         textField.setFont(font);
         textField.setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
