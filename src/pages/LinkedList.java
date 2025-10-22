@@ -183,18 +183,56 @@ class LinkedListVisual extends JPanel implements LinkedListLightWeightInterface,
         int x = node.xPos;
         int y = node.yPos;
         int value = node.data;
+        
+        // Draw shadow for depth
+        g.setColor(new Color(0, 0, 0, 50));
+        g.fillRoundRect(x + 4, y + 4, nodeWidth, nodeHeight, 10, 10);
+        
+        // Draw main node with rounded corners
         g.setColor(new Color(0x1E3A8A));
-        g.fillRect(x, y, nodeWidth, nodeHeight);
+        g.fillRoundRect(x, y, nodeWidth, nodeHeight, 10, 10);
+        
+        // Draw border
         g.setStroke(new BasicStroke(4f));
         g.setColor(new Color(0xFFD700));
-        g.drawLine(x + nodeWidth / 2, y, x + nodeWidth / 2, y + nodeHeight);
-        g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 30));
-        g.drawString(String.valueOf(value), x + (float) nodeWidth / 4, y + nodeWidth / 3.5f);
-        g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
-        g.drawString((node.isLast()) ? "NULL" : node.nextAddress, x + nodeWidth / 1.75f, y + nodeHeight/2f);
+        g.drawRoundRect(x, y, nodeWidth, nodeHeight, 10, 10);
+        
+        // Draw vertical divider
+        g.setStroke(new BasicStroke(3f));
+        g.drawLine(x + nodeWidth / 2, y + 5, x + nodeWidth / 2, y + nodeHeight - 5);
+        
+        // Draw data section
+        g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 28));
         g.setColor(Color.WHITE);
-        g.drawString(node.address, x + nodeWidth / 3, y - SPACING);
-        if (!node.isLast()) arrow.draw(g, x + nodeWidth, y + nodeHeight / 2, Color.YELLOW);
+        String valueStr = String.valueOf(value);
+        FontMetrics fm = g.getFontMetrics();
+        g.drawString(valueStr, x + nodeWidth / 4 - fm.stringWidth(valueStr) / 2, y + nodeHeight / 2 + 10);
+        
+        // Draw data label
+        g.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        g.setColor(new Color(0xFFD700));
+        g.drawString("Data", x + nodeWidth / 4 - 15, y + 20);
+        
+        // Draw next pointer section
+        g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 14));
+        g.setColor(Color.WHITE);
+        String nextAddr = node.isLast() ? "NULL" : node.nextAddress.substring(0, Math.min(6, node.nextAddress.length()));
+        g.drawString(nextAddr, x + 3 * nodeWidth / 5 - 12, y + nodeHeight / 2 + 10);
+        
+        g.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        g.setColor(new Color(0xFFD700));
+        g.drawString("Next", x + 3 * nodeWidth / 5 - 5, y + 20);
+        
+        // Draw address above node
+        g.setColor(Color.WHITE);
+        g.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 11));
+        String shortAddr = node.address.substring(0, Math.min(10, node.address.length()));
+        g.drawString(shortAddr, x + nodeWidth / 2 - fm.stringWidth(shortAddr) / 2, y - 10);
+        
+        // Draw arrow to next node
+        if (!node.isLast()) {
+            arrow.draw(g, x + nodeWidth, y + nodeHeight / 2, new Color(0xFFD700));
+        }
     }
 }
 
