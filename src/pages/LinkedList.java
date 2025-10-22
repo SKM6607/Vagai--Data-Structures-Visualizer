@@ -125,13 +125,33 @@ class LinkedListVisual extends JPanel implements LinkedListLightWeightInterface,
     }
 
     public void setCamCentered(JScrollPane scrollPane) {
-        JViewport viewport = scrollPane.getViewport();
-        Rectangle rectangle = viewport.getViewRect();
-        viewport.setViewPosition(new Point(
-                 Math.max(rectangle.width/2,calculateSize()- rectangle.width/2), height/2
-        ));
-        resize();
-        scrollPane.setViewport(viewport);
+        if (isAnimating) return;
+        
+        SwingUtilities.invokeLater(() -> {
+            JViewport viewport = scrollPane.getViewport();
+            Rectangle rectangle = viewport.getViewRect();
+            int currentX = rectangle.x;
+            int targetX = Math.max(0, calculateSize() - rectangle.width / 2);
+            
+            // Smooth scroll animation
+            Timer scrollTimer = new Timer(20, null);
+            final int[] step = {0};
+            final int steps = 10;
+            
+            scrollTimer.addActionListener(e -> {
+                step[0]++;
+                float progress = utils.AnimationHelper.easeInOut((float) step[0] / steps);
+                int newX = (int) (currentX + (targetX - currentX) * progress);
+                viewport.setViewPosition(new Point(newX, rectangle.y));
+                
+                if (step[0] >= steps) {
+                    scrollTimer.stop();
+                    viewport.setViewPosition(new Point(targetX, rectangle.y));
+                }
+            });
+            scrollTimer.start();
+            resize();
+        });
     }
 
     @Override
