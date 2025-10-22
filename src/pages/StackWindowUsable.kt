@@ -63,16 +63,38 @@ class StackWindow : JPanel(), StackLightWeightInterface, GridInterface {
 
     @Suppress("SpellCheckingInspection")
     fun setCamCentered(scrollPane: JScrollPane) {
-        val viewport = scrollPane.viewport
-        val viewRect = viewport.viewRect
-        val currentX = viewRect.x
-        val contentHeight = preferredSize.height
-        val viewportHeight = viewRect.height
-        val targetCenterY = top.yPos + nodeHeight / 2
-        val unclampedY = targetCenterY - viewportHeight / 2
-        val maxY = (contentHeight - viewportHeight).coerceAtLeast(0)
-        val clampedY = unclampedY.coerceIn(0, maxY)
-        viewport.viewPosition = Point(currentX, clampedY)
+        if (isAnimating) return // Don't scroll during animation
+        
+        SwingUtilities.invokeLater {
+            val viewport = scrollPane.viewport
+            val viewRect = viewport.viewRect
+            val currentX = viewRect.x
+            val contentHeight = preferredSize.height
+            val viewportHeight = viewRect.height
+            val targetCenterY = top.yPos + nodeHeight / 2
+            val unclampedY = targetCenterY - viewportHeight / 2
+            val maxY = (contentHeight - viewportHeight).coerceAtLeast(0)
+            val clampedY = unclampedY.coerceIn(0, maxY)
+            
+            // Smooth scroll animation
+            val startY = viewRect.y
+            val distance = clampedY - startY
+            val steps = 10
+            var currentStep = 0
+            
+            val scrollTimer = Timer(20) {
+                currentStep++
+                val progress = AnimationHelper.easeInOut(currentStep.toFloat() / steps)
+                val newY = startY + (distance * progress).toInt()
+                viewport.viewPosition = Point(currentX, newY)
+                
+                if (currentStep >= steps) {
+                    (it.source as Timer).stop()
+                    viewport.viewPosition = Point(currentX, clampedY)
+                }
+            }
+            scrollTimer.start()
+        }
     }
 
     override fun drawGrid(g: Graphics2D, color: Color?) {
