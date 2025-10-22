@@ -14,6 +14,7 @@ class LinkedListVisual extends JPanel implements LinkedListLightWeightInterface,
     VisualNode head = new VisualNode(0, width / 4, height / 2 - nodeHeight);
     private int dynamicWidth = width;
     private int size = 1;
+    private boolean isAnimating = false;
 
     LinkedListVisual() {
         setPreferredSize(new Dimension(width, height));
