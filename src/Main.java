@@ -16,15 +16,23 @@ public class Main implements MacroInterface {
     private static final JMenu queueMenu = new JMenu(QUEUE);
     private static final JMenu updateDialog=new JMenu(MORE);
     private static final JMenuItem[] sortingMenuItems = new JMenuItem[4];
-    private static final JMenuItem linkedListMenuItem = new JMenuItem(LINKED_LIST);
+    private static final JMenuItem linkedListMenuItem = new JMenuItem("Linked List");
+    private static final JMenuItem cycleDetectionMenuItem = new JMenuItem("Cycle Detection");
     private static final JMenuItem stackMenuItem=new JMenuItem(STACK);
+    private static final JMenuItem simpleQueueMenuItem = new JMenuItem("Simple Queue");
+    private static final JMenuItem circularQueueMenuItem = new JMenuItem("Circular Queue");
+    private static final JMenuItem priorityQueueMenuItem = new JMenuItem("Priority Queue");
     private static final JMenuItem updateDialogMenuItem=new JMenuItem(UPDATE_DIALOG);
     private static final CardLayout cardLayout = new CardLayout();
     private static final JPanel cardPanel = new JPanel(cardLayout);
     private static final LoadingPage loadingPage = new LoadingPage();
     private static final Sorting sortingPanel = new Sorting(width, height, SELECTION_SORTING);
     private static final LinkedList linkedListPanel=new LinkedList();
+    private static final LinkedListCycleDetection cycleDetectionPanel = new LinkedListCycleDetection();
     private static final StackWindowUsable stackWindow=new StackWindowUsable();
+    private static final SimpleQueueWindow simpleQueueWindow = new SimpleQueueWindow();
+    private static final CircularQueueWindow circularQueueWindow = new CircularQueueWindow();
+    private static final PriorityQueueWindow priorityQueueWindow = new PriorityQueueWindow();
     private static JFrame jFrame;
     private static QRCodeDisplayer qrCode;
     private static final Font menuFont=new Font(Font.SANS_SERIF, Font.BOLD, 18);
@@ -47,19 +55,59 @@ public class Main implements MacroInterface {
             sortingMenuItems[i].setForeground(foreGroundBG);
             sortingMenuItems[i].setFont(menuFont);
         }
+        // Add menu items to their respective menus
         stackMenu.add(stackMenuItem);
-        cardPanel.add(linkedListPanel,LINKED_LIST);
+        linkedListMenu.add(linkedListMenuItem);
+        linkedListMenu.add(cycleDetectionMenuItem);
+        queueMenu.add(simpleQueueMenuItem);
+        queueMenu.add(circularQueueMenuItem);
+        queueMenu.add(priorityQueueMenuItem);
+        
+        // Add panels to card layout
+        cardPanel.add(linkedListPanel, "Linked List");
+        cardPanel.add(cycleDetectionPanel, "Cycle Detection");
         cardPanel.add(loadingPage, DEFAULT);
         cardPanel.add(stackWindow, STACK);
+        cardPanel.add(simpleQueueWindow, "Simple Queue");
+        cardPanel.add(circularQueueWindow, "Circular Queue");
+        cardPanel.add(priorityQueueWindow, "Priority Queue");
+        
+        // Style menu items
         linkedListMenuItem.setFont(menuFont);
+        cycleDetectionMenuItem.setFont(menuFont);
         stackMenuItem.setFont(menuFont);
+        simpleQueueMenuItem.setFont(menuFont);
+        circularQueueMenuItem.setFont(menuFont);
+        priorityQueueMenuItem.setFont(menuFont);
+        
+        // Style menus
         linkedListMenu.setBackground(themeColorBG);
         linkedListMenu.setForeground(foreGroundBG);
+        queueMenu.setBackground(themeColorBG);
+        queueMenu.setForeground(foreGroundBG);
+        queueMenu.setFont(menuFont);
+        
+        // Style menu items colors
         linkedListMenuItem.setBackground(themeColorBG);
         linkedListMenuItem.setForeground(foreGroundBG);
+        cycleDetectionMenuItem.setBackground(themeColorBG);
+        cycleDetectionMenuItem.setForeground(foreGroundBG);
         stackMenuItem.setBackground(themeColorBG);
         stackMenuItem.setForeground(foreGroundBG);
+        simpleQueueMenuItem.setBackground(themeColorBG);
+        simpleQueueMenuItem.setForeground(foreGroundBG);
+        circularQueueMenuItem.setBackground(themeColorBG);
+        circularQueueMenuItem.setForeground(foreGroundBG);
+        priorityQueueMenuItem.setBackground(themeColorBG);
+        priorityQueueMenuItem.setForeground(foreGroundBG);
+        
+        // Set cursors
+        linkedListMenuItem.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        cycleDetectionMenuItem.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         stackMenuItem.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        simpleQueueMenuItem.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        circularQueueMenuItem.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        priorityQueueMenuItem.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         updateDialog.setBackground(themeColorBG);
         updateDialog.setForeground(foreGroundBG);
         updateDialog.setFont(menuFont);
@@ -72,40 +120,62 @@ public class Main implements MacroInterface {
         stackMenu.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         linkedListMenu.add(linkedListMenuItem).setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         linkedListMenu.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        queueMenu.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        
+        // Add menus to menu bar
         menuBarMain.add(sortingMenu);
         menuBarMain.add(Box.createHorizontalStrut(15));
         menuBarMain.add(linkedListMenu);
         menuBarMain.add(Box.createHorizontalStrut(15));
         menuBarMain.add(stackMenu);
         menuBarMain.add(Box.createHorizontalStrut(15));
+        menuBarMain.add(queueMenu);
+        menuBarMain.add(Box.createHorizontalStrut(15));
         menuBarMain.add(updateDialog);
+        
         sortingMenu.setFont(menuFont);
         linkedListMenu.setFont(menuFont);
         stackMenu.setFont(menuFont);
     }
     static {
         for (JMenuItem item : sortingMenuItems) {
-            item.addActionListener(_ -> {
+            item.addActionListener(e -> {
                 closeChildWindows();
                 cardLayout.show(cardPanel, item.getText());
                 new Sorting(width,height,item.getText()).invokeLegend();
             });
         }
-        linkedListMenuItem.addActionListener(_ -> {
+        linkedListMenuItem.addActionListener(e -> {
             closeChildWindows();
-            cardLayout.show(cardPanel, LINKED_LIST);
+            cardLayout.show(cardPanel, "Linked List");
         });
-        loadingPage.returnControlOfLoadButton().addActionListener(_ -> {
+        cycleDetectionMenuItem.addActionListener(e -> {
+            closeChildWindows();
+            cardLayout.show(cardPanel, "Cycle Detection");
+        });
+        loadingPage.returnControlOfLoadButton().addActionListener(e -> {
             closeQRWindow();
             menuBarMain.setVisible(true);
             cardLayout.show(cardPanel, SELECTION_SORTING);
             sortingPanel.invokeLegend();
         });
-        stackMenuItem.addActionListener(_->{
+        stackMenuItem.addActionListener(e -> {
             closeChildWindows();
-            cardLayout.show(cardPanel,STACK);
+            cardLayout.show(cardPanel, STACK);
         });
-        updateDialogMenuItem.addActionListener(_->{
+        simpleQueueMenuItem.addActionListener(e -> {
+            closeChildWindows();
+            cardLayout.show(cardPanel, "Simple Queue");
+        });
+        circularQueueMenuItem.addActionListener(e -> {
+            closeChildWindows();
+            cardLayout.show(cardPanel, "Circular Queue");
+        });
+        priorityQueueMenuItem.addActionListener(e -> {
+            closeChildWindows();
+            cardLayout.show(cardPanel, "Priority Queue");
+        });
+        updateDialogMenuItem.addActionListener(e -> {
             closeChildWindows();
             new UpdateDialog(null);
         });

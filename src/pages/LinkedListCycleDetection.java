@@ -395,6 +395,60 @@ class CycleDetectionVisual extends JPanel implements GridInterface {
         timer.start();
     }
     
+    public void detectCycleBrent() {
+        if (nodes.isEmpty()) return;
+        if (detectionRunning) {
+            JOptionPane.showMessageDialog(this, "Detection already running!", "Info", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+        
+        detectionRunning = true;
+        currentAlgorithm = "Brent's Cycle Detection";
+        detectionResult = "";
+        visitedNodes.clear();
+        slowPointer = nodes.get(0);
+        fastPointer = nodes.get(0);
+        
+        final int[] power = {1};
+        final int[] lambda = {1};
+        
+        Timer timer = new Timer(animationSpeed, null);
+        timer.addActionListener(e -> {
+            // Move fast pointer
+            if (fastPointer.nextNode != null) {
+                fastPointer = fastPointer.nextNode;
+            } else {
+                detectionResult = "NO CYCLE FOUND";
+                slowPointer = null;
+                fastPointer = null;
+                detectionRunning = false;
+                timer.stop();
+                repaint();
+                return;
+            }
+            
+            // Check if they meet
+            if (slowPointer == fastPointer) {
+                detectionResult = "CYCLE FOUND! (Brent's Algorithm) at node " + slowPointer.data;
+                detectionRunning = false;
+                timer.stop();
+                repaint();
+                return;
+            }
+            
+            // Check if power needs to be updated
+            if (lambda[0] == power[0]) {
+                slowPointer = fastPointer;
+                power[0] *= 2;
+                lambda[0] = 0;
+            }
+            
+            lambda[0]++;
+            repaint();
+        });
+        timer.start();
+    }
+    
     public void reset() {
         detectionRunning = false;
         currentAlgorithm = "";
@@ -491,18 +545,21 @@ public class LinkedListCycleDetection extends JPanel implements DefaultWindowsIn
         cyclePanel.add(removeCycleBtn);
         
         // Detection buttons
-        JPanel detectionPanel = new JPanel(new GridLayout(1, 3, 5, 5));
+        JPanel detectionPanel = new JPanel(new GridLayout(1, 4, 5, 5));
         detectionPanel.setBackground(new Color(0, 18, 121));
         
         JButton floydBtn = createButton("FLOYD'S ALGORITHM", new Color(0, 100, 0));
+        JButton brentBtn = createButton("BRENT'S ALGORITHM", new Color(0, 80, 120));
         JButton hashSetBtn = createButton("HASHSET METHOD", new Color(0, 0, 139));
         JButton resetBtn = createButton("RESET", new Color(139, 0, 0));
         
         floydBtn.addActionListener(e -> visualPanel.detectCycleFloyd());
+        brentBtn.addActionListener(e -> visualPanel.detectCycleBrent());
         hashSetBtn.addActionListener(e -> visualPanel.detectCycleHashSet());
         resetBtn.addActionListener(e -> visualPanel.reset());
         
         detectionPanel.add(floydBtn);
+        detectionPanel.add(brentBtn);
         detectionPanel.add(hashSetBtn);
         detectionPanel.add(resetBtn);
         

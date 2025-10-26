@@ -2,7 +2,6 @@ package pages;
 import pages.interfaces.GridInterface;
 import pages.interfaces.MacroInterface;
 import pages.dialogs.LegendDialog;
-import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
@@ -87,7 +86,7 @@ public class Sorting extends JPanel implements MacroInterface, GridInterface {
         }
         repaint();
     }
-    private @NotNull JPanel getUserPanel() {
+    private JPanel getUserPanel() {
         GridLayout layout = new GridLayout(1, 4);
         label = new JLabel("Current Array Elements: 5");
         label.setOpaque(true);
@@ -95,7 +94,7 @@ public class Sorting extends JPanel implements MacroInterface, GridInterface {
         label.setBackground(Color.BLACK);
         int LIMIT = 50;
         slider = new JSlider(0, LIMIT, MAX_ELEMENTS);
-        slider.addChangeListener(_ -> {
+        slider.addChangeListener(e -> {
             isStart = true;
             label.setText(String.format("Current Array Elements: %d", slider.getValue()));
             MAX_ELEMENTS = slider.getValue();
@@ -122,9 +121,9 @@ public class Sorting extends JPanel implements MacroInterface, GridInterface {
         return returnPanel;
     }
 
-    private @NotNull JButton getButton(JSlider slider) {
+    private JButton getButton(JSlider slider) {
         JButton startButton = new JButton("Start");
-        startButton.addActionListener(_ -> {
+        startButton.addActionListener(e -> {
             if (isStart) {
                 thread = new Thread(sortingAlgorithms[choice]);
                 slider.setEnabled(false);

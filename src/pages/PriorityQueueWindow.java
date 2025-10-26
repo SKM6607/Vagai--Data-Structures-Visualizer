@@ -278,6 +278,19 @@ class PriorityQueueVisual extends JPanel implements GridInterface {
     public boolean isEmpty() {
         return queue.isEmpty();
     }
+    
+    @Override
+    public void drawGrid(Graphics2D g, Color color) {
+        Color retColor = g.getColor();
+        g.setColor(color);
+        for (int i = 0; i < dynamicWidth; i += SPACING) {
+            g.drawLine(i, 0, i, height);
+        }
+        for (int i = 0; i < height; i += SPACING) {
+            g.drawLine(0, i, dynamicWidth, i);
+        }
+        g.setColor(retColor);
+    }
 }
 
 public class PriorityQueueWindow extends JPanel implements DefaultWindowsInterface {

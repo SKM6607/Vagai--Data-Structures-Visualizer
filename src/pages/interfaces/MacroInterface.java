@@ -6,6 +6,7 @@ public interface MacroInterface extends DefaultWindowsInterface{
     String LINKED_LIST = "Linked List";
     String DEFAULT = "LoadingPage";
     String STACK= "Stack";
+    String QUEUE = "Queue";
     String SORTING_ALGORITHMS="Sorting Algorithms";
     String INSERTION_SORTING = "Insertion Sort";
     String SELECTION_SORTING = "Selection Sort";
