@@ -1,6 +1,7 @@
 package sound;
 import javax.sound.sampled.*;
 import java.io.File;
+
 public class BackgroundMusic implements Runnable {
     private final String filePath;
     public BackgroundMusic(String filePath) {
@@ -19,7 +20,7 @@ public class BackgroundMusic implements Runnable {
                 Thread.sleep(100);
             }
         } catch (Exception e) {
-            e.fillInStackTrace();
+            e.printStackTrace();
         }
     }
 }

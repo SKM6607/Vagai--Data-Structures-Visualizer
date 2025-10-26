@@ -1,6 +1,5 @@
 package pages.dialogs
 
-import org.jetbrains.annotations.NotNull
 import java.awt.Color
 import java.awt.FlowLayout
 import java.awt.Font
@@ -24,7 +23,7 @@ class LegendDialog(parent: Window?, title: String?, legend:Map<String, Color>): 
         isAlwaysOnTop=true
         setLocationRelativeTo(parent)
     }
-    private fun createDialogBox(string: String,color: Color): @NotNull JPanel {
+    private fun createDialogBox(string: String,color: Color): JPanel {
         val jPanel= JPanel(FlowLayout(FlowLayout.LEFT))
         val jLabel= JLabel(string)
         jLabel.background= Color.BLACK

@@ -1,20 +1,20 @@
 package pages
-//TODO SCROLLING MECHANISMS
 import pages.interfaces.DefaultWindowsInterface
 import pages.interfaces.GridInterface
 import pages.interfaces.GridInterface.SPACING
 import pages.interfaces.LinkedListInterface.VisualNode
 import pages.interfaces.StackLightWeightInterface
 import shapes.MyArrow
+import utils.AnimationHelper
 import java.awt.*
 import java.awt.event.KeyEvent
 import java.awt.event.KeyListener
 import javax.swing.*
 
 class StackWindow : JPanel(), StackLightWeightInterface, GridInterface {
-    private val myWidth = StackLightWeightInterface.width;
-    private val myHeight = StackLightWeightInterface.height;
-    private val myArrow = MyArrow(80, 12);
+    private val myWidth = StackLightWeightInterface.width
+    private val myHeight = StackLightWeightInterface.height
+    private val myArrow = MyArrow(80, 12)
     private var top: VisualNode
     private var size = 1
     private val nodeHeight = 80
@@ -25,6 +25,8 @@ class StackWindow : JPanel(), StackLightWeightInterface, GridInterface {
     private var endY = returnClosest(myHeight - 4 * nodeHeight, myHeight - 3 * nodeHeight, SPACING + 5)
     private var dynamicHeight = startY
     private var stopPop = false
+    private var isAnimating = false
+    private val animationSpeed = 15
 
     init {
         nodeWidth = endX - startX - 60
@@ -35,9 +37,12 @@ class StackWindow : JPanel(), StackLightWeightInterface, GridInterface {
 
     @Suppress("SENSELESS_COMPARISON")
     protected override fun paintComponent(g1: Graphics) {
-        super.paintComponent(g1);
+        super.paintComponent(g1)
         val g: Graphics2D = g1 as Graphics2D
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
+        g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY)
         drawGrid(g, Color(0x1C233D))
+        drawTitle(g)
         drawBasket(g)
         var temp: VisualNode = top
         while (temp != null) {
@@ -45,19 +50,51 @@ class StackWindow : JPanel(), StackLightWeightInterface, GridInterface {
             temp = temp.nextNode
         }
     }
+    
+    private fun drawTitle(g: Graphics2D) {
+        g.color = Color.WHITE
+        g.font = Font(Font.SANS_SERIF, Font.BOLD, 28)
+        g.drawString("Stack Visualization (LIFO)", myWidth / 2 - 170, 40)
+        
+        g.font = Font(Font.SANS_SERIF, Font.BOLD, 18)
+        g.color = Color(0xFFD700)
+        g.drawString("Size: $size", myWidth / 2 - 40, 70)
+    }
 
     @Suppress("SpellCheckingInspection")
     fun setCamCentered(scrollPane: JScrollPane) {
-        val viewport = scrollPane.viewport
-        val viewRect = viewport.viewRect
-        val currentX = viewRect.x
-        val contentHeight = preferredSize.height
-        val viewportHeight = viewRect.height
-        val targetCenterY = top.yPos + nodeHeight / 2
-        val unclampedY = targetCenterY - viewportHeight / 2
-        val maxY = (contentHeight - viewportHeight).coerceAtLeast(0)
-        val clampedY = unclampedY.coerceIn(0, maxY)
-        viewport.viewPosition = Point(currentX, clampedY)
+        if (isAnimating) return // Don't scroll during animation
+        
+        SwingUtilities.invokeLater {
+            val viewport = scrollPane.viewport
+            val viewRect = viewport.viewRect
+            val currentX = viewRect.x
+            val contentHeight = preferredSize.height
+            val viewportHeight = viewRect.height
+            val targetCenterY = top.yPos + nodeHeight / 2
+            val unclampedY = targetCenterY - viewportHeight / 2
+            val maxY = (contentHeight - viewportHeight).coerceAtLeast(0)
+            val clampedY = unclampedY.coerceIn(0, maxY)
+            
+            // Smooth scroll animation
+            val startY = viewRect.y
+            val distance = clampedY - startY
+            val steps = 10
+            var currentStep = 0
+            
+            val scrollTimer = Timer(20) {
+                currentStep++
+                val progress = AnimationHelper.easeInOut(currentStep.toFloat() / steps)
+                val newY = startY + (distance * progress).toInt()
+                viewport.viewPosition = Point(currentX, newY)
+                
+                if (currentStep >= steps) {
+                    (it.source as Timer).stop()
+                    viewport.viewPosition = Point(currentX, clampedY)
+                }
+            }
+            scrollTimer.start()
+        }
     }
 
     override fun drawGrid(g: Graphics2D, color: Color?) {
@@ -99,39 +136,88 @@ class StackWindow : JPanel(), StackLightWeightInterface, GridInterface {
     }
 
     override fun push(value: Int) {
+        if (isAnimating) return
+        
         size++
         resizePush()
         stopPop = false
-        val newNode = VisualNode(value, top.xPos, top.yPos - nodeHeight - 10)
-        newNode.nextNode = top;
+        
+        val newNode = VisualNode(value, top.xPos, -nodeHeight)
+        newNode.nextNode = top
         newNode.nextAddress = top.address
+        val oldTop = top
         top = newNode
+        
+        // Smooth animation for push
+        animatePush(newNode, oldTop.yPos - nodeHeight - 10)
+    }
+    
+    private fun animatePush(node: VisualNode, targetY: Int) {
+        isAnimating = true
+        val timer = Timer(animationSpeed) {
+            if (node.yPos < targetY) {
+                node.yPos += 12
+                repaint()
+            } else {
+                node.yPos = targetY
+                isAnimating = false
+                (it.source as Timer).stop()
+                repaint()
+            }
+        }
+        timer.start()
     }
 
     override fun pop(): Int {
+        if (isAnimating) return top.data
+        
         if (stopPop) {
-            dynamicHeight=myHeight
-            preferredSize= Dimension(myWidth,myHeight)
+            dynamicHeight = myHeight
+            preferredSize = Dimension(myWidth, myHeight)
             this.scrollRectToVisible(Rectangle(preferredSize))
             repaint()
-            return top.data;
+            return top.data
         }
+        
         if (sizeSt() == 1 && !stopPop) {
             stopPop = true
             dynamicHeight -= nodeHeight * 2
-            top.yPos -= nodeHeight * 2
+            animatePop(top, -nodeHeight * 3, true)
             endY -= nodeHeight * 2
             return top.data
         }
+        
         val retData = top.data
+        val nodeToRemove = top
         top.nextAddress = null
         val temp = top.nextNode
         top.nextNode = null
-        //TODO: POSITION CHANGE
         top = temp
         size--
-        resizePop()
+        
+        // Smooth animation for pop
+        animatePop(nodeToRemove, -nodeHeight * 2, false)
+        
         return retData
+    }
+    
+    private fun animatePop(node: VisualNode, targetY: Int, isSingleElement: Boolean) {
+        isAnimating = true
+        val timer = Timer(animationSpeed) {
+            if (node.yPos > targetY) {
+                node.yPos -= 12
+                repaint()
+            } else {
+                node.yPos = targetY
+                isAnimating = false
+                (it.source as Timer).stop()
+                if (!isSingleElement) {
+                    resizePop()
+                }
+                repaint()
+            }
+        }
+        timer.start()
     }
 
     private fun resizePop() {
@@ -155,38 +241,61 @@ class StackWindow : JPanel(), StackLightWeightInterface, GridInterface {
     override fun drawNode(g: Graphics2D, node: VisualNode) {
         val oldColor = g.color
         val resetStroke = g.stroke
-        g.also {
-            it.color = Color(0x1E3A8A)
-            it.fillRect(node.xPos, node.yPos, nodeWidth, nodeHeight)
-            it.color = Color(0xFFD700)
-            it.font = Font(Font.SANS_SERIF, Font.BOLD, 30)
-            it.stroke = BasicStroke(6f)
-            it.drawString("Data: ${node.data}", node.xPos + nodeWidth / 6, node.yPos + nodeHeight / 2 + 10)
-            it.drawLine(node.xPos + nodeWidth / 2, node.yPos + 5, node.xPos + nodeWidth / 2, node.yPos + nodeHeight - 5)
-            it.drawString(
-                "Next Address: ${
-                    when (node.nextAddress) {
-                        null -> "NULL"
-                        else -> {
-                            node.nextAddress
-                        }
-                    }
-                }",
-                node.xPos + 9 * nodeWidth / 15,
-                node.yPos + nodeHeight / 2 + 10
-            )
-            it.color = Color.WHITE
-            it.font = it.font.deriveFont(10)
-            it.drawString("${node.address}", 30, node.yPos + nodeHeight / 2 + 10)
-            myArrow.draw(
-                g,
-                g.getFontMetrics(it.font).stringWidth(node.address) + 35,
-                node.yPos + nodeHeight / 2,
-                Color(0xFFD700)
-            )
-            it.color = oldColor
-            it.stroke = resetStroke
-        }
+        
+        // Draw shadow for depth
+        g.color = Color(0, 0, 0, 50)
+        g.fillRoundRect(node.xPos + 4, node.yPos + 4, nodeWidth, nodeHeight, 10, 10)
+        
+        // Draw main node with rounded corners
+        g.color = Color(0x1E3A8A)
+        g.fillRoundRect(node.xPos, node.yPos, nodeWidth, nodeHeight, 10, 10)
+        
+        // Draw border
+        g.color = Color(0xFFD700)
+        g.stroke = BasicStroke(4f)
+        g.drawRoundRect(node.xPos, node.yPos, nodeWidth, nodeHeight, 10, 10)
+        
+        // Draw vertical divider
+        g.stroke = BasicStroke(3f)
+        g.drawLine(node.xPos + nodeWidth / 2, node.yPos + 5, node.xPos + nodeWidth / 2, node.yPos + nodeHeight - 5)
+        
+        // Draw data section
+        g.font = Font(Font.SANS_SERIF, Font.BOLD, 26)
+        g.color = Color.WHITE
+        val dataStr = "${node.data}"
+        val fm = g.getFontMetrics(g.font)
+        g.drawString(dataStr, node.xPos + nodeWidth / 4 - fm.stringWidth(dataStr) / 2, node.yPos + nodeHeight / 2 + 10)
+        
+        // Draw label
+        g.font = Font(Font.SANS_SERIF, Font.PLAIN, 12)
+        g.color = Color(0xFFD700)
+        g.drawString("Data", node.xPos + nodeWidth / 4 - 15, node.yPos + 20)
+        
+        // Draw next address
+        g.font = Font(Font.SANS_SERIF, Font.BOLD, 14)
+        g.color = Color.WHITE
+        val nextAddr = if (node.nextAddress == null) "NULL" else node.nextAddress!!.substring(0, minOf(6, node.nextAddress!!.length))
+        g.drawString(nextAddr, node.xPos + 3 * nodeWidth / 5 - 10, node.yPos + nodeHeight / 2 + 10)
+        
+        g.font = Font(Font.SANS_SERIF, Font.PLAIN, 12)
+        g.color = Color(0xFFD700)
+        g.drawString("Next", node.xPos + 3 * nodeWidth / 5 - 5, node.yPos + 20)
+        
+        // Draw address pointer
+        g.color = Color.WHITE
+        g.font = Font(Font.SANS_SERIF, Font.PLAIN, 11)
+        val shortAddr = node.address.substring(0, minOf(8, node.address.length))
+        g.drawString(shortAddr, 30, node.yPos + nodeHeight / 2 + 5)
+        
+        myArrow.draw(
+            g,
+            g.getFontMetrics(g.font).stringWidth(shortAddr) + 35,
+            node.yPos + nodeHeight / 2,
+            Color(0xFFD700)
+        )
+        
+        g.color = oldColor
+        g.stroke = resetStroke
     }
 
     private fun returnClosest(startPoint: Int, endPoint: Int, divisor: Int): Int {
