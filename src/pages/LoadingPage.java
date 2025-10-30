@@ -4,6 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
+
 public class LoadingPage extends JPanel implements DefaultWindowsInterface {
     public static final Font newFont;
     private static final JButton startButton;
@@ -14,7 +16,7 @@ public class LoadingPage extends JPanel implements DefaultWindowsInterface {
     static {
         startLabel=new JLabel("Vagai - An Algorithms Demonstrator");
         try {
-            newFont = Font.createFont(Font.TRUETYPE_FONT, new File("src/Fonts/PressStart2P-Regular.ttf"));
+            newFont = Font.createFont(Font.TRUETYPE_FONT, Objects.requireNonNull(LoadingPage.class.getResourceAsStream("/Fonts/PressStart2P-Regular.ttf")));
         } catch (FontFormatException | IOException e) {
             throw new RuntimeException(e);
         }

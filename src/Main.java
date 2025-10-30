@@ -1,3 +1,9 @@
+import pages.linkedList.LinkedListCycleDetection;
+import pages.linkedList.LinkedListImplementation;
+import pages.queues.CircularQueueWindow;
+import pages.queues.PriorityQueueWindow;
+import pages.queues.SimpleQueueWindow;
+import pages.sorting.Sorting;
 import sound.BackgroundMusic;
 import pages.*;
 import pages.dialogs.UpdateDialog;
@@ -27,7 +33,7 @@ public class Main implements MacroInterface {
     private static final JPanel cardPanel = new JPanel(cardLayout);
     private static final LoadingPage loadingPage = new LoadingPage();
     private static final Sorting sortingPanel = new Sorting(width, height, SELECTION_SORTING);
-    private static final LinkedList linkedListPanel=new LinkedList();
+    private static final LinkedListImplementation linkedListPanel= new LinkedListImplementation();
     private static final LinkedListCycleDetection cycleDetectionPanel = new LinkedListCycleDetection();
     private static final StackWindowUsable stackWindow=new StackWindowUsable();
     private static final SimpleQueueWindow simpleQueueWindow = new SimpleQueueWindow();

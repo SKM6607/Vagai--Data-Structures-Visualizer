@@ -195,7 +195,7 @@ class StackWindow : JPanel(), StackLightWeightInterface, GridInterface {
         top = temp
         size--
         
-        // Smooth animation for pop
+        // Smooth animation for delete
         animatePop(nodeToRemove, -nodeHeight * 2, false)
         
         return retData
