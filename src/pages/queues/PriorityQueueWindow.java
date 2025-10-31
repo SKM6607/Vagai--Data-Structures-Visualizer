@@ -1,7 +1,7 @@
 package pages.queues;
 
-import pages.interfaces.DefaultWindowsInterface;
-import pages.interfaces.GridInterface;
+import pages.abstractClasses.ComponentUtilities;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -9,44 +9,21 @@ import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.List;
 
-class PriorityNode {
-    int value;
-    int priority;
-    int xPos;
-    int yPos;
-    Color color;
-    
-    PriorityNode(int value, int priority, int x, int y) {
-        this.value = value;
-        this.priority = priority;
-        this.xPos = x;
-        this.yPos = y;
-        this.color = new Color(0x1E3A8A);
-    }
-}
 
-class PriorityQueueVisual extends JPanel implements GridInterface {
+final class PriorityQueueVisual extends Queue{
     private final List<PriorityNode> queue = new ArrayList<>();
-    private final int nodeWidth = 100;
-    private final int nodeHeight = 120;
-    private final int spacing = 30;
-    private final int startX = 100;
-    private final int startY = 150;
     private int animationSpeed = 300;
     private int dynamicWidth = width;
-    
     PriorityQueueVisual() {
         setPreferredSize(new Dimension(width, height));
         setBackground(new Color(0xA0F29));
     }
-    
     @Override
     protected void paintComponent(Graphics g1) {
         super.paintComponent(g1);
         Graphics2D g = (Graphics2D) g1;
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         drawGrid(g, new Color(0x1C233D));
-        
         drawTitle(g);
         drawNodes(g);
         drawPriorityLegend(g);
@@ -172,7 +149,6 @@ class PriorityQueueVisual extends JPanel implements GridInterface {
     
     public void enqueue(int value, int priority) {
         PriorityNode newNode = new PriorityNode(value, priority, 0, startY);
-        
         // Find correct position based on priority
         int insertIndex = 0;
         for (int i = 0; i < queue.size(); i++) {
@@ -206,20 +182,26 @@ class PriorityQueueVisual extends JPanel implements GridInterface {
         });
         timer.start();
     }
-    
-    public int dequeue() {
+
+    @Override
+    public void enqueue(int value) {
+
+    }
+
+    public void dequeue() {
         if (queue.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Queue is empty!", "Error", JOptionPane.ERROR_MESSAGE);
-            return -1;
+            return;
         }
-        
         PriorityNode front = queue.get(0);
-        int value = front.value;
-        
         animateRemoval(front);
-        return value;
     }
-    
+
+    @Override
+    public int sizeQ() {
+        return 0;
+    }
+
     private void animateRemoval(PriorityNode node) {
         Timer timer = new Timer(15, null);
         timer.addActionListener(e -> {
@@ -278,109 +260,70 @@ class PriorityQueueVisual extends JPanel implements GridInterface {
     public boolean isEmpty() {
         return queue.isEmpty();
     }
-    
+
     @Override
-    public void drawGrid(Graphics2D g, Color color) {
-        Color retColor = g.getColor();
-        g.setColor(color);
-        for (int i = 0; i < dynamicWidth; i += SPACING) {
-            g.drawLine(i, 0, i, height);
-        }
-        for (int i = 0; i < height; i += SPACING) {
-            g.drawLine(0, i, dynamicWidth, i);
-        }
-        g.setColor(retColor);
+    public boolean isFull() {
+        return false;
+    }
+
+    @Override
+    protected void drawNode(Graphics2D g, VisualNode node) {
+
     }
 }
 
-public class PriorityQueueWindow extends JPanel implements DefaultWindowsInterface {
-    private final PriorityQueueVisual visualQueue;
-    private final JTextField valueField;
+public final class PriorityQueueWindow extends QueueWindow<PriorityQueueVisual> {
     private final JTextField priorityField;
-    private final Font font = new Font(Font.SANS_SERIF, Font.BOLD, 18);
-    
     public PriorityQueueWindow() {
         setLayout(new BorderLayout());
-        
         visualQueue = new PriorityQueueVisual();
         JScrollPane scrollPane = new JScrollPane(visualQueue,
                 JScrollPane.VERTICAL_SCROLLBAR_NEVER,
                 JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         scrollPane.getHorizontalScrollBar().setUnitIncrement(20);
-        
-        // Control panel
         JPanel controlPanel = new JPanel(new GridLayout(3, 1, 5, 5));
         controlPanel.setBackground(new Color(0, 18, 121));
-        
-        // Input panel
         JPanel inputPanel = new JPanel(new GridLayout(1, 4, 5, 5));
         inputPanel.setBackground(new Color(0, 18, 121));
-        
-        valueField = createTextField("Value");
+        textField = createTextField("Value");
         priorityField = createTextField("Priority (0-9)");
-        JButton enqueueBtn = createButton("ENQUEUE", new Color(0, 18, 121));
-        JButton dequeueBtn = createButton("DEQUEUE", Color.BLACK);
-        
-        enqueueBtn.addActionListener(e -> {
-            if (verifyInput(valueField) && verifyInput(priorityField)) {
-                int value = Integer.parseInt(valueField.getText());
+        enqueueButton.addActionListener(e -> {
+            if (verifyInput(textField) && verifyInput(priorityField)) {
+                int value = Integer.parseInt(textField.getText());
                 int priority = Integer.parseInt(priorityField.getText());
                 if (priority < 0 || priority > 9) {
                     JOptionPane.showMessageDialog(this, "Priority must be 0-9", "Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
                 visualQueue.enqueue(value, priority);
-                valueField.setText("");
+                textField.setText("");
                 priorityField.setText("");
             }
         });
-        
-        dequeueBtn.addActionListener(e -> visualQueue.dequeue());
-        
-        inputPanel.add(valueField);
+        dequeueButton.addActionListener(e -> visualQueue.dequeue());
+        inputPanel.add(textField);
         inputPanel.add(priorityField);
-        inputPanel.add(enqueueBtn);
-        inputPanel.add(dequeueBtn);
-        
+        inputPanel.add(enqueueButton);
+        inputPanel.add(dequeueButton);
         // Speed control
-        JPanel speedPanel = new JPanel(new BorderLayout());
-        speedPanel.setBackground(new Color(0, 18, 121));
-        JLabel speedLabel = new JLabel("Animation Speed", SwingConstants.CENTER);
-        speedLabel.setForeground(Color.WHITE);
-        speedLabel.setFont(font);
-        
-        JSlider speedSlider = new JSlider(50, 500, 300);
-        speedSlider.setBackground(new Color(0, 18, 121));
-        speedSlider.setForeground(Color.WHITE);
-        speedSlider.addChangeListener(e -> visualQueue.setAnimationSpeed(speedSlider.getValue()));
-        
-        speedPanel.add(speedLabel, BorderLayout.NORTH);
-        speedPanel.add(speedSlider, BorderLayout.CENTER);
-        
+        JPanel speedPanel = getPanel();
         // Info panel
-        JLabel infoLabel = new JLabel("Priority Queue - Elements ordered by Priority", SwingConstants.CENTER);
-        infoLabel.setForeground(Color.WHITE);
-        infoLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 16));
-        infoLabel.setOpaque(true);
-        infoLabel.setBackground(new Color(0, 18, 121));
-        
+        setInfoLabel("Priority Queue - Elements ordered by Priority");
         controlPanel.add(infoLabel);
         controlPanel.add(inputPanel);
         controlPanel.add(speedPanel);
-        
         add(scrollPane, BorderLayout.CENTER);
         add(controlPanel, BorderLayout.SOUTH);
-        
         // Key listeners
         priorityField.addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
-                if (e.getKeyChar() == '\n' && verifyInput(valueField) && verifyInput(priorityField)) {
-                    int value = Integer.parseInt(valueField.getText());
+                if (e.getKeyChar() == '\n' && verifyInput(textField) && verifyInput(priorityField)) {
+                    int value = Integer.parseInt(textField.getText());
                     int priority = Integer.parseInt(priorityField.getText());
                     if (priority >= 0 && priority <= 9) {
                         visualQueue.enqueue(value, priority);
-                        valueField.setText("");
+                        textField.setText("");
                         priorityField.setText("");
                     }
                 }
@@ -393,7 +336,6 @@ public class PriorityQueueWindow extends JPanel implements DefaultWindowsInterfa
             public void keyReleased(KeyEvent e) {}
         });
     }
-    
     private JTextField createTextField(String tooltip) {
         JTextField field = new JTextField();
         field.setFont(font);
@@ -414,17 +356,6 @@ public class PriorityQueueWindow extends JPanel implements DefaultWindowsInterfa
         });
         return field;
     }
-    
-    private JButton createButton(String text, Color bgColor) {
-        JButton button = new JButton(text);
-        button.setFont(font);
-        button.setBackground(bgColor);
-        button.setForeground(Color.WHITE);
-        button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        button.setFocusPainted(false);
-        return button;
-    }
-    
     private boolean verifyInput(JTextField field) {
         return field.getInputVerifier().verify(field);
     }

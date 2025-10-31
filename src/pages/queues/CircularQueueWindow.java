@@ -1,23 +1,19 @@
 package pages.queues;
 
+import org.jetbrains.annotations.NotNull;
 import pages.interfaces.DefaultWindowsInterface;
-import pages.interfaces.GridInterface;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import static pages.abstractClasses.ComponentUtilities.*;
-import static pages.abstractClasses.ComponentUtilities.createButton;
+final class CircularQueueVisual extends Queue {
 
-final class CircularQueueVisual extends JPanel implements GridInterface {
-    private final int[] queue;
-    private int front = -1;
-    private int rear = -1;
     private final int capacity = 12;
     private final int centerX;
     private final int centerY;
     private final int radius = 250;
-    private final int nodeSize = 60;
     private int animationSpeed = 300;
     private Integer highlightIndex = null;
     private Color highlightColor = Color.GREEN;
@@ -58,14 +54,14 @@ final class CircularQueueVisual extends JPanel implements GridInterface {
     private void drawNodes(Graphics2D g) {
         for (int i = 0; i < capacity; i++) {
             double angle = 2 * Math.PI * i / capacity - Math.PI / 2;
+            int nodeSize = 60;
             int x = centerX + (int) (radius * Math.cos(angle)) - nodeSize / 2;
             int y = centerY + (int) (radius * Math.sin(angle)) - nodeSize / 2;
             
             // Draw shadow
             g.setColor(new Color(0, 0, 0, 50));
             g.fillOval(x + 3, y + 3, nodeSize, nodeSize);
-            
-            // Determine node color
+
             Color nodeColor;
             if (highlightIndex != null && highlightIndex == i) {
                 nodeColor = highlightColor;
@@ -203,16 +199,15 @@ final class CircularQueueVisual extends JPanel implements GridInterface {
         animateHighlight(rear, Color.GREEN);
     }
     
-    public int dequeue() {
+    public void dequeue() {
         if (isEmpty()) {
             JOptionPane.showMessageDialog(this, "Queue is empty!", "Error", JOptionPane.ERROR_MESSAGE);
-            return -1;
+            return;
         }
-        
-        int value = queue[front];
+
         animateHighlight(front, Color.RED);
         
-        Timer timer = new Timer(animationSpeed, e -> {
+        Timer timer = new Timer(animationSpeed, _ -> {
             if (front == rear) {
                 front = rear = -1;
             } else {
@@ -222,16 +217,15 @@ final class CircularQueueVisual extends JPanel implements GridInterface {
         });
         timer.setRepeats(false);
         timer.start();
-        
-        return value;
+
     }
-    
+
     private void animateHighlight(int index, Color color) {
         highlightIndex = index;
         highlightColor = color;
         repaint();
         
-        Timer timer = new Timer(animationSpeed, e -> {
+        Timer timer = new Timer(animationSpeed, _ -> {
             highlightIndex = null;
             repaint();
         });
@@ -246,7 +240,12 @@ final class CircularQueueVisual extends JPanel implements GridInterface {
     public boolean isFull() {
         return (rear + 1) % capacity == front;
     }
-    
+
+    @Override
+    public void drawNode(Graphics2D g, VisualNode node) {
+
+    }
+
     public int sizeQ() {
         if (isEmpty()) return 0;
         if (front <= rear) {
@@ -261,11 +260,7 @@ final class CircularQueueVisual extends JPanel implements GridInterface {
     }
 
 }
-public final class CircularQueueWindow extends JPanel implements DefaultWindowsInterface {
-    private final CircularQueueVisual visualQueue;
-    private final JTextField textField;
-    private final Font font = new Font(Font.SANS_SERIF, Font.BOLD, 18);
-    
+public final class CircularQueueWindow extends QueueWindow<CircularQueueVisual> {
     public CircularQueueWindow() {
         setLayout(new BorderLayout());
         
@@ -278,39 +273,28 @@ public final class CircularQueueWindow extends JPanel implements DefaultWindowsI
         // Input and buttons
         JPanel inputPanel = new JPanel(new GridLayout(1, 3, 5, 5));
         inputPanel.setBackground(new Color(0, 18, 121));
-        
+
+        Font font = new Font(Font.SANS_SERIF, Font.BOLD, 18);
         textField =createTextField(font,themeColorBG);
-        JButton enqueueBtn = createButton("ENQUEUE", new Color(0, 18, 121),font);
-        JButton dequeueBtn = createButton("DEQUEUE", Color.BLACK,font);
+        JButton enqueueBtn = createButton("ENQUEUE", new Color(0, 18, 121), font);
+        JButton dequeueBtn = createButton("DEQUEUE", Color.BLACK, font);
         
-        enqueueBtn.addActionListener(e -> {
+        enqueueBtn.addActionListener(_ -> {
             if (verifyInput()) {
                 visualQueue.enqueue(Integer.parseInt(textField.getText()));
                 textField.setText("");
             }
         });
         
-        dequeueBtn.addActionListener(e -> visualQueue.dequeue());
+        dequeueBtn.addActionListener(_ -> visualQueue.dequeue());
         
         inputPanel.add(textField);
         inputPanel.add(enqueueBtn);
         inputPanel.add(dequeueBtn);
         
         // Speed control
-        JPanel speedPanel = new JPanel(new BorderLayout());
-        speedPanel.setBackground(new Color(0, 18, 121));
-        JLabel speedLabel = new JLabel("Animation Speed", SwingConstants.CENTER);
-        speedLabel.setForeground(Color.WHITE);
-        speedLabel.setFont(font);
-        
-        JSlider speedSlider = new JSlider(100, 800, 300);
-        speedSlider.setBackground(new Color(0, 18, 121));
-        speedSlider.setForeground(Color.WHITE);
-        speedSlider.addChangeListener(e -> visualQueue.setAnimationSpeed(speedSlider.getValue()));
-        
-        speedPanel.add(speedLabel, BorderLayout.NORTH);
-        speedPanel.add(speedSlider, BorderLayout.CENTER);
-        
+        JPanel speedPanel = getPanel();
+
         // Info panel
         JLabel infoLabel = new JLabel("Circular Queue - Efficient Space Utilization", SwingConstants.CENTER);
         infoLabel.setForeground(Color.WHITE);
@@ -342,10 +326,6 @@ public final class CircularQueueWindow extends JPanel implements DefaultWindowsI
             public void keyReleased(KeyEvent e) {}
         });
     }
-
-    
-
-    
     private boolean verifyInput() {
         return textField.getInputVerifier().verify(textField);
     }

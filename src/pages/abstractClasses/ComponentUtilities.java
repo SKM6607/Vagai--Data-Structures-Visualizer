@@ -3,7 +3,8 @@ package pages.abstractClasses;
 import javax.swing.*;
 import java.awt.*;
 
-public abstract class ComponentUtilities {
+public final class ComponentUtilities {
+    private ComponentUtilities(){}
     public static JTextField createTextField(Font font,Color color) {
         JTextField field = new JTextField();
         field.setFont(font);
