@@ -291,24 +291,15 @@ public final class CircularQueueWindow extends QueueWindow<CircularQueueVisual> 
         inputPanel.add(textField);
         inputPanel.add(enqueueBtn);
         inputPanel.add(dequeueBtn);
-        
         // Speed control
         JPanel speedPanel = getPanel();
-
         // Info panel
-        JLabel infoLabel = new JLabel("Circular Queue - Efficient Space Utilization", SwingConstants.CENTER);
-        infoLabel.setForeground(Color.WHITE);
-        infoLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 16));
-        infoLabel.setOpaque(true);
-        infoLabel.setBackground(new Color(0, 18, 121));
-        
+        infoLabel = setInfoLabel("Circular Queue - Efficient Space Utilization");
         controlPanel.add(infoLabel);
         controlPanel.add(inputPanel);
         controlPanel.add(speedPanel);
-        
         add(visualQueue, BorderLayout.CENTER);
         add(controlPanel, BorderLayout.SOUTH);
-        
         // Key listener
         textField.addKeyListener(new KeyListener() {
             @Override

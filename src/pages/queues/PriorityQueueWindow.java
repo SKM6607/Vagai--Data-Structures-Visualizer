@@ -308,7 +308,7 @@ public final class PriorityQueueWindow extends QueueWindow<PriorityQueueVisual> 
         // Speed control
         JPanel speedPanel = getPanel();
         // Info panel
-        setInfoLabel("Priority Queue - Elements ordered by Priority");
+        infoLabel=setInfoLabel("Priority Queue - Elements ordered by Priority");
         controlPanel.add(infoLabel);
         controlPanel.add(inputPanel);
         controlPanel.add(speedPanel);
