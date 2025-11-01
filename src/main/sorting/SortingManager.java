@@ -17,7 +17,6 @@ public final class SortingManager extends JPanel implements MacroInterface, Grid
             this::selectionSort, this::insertionSort, this::bubbleSort, this::quickSort};
     private int WIDTH=width, HEIGHT=height, MAX_ELEMENTS = 5;
     private boolean isStart = true;
-    private volatile boolean paused = false;
     private Thread thread;
     private final JDialog legend;
     public SortingManager(int width, int height, String menuOption) {
@@ -122,7 +121,6 @@ public final class SortingManager extends JPanel implements MacroInterface, Grid
             if (isStart) {
                 thread = new Thread(sortingAlgorithms[choice]);
                 slider.setEnabled(false);
-                paused = false;
                 startButton.setEnabled(false);
                 isStart = false;
                 thread.start();
@@ -157,7 +155,7 @@ public final class SortingManager extends JPanel implements MacroInterface, Grid
         }
     }
 
-    private void swapBlocks(ArrayBlock block1, ArrayBlock block2) {
+    private static void swapBlocks(ArrayBlock block1, ArrayBlock block2) {
         int temp = block1.height;
         block1.height = block2.height;
         block2.height = temp;
