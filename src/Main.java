@@ -1,15 +1,15 @@
-import pages.linkedList.LinkedListCycleDetection;
-import pages.linkedList.LinkedListImplementation;
-import pages.queues.CircularQueueWindow;
-import pages.queues.PriorityQueueWindow;
-import pages.queues.SimpleQueueWindow;
-import pages.sorting.Sorting;
+import main.linkedList.LinkedListCycleDetection;
+import main.linkedList.LinkedListImplementation;
+import main.queues.CircularQueueWindow;
+import main.queues.PriorityQueueWindow;
+import main.queues.SimpleQueueWindow;
+import main.sorting.SortingManager;
 import sound.BackgroundMusic;
-import pages.*;
-import pages.dialogs.UpdateDialog;
-import pages.interfaces.MacroInterface;
-import pages.dialogs.LegendDialog;
-import pages.dialogs.QRCodeDisplayer;
+import main.*;
+import main.dialogs.UpdateDialog;
+import main.interfaces.MacroInterface;
+import main.dialogs.LegendDialog;
+import main.dialogs.QRCodeDisplayer;
 import javax.swing.*;
 import java.awt.*;
 //NOT WORKING VERSION
@@ -22,7 +22,7 @@ public class Main implements MacroInterface {
     private static final JMenu queueMenu = new JMenu(QUEUE);
     private static final JMenu updateDialog=new JMenu(MORE);
     private static final JMenuItem[] sortingMenuItems = new JMenuItem[4];
-    private static final JMenuItem linkedListMenuItem = new JMenuItem("Linked List");
+    private static final JMenuItem linkedListMenuItem = new JMenuItem(LINKED_LIST);
     private static final JMenuItem cycleDetectionMenuItem = new JMenuItem("Cycle Detection");
     private static final JMenuItem stackMenuItem=new JMenuItem(STACK);
     private static final JMenuItem simpleQueueMenuItem = new JMenuItem("Simple Queue");
@@ -32,7 +32,7 @@ public class Main implements MacroInterface {
     private static final CardLayout cardLayout = new CardLayout();
     private static final JPanel cardPanel = new JPanel(cardLayout);
     private static final LoadingPage loadingPage = new LoadingPage();
-    private static final Sorting sortingPanel = new Sorting(width, height, SELECTION_SORTING);
+    private static final SortingManager SORTING_MANAGER_PANEL = new SortingManager(width, height, SELECTION_SORTING);
     private static final LinkedListImplementation linkedListPanel= new LinkedListImplementation();
     private static final LinkedListCycleDetection cycleDetectionPanel = new LinkedListCycleDetection();
     private static final StackWindowUsable stackWindow=new StackWindowUsable();
@@ -53,7 +53,7 @@ public class Main implements MacroInterface {
         sortingMenu.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         for (int i = 0; i < sortingMenuItems.length; i++) {
             sortingMenuItems[i] = new JMenuItem(IDENTIFIER_ARRAY[i]);
-            cardPanel.add(new Sorting(width,height , IDENTIFIER_ARRAY[i]), IDENTIFIER_ARRAY[i]);
+            cardPanel.add(new SortingManager(width,height , IDENTIFIER_ARRAY[i]), IDENTIFIER_ARRAY[i]);
             sortingMenu.
                     add(sortingMenuItems[i]).
                     setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -148,7 +148,7 @@ public class Main implements MacroInterface {
             item.addActionListener(e -> {
                 closeChildWindows();
                 cardLayout.show(cardPanel, item.getText());
-                new Sorting(width,height,item.getText()).invokeLegend();
+                new SortingManager(width,height,item.getText()).invokeLegend();
             });
         }
         linkedListMenuItem.addActionListener(e -> {
@@ -163,7 +163,7 @@ public class Main implements MacroInterface {
             closeQRWindow();
             menuBarMain.setVisible(true);
             cardLayout.show(cardPanel, SELECTION_SORTING);
-            sortingPanel.invokeLegend();
+            SORTING_MANAGER_PANEL.invokeLegend();
         });
         stackMenuItem.addActionListener(e -> {
             closeChildWindows();
@@ -203,10 +203,8 @@ public class Main implements MacroInterface {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             jFrame = new JFrame("VAGAI");
-            {
-                qrCode=new QRCodeDisplayer(jFrame);
-                qrCode.setVisible(true);
-            }
+            qrCode=new QRCodeDisplayer(jFrame);
+            qrCode.setVisible(true);
             jFrame.setSize(width,height);
             jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             jFrame.setBackground(themeColorBG);
