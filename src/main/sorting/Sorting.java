@@ -9,11 +9,16 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Random;
-
+/**
+ * The <code>Sorting</code> abstract class is the class with the most basic methods for designing <code>Sorting Algorithms</code>
+ * @author Sri Koushik JK
+ * @since 0.0.3
+ * */
 public sealed abstract class Sorting
         extends JPanel
         implements MacroInterface, GridInterface
-        permits SelectionSort, InsertionSort, BubbleSort, QuickSort {
+        permits SelectionSort, InsertionSort, BubbleSort, QuickSort
+{
     protected final int widthX = 20;
     protected String algoName;
     protected final ArrayList<ArrayBlock> blocks = new ArrayList<>();
@@ -39,25 +44,15 @@ public sealed abstract class Sorting
         }
         repaint();
     }
-
+    /**
+     * The <code>sort</code> method is an abstract method needed to be implemented whenever you are writing <code>Sorting Algorithms</code>
+     * @author Sri Koushik JK
+     * @since 0.0.3
+     * */
     public abstract void sort();
-
-    public final void increaseBlocksByOne() {
-        Random random = new Random();
-        int spacingX = 10;
-        int randomRange = random.nextInt(10, 500);
-        blocks.add(new ArrayBlock(blocks.getLast().x += widthX + spacingX, HEIGHT - 200, randomRange, Color.WHITE));
-    }
-
-    public final void decreaseBlocksByOne() {
-        Random random = new Random();
-        blocks.removeLast();
-    }
-
     public final void invokeLegend() {
         legendDialog.setVisible(true);
     }
-
     protected final void drawElements(Graphics2D g) {
         g.setColor(Color.WHITE);
         g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
@@ -67,7 +62,6 @@ public sealed abstract class Sorting
             g.drawString(String.format("%d", element.height), element.x, element.y + 30);
         }
     }
-
     protected final void displaySuccess() {
         for (int j = 0; j < blocks.size(); j++) {
             blocks.get(j).color = Color.CYAN;
@@ -101,7 +95,6 @@ public sealed abstract class Sorting
     protected static final class ArrayBlock {
         int x, y, height;
         Color color;
-
         public ArrayBlock(int x, int y, int height, Color color) {
             this.x = x;
             this.y = y;

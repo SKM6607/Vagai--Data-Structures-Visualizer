@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import static main.abstractClasses.ComponentUtilities.createTextField;
+import static utils.ComponentUtilities.createTextField;
 /**
  * <code>QueueWindow</code> is an abstract sealed class, that enables the inheritors to use the children of Queue class
  *

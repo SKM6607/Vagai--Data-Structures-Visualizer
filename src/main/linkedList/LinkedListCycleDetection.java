@@ -1,6 +1,6 @@
 package main.linkedList;
 
-import main.abstractClasses.ComponentUtilities;
+import utils.ComponentUtilities;
 import main.interfaces.DefaultWindowsInterface;
 import shapes.MyArrow;
 import javax.swing.*;

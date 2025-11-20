@@ -1,7 +1,7 @@
 package main.queues;
 import javax.swing.*;
 import java.awt.*;
-import static main.abstractClasses.ComponentUtilities.*;
+import static utils.ComponentUtilities.*;
 final class CircularQueue extends Queue {
     private final int capacity = 12;
     private final int centerX;
