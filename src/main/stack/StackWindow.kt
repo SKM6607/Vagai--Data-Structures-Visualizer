@@ -311,7 +311,7 @@ class StackWindow : JPanel(), StackLightWeightInterface, GridInterface {
         val stroke = g.stroke
         val color = g.color
         g.stroke = BasicStroke(15f)
-        g.color = DefaultWindowsInterface.themeColorBG
+        g.color = DefaultWindowsInterface.backgroundColor
         g.drawLine(startX, dynamicHeight, startX, endY)
         g.drawLine(startX, endY, endX, endY)
         g.drawLine(endX, endY, endX, dynamicHeight)
@@ -346,7 +346,7 @@ class StackWindowUsable : JPanel(), DefaultWindowsInterface {
         }
         textField = textInput()
         pushButton = JButton("PUSH").apply {
-            background = DefaultWindowsInterface.themeColorBG
+            background = DefaultWindowsInterface.backgroundColor
             foreground = Color.WHITE
             cursor = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)
             font = this@StackWindowUsable.font
@@ -391,7 +391,7 @@ class StackWindowUsable : JPanel(), DefaultWindowsInterface {
             size = Dimension(100, 50)
             cursor = Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR)
             font = this@StackWindowUsable.font
-            background = DefaultWindowsInterface.themeColorBG
+            background = DefaultWindowsInterface.backgroundColor
             foreground = Color.WHITE
             horizontalAlignment = JTextField.CENTER
             toolTipText = "Value of the next block (Int): "

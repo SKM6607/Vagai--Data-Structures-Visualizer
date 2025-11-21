@@ -19,7 +19,7 @@ public sealed abstract class QueueWindow <T extends Queue>
     JPanel speedPanel;
     final T visualQueue;
     JLabel infoLabel;
-    JTextField textField = createTextField(font, themeColorBG);
+    JTextField textField = createTextField(font, backgroundColor);
     JButton enqueueButton = getEnqueueButton();
     JButton dequeueButton = getDequeueButton();
     public QueueWindow(T visualQueue){

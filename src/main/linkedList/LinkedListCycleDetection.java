@@ -587,7 +587,7 @@ public class LinkedListCycleDetection extends JPanel implements DefaultWindowsIn
     }
     
     private JTextField createTextField(String tooltip) {
-        return ComponentUtilities.createTextField(font,themeColorBG,tooltip);
+        return ComponentUtilities.createTextField(font, backgroundColor,tooltip);
     }
     
     private JButton createButton(String text, Color bgColor) {

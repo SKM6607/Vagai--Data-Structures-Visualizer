@@ -47,17 +47,17 @@ public final class Main{
     static {
         menuBarMain.setBorderPainted(false);
         menuBarMain.setVisible(false);
-        menuBarMain.setForeground(foreGroundBG);
-        menuBarMain.setBackground(themeColorBG);
-        sortingMenu.setForeground(foreGroundBG);
-        stackMenu.setForeground(foreGroundBG);
-        stackMenu.setBackground(themeColorBG);
+        menuBarMain.setForeground(foregroundColor);
+        menuBarMain.setBackground(backgroundColor);
+        sortingMenu.setForeground(foregroundColor);
+        stackMenu.setForeground(foregroundColor);
+        stackMenu.setBackground(backgroundColor);
         sortingMenu.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         for (int i = 0; i < sortingMenuItems.length; i++) {
             sortingMenuItems[i] = new JMenuItem(SORTING_ARRAY[i]);
             sortingMenu.add(sortingMenuItems[i]).setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-            sortingMenuItems[i].setBackground(themeColorBG);
-            sortingMenuItems[i].setForeground(foreGroundBG);
+            sortingMenuItems[i].setBackground(backgroundColor);
+            sortingMenuItems[i].setForeground(foregroundColor);
             sortingMenuItems[i].setFont(menuFont);
         }
         cardPanel.add(new SortingManager());
@@ -87,25 +87,25 @@ public final class Main{
         priorityQueueMenuItem.setFont(menuFont);
 
         // Style menus
-        linkedListMenu.setBackground(themeColorBG);
-        linkedListMenu.setForeground(foreGroundBG);
-        queueMenu.setBackground(themeColorBG);
-        queueMenu.setForeground(foreGroundBG);
+        linkedListMenu.setBackground(backgroundColor);
+        linkedListMenu.setForeground(foregroundColor);
+        queueMenu.setBackground(backgroundColor);
+        queueMenu.setForeground(foregroundColor);
         queueMenu.setFont(menuFont);
         
         // Style menu items colors
-        linkedListMenuItem.setBackground(themeColorBG);
-        linkedListMenuItem.setForeground(foreGroundBG);
-        cycleDetectionMenuItem.setBackground(themeColorBG);
-        cycleDetectionMenuItem.setForeground(foreGroundBG);
-        stackMenuItem.setBackground(themeColorBG);
-        stackMenuItem.setForeground(foreGroundBG);
-        simpleQueueMenuItem.setBackground(themeColorBG);
-        simpleQueueMenuItem.setForeground(foreGroundBG);
-        circularQueueMenuItem.setBackground(themeColorBG);
-        circularQueueMenuItem.setForeground(foreGroundBG);
-        priorityQueueMenuItem.setBackground(themeColorBG);
-        priorityQueueMenuItem.setForeground(foreGroundBG);
+        linkedListMenuItem.setBackground(backgroundColor);
+        linkedListMenuItem.setForeground(foregroundColor);
+        cycleDetectionMenuItem.setBackground(backgroundColor);
+        cycleDetectionMenuItem.setForeground(foregroundColor);
+        stackMenuItem.setBackground(backgroundColor);
+        stackMenuItem.setForeground(foregroundColor);
+        simpleQueueMenuItem.setBackground(backgroundColor);
+        simpleQueueMenuItem.setForeground(foregroundColor);
+        circularQueueMenuItem.setBackground(backgroundColor);
+        circularQueueMenuItem.setForeground(foregroundColor);
+        priorityQueueMenuItem.setBackground(backgroundColor);
+        priorityQueueMenuItem.setForeground(foregroundColor);
         
         // Set cursors
         linkedListMenuItem.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -114,12 +114,12 @@ public final class Main{
         simpleQueueMenuItem.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         circularQueueMenuItem.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         priorityQueueMenuItem.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        updateDialog.setBackground(themeColorBG);
-        updateDialog.setForeground(foreGroundBG);
+        updateDialog.setBackground(backgroundColor);
+        updateDialog.setForeground(foregroundColor);
         updateDialog.setFont(menuFont);
         updateDialog.add(updateDialogMenuItem);
-        updateDialogMenuItem.setForeground(foreGroundBG);
-        updateDialogMenuItem.setBackground(themeColorBG);
+        updateDialogMenuItem.setForeground(foregroundColor);
+        updateDialogMenuItem.setBackground(backgroundColor);
         updateDialogMenuItem.setFont(menuFont);
         updateDialogMenuItem.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         updateDialog.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -204,8 +204,8 @@ public final class Main{
             jFrame = new JFrame("VAGAI");
             jFrame.setSize(width,height);
             jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            jFrame.setBackground(themeColorBG);
-            jFrame.setForeground(foreGroundBG);
+            jFrame.setBackground(backgroundColor);
+            jFrame.setForeground(foregroundColor);
             backgroundMusicThread.start();
             jFrame.add(cardPanel, BorderLayout.CENTER);
             jFrame.setLayout(cardLayout);

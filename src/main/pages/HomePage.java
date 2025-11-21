@@ -23,14 +23,14 @@ public class HomePage extends JPanel implements DefaultWindowsInterface {
     }
     public HomePage() {
         setLayout(null);
-        setBackground(themeColorBG);
+        setBackground(backgroundColor);
         setPreferredSize(new Dimension(1800,1000));
         startLabel.setBounds(width/6,height/6,1200,300);
-        startLabel.setForeground(foreGroundBG);
+        startLabel.setForeground(foregroundColor);
         startLabel.setFont(newFont.deriveFont(32f));
         startButton.setFont(newFont.deriveFont(24.2f));
         startButton.setBounds(width/2 -200,height/2,400,50);
-        startButton.setForeground(themeColorBG);
+        startButton.setForeground(backgroundColor);
         startButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
         add(startLabel);
         add(startButton);
