@@ -7,18 +7,27 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 public final class MainMenuBar extends JMenuBar {
-    private MainMenuBar() {
-        add(SortingMenu.getInstance());
+    private final SortingMenu sortingMenu;
+    private final StackMenu stackMenu;
+    private final LinkedListMenu linkedListMenu;
+    private final QueueMenu queueMenu;
+    private MainMenuBar(JPanel parent) {
+        sortingMenu=SortingMenu.getInstance(parent);
+        queueMenu=QueueMenu.getInstance(parent);
+        linkedListMenu=LinkedListMenu.getInstance(parent);
+        stackMenu=StackMenu.getInstance(parent);
+        setBorderPainted(false);
+        setVisible(false);
+        add(sortingMenu);
         add(Box.createHorizontalStrut(15));
-        add(LinkedListMenu.getInstance());
+        add(linkedListMenu);
         add(Box.createHorizontalStrut(15));
-        add(StackMenu.getInstance());
+        add(stackMenu);
         add(Box.createHorizontalStrut(15));
-        add(QueueMenu.getInstance());
-        add(Box.createHorizontalStrut(15));
+        add(queueMenu);
     }
     @Contract(" -> new")
-    public static @NotNull MainMenuBar getInstance() {
-        return new MainMenuBar();
+    public static @NotNull MainMenuBar getInstance(JPanel parent) {
+        return new MainMenuBar(parent);
     }
 }

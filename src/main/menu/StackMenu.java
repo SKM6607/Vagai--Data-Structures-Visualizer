@@ -6,15 +6,15 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 import static main.interfaces.MacroInterface.*;
 public final class StackMenu extends GenericMenu {
-    private StackMenu() {
-        super(STACK,STACK_ARRAY);
+    private StackMenu(JPanel parent) {
+        super(STACK,STACK_ARRAY,parent);
     }
     /**
      * Used for providing Stack Menu
      * @return <code>StackMenu</code>
      */
     @Contract(" -> new")
-    public static @NotNull StackMenu getInstance() {
-        return new StackMenu();
+    public static @NotNull StackMenu getInstance(JPanel parent) {
+        return new StackMenu(parent);
     }
 }
