@@ -1,6 +1,6 @@
 import main.linkedList.LinkedListCycleDetection;
 import main.linkedList.LinkedListImplementation;
-import main.pages.MenuPage;
+import main.pages.HomePage;
 import main.queues.CircularQueueWindow;
 import main.queues.PriorityQueueWindow;
 import main.queues.SimpleQueueWindow;
@@ -14,7 +14,7 @@ import main.dialogs.QRCodeDisplayer;
 import javax.swing.*;
 import java.awt.*;
 /**
- *The <code>Main</code> class is the entry point to <h4 color="blue">VAGAI Algorithms Visualizer</h4>
+ *The <code>Main</code> class is the entry point <h5 color="blue">VAGAI Algorithms Visualizer</h4>
 */
 public final class Main{
     private static final Thread backgroundMusicThread = new Thread(new BackgroundMusic("src/Sound/Granius.wav"));
@@ -26,15 +26,15 @@ public final class Main{
     private static final JMenu updateDialog=new JMenu(MORE);
     private static final JMenuItem[] sortingMenuItems = new JMenuItem[4];
     private static final JMenuItem linkedListMenuItem = new JMenuItem(LINKED_LIST);
-    private static final JMenuItem cycleDetectionMenuItem = new JMenuItem("Cycle Detection");
+    private static final JMenuItem cycleDetectionMenuItem = new JMenuItem(CYCLE_DETECTION);
     private static final JMenuItem stackMenuItem=new JMenuItem(STACK);
-    private static final JMenuItem simpleQueueMenuItem = new JMenuItem("Simple Queue");
-    private static final JMenuItem circularQueueMenuItem = new JMenuItem("Circular Queue");
-    private static final JMenuItem priorityQueueMenuItem = new JMenuItem("Priority Queue");
+    private static final JMenuItem simpleQueueMenuItem = new JMenuItem(SIMPLE_QUEUE);
+    private static final JMenuItem circularQueueMenuItem = new JMenuItem(CIRCULAR_QUEUE);
+    private static final JMenuItem priorityQueueMenuItem = new JMenuItem(PRIORITY_QUEUE);
     private static final JMenuItem updateDialogMenuItem=new JMenuItem(UPDATE_DIALOG);
     private static final CardLayout cardLayout = new CardLayout();
     private static final JPanel cardPanel = new JPanel(cardLayout);
-    private static final MenuPage menuPage = new MenuPage();
+    private static final HomePage HOME_PAGE = new HomePage();
     private static final SortingManager sortingManager = new SortingManager();
     private static final LinkedListImplementation linkedListPanel= new LinkedListImplementation();
     private static final LinkedListCycleDetection cycleDetectionPanel = new LinkedListCycleDetection();
@@ -54,7 +54,7 @@ public final class Main{
         stackMenu.setBackground(themeColorBG);
         sortingMenu.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         for (int i = 0; i < sortingMenuItems.length; i++) {
-            sortingMenuItems[i] = new JMenuItem(IDENTIFIER_ARRAY[i]);
+            sortingMenuItems[i] = new JMenuItem(SORTING_ARRAY[i]);
             sortingMenu.add(sortingMenuItems[i]).setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             sortingMenuItems[i].setBackground(themeColorBG);
             sortingMenuItems[i].setForeground(foreGroundBG);
@@ -72,7 +72,7 @@ public final class Main{
         // Add panels to card layout
         cardPanel.add(linkedListPanel, LINKED_LIST);
         cardPanel.add(cycleDetectionPanel, CYCLE_DETECTION);
-        cardPanel.add(menuPage, DEFAULT);
+        cardPanel.add(HOME_PAGE, DEFAULT);
         cardPanel.add(stackWindow, STACK);
         cardPanel.add(simpleQueueWindow, SIMPLE_QUEUE);
         cardPanel.add(circularQueueWindow, CIRCULAR_QUEUE);
@@ -159,7 +159,7 @@ public final class Main{
             closeChildWindows();
             cardLayout.show(cardPanel, CYCLE_DETECTION);
         });
-        menuPage.returnControlOfLoadButton().addActionListener(e -> {
+        HOME_PAGE.returnControlOfLoadButton().addActionListener(_ -> {
             closeQRWindow();
             menuBarMain.setVisible(true);
             sortingManager.switchAlgorithm(SELECTION_SORTING);

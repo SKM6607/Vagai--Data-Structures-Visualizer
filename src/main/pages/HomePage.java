@@ -5,7 +5,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 
-public class MenuPage extends JPanel implements DefaultWindowsInterface {
+public class HomePage extends JPanel implements DefaultWindowsInterface {
     public static final Font newFont;
     private static final JButton startButton;
     private static final JLabel startLabel;
@@ -21,7 +21,7 @@ public class MenuPage extends JPanel implements DefaultWindowsInterface {
         }
         startButton=new JButton("Start Learning!");
     }
-    public MenuPage() {
+    public HomePage() {
         setLayout(null);
         setBackground(themeColorBG);
         setPreferredSize(new Dimension(1800,1000));
