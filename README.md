@@ -1,4 +1,4 @@
-# Vagai— Algorithms Demonstrator - V-0.0.3
+# Vagai— Algorithms Demonstrator - V-0.0.41
 
 ### A simple 2D graphical demonstration of popular sorting algorithms — visually appealing and self-explanatory.
 
@@ -50,7 +50,7 @@ Vagai(**Vagai+Paduthal** transl. **Sorting**) is a Java-based application that r
 2. **Have an IDE like IntelliJ if you are aiming to learn JAVA Swing**
 ---
 ### Version
-***Current Version: 0.0.3***
+***Current Version: 0.0.41***
 ---
 ### Class Diagram
 - <div style="text-align: center; margin-bottom: 50px;">Project Classes</div>
