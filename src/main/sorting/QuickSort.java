@@ -1,11 +1,9 @@
 package main.sorting;
-
 import main.dialogs.LegendDialog;
-
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
-
+import static main.interfaces.MacroInterface.QUICK_SORTING;
 public final class QuickSort extends Sorting{
     public QuickSort(JPanel parent){
         super(parent);
