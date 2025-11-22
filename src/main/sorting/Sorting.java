@@ -1,9 +1,5 @@
 package main.sorting;
-
 import main.dialogs.LegendDialog;
-import main.interfaces.GridInterface;
-import main.interfaces.MacroInterface;
-
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
@@ -16,7 +12,6 @@ import java.util.Random;
  * */
 public sealed abstract class Sorting
         extends JPanel
-        implements MacroInterface, GridInterface
         permits SelectionSort, InsertionSort, BubbleSort, QuickSort
 {
     protected final int widthX = 20;
@@ -46,6 +41,7 @@ public sealed abstract class Sorting
     }
     /**
      * The <code>sort</code> method is an abstract method needed to be implemented whenever you are writing <code>Sorting Algorithms</code>
+     * @see Sorting
      * @author Sri Koushik JK
      * @since 0.0.3
      * */
