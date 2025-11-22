@@ -3,7 +3,7 @@ package utils;
 /**
  * Utility class for creating smooth animations in DSA visualizations
  */
-public class AnimationHelper {
+public final class AnimationHelper {
     
     /**
      * Easing function for smooth transitions (ease-in-out)
