@@ -1,22 +1,18 @@
 package main.sorting;
-import main.interfaces.*;
-import main.dialogs.LegendDialog;
 import javax.swing.*;
 import java.awt.*;
-import java.util.*;
+
 import static main.interfaces.MacroInterface.*;
-public final class SortingManager extends JPanel implements GridInterface {
-    Sorting sortingAlgorithm=new SelectionSort(this);
+public final class SortingWindow<T extends Sorting> extends JPanel {
+    T sortingAlgorithm;
     private JButton startButton;
     private JLabel label;
     private JSlider slider;
     private int MAX_ELEMENTS = 5;
     JLabel algorithmName = new JLabel(SELECTION_SORTING);
     JPanel returnPanel = new JPanel();
-    public SortingManager() {
-        //setBlock
-        {
-        }
+    public SortingWindow() {
+
         add(getUserPanel(), BorderLayout.WEST);
         setBackground(new Color(0xA0F29));
     }

@@ -5,7 +5,7 @@ import main.pages.HomePage;
 import main.queues.CircularQueueWindow;
 import main.queues.PriorityQueueWindow;
 import main.queues.SimpleQueueWindow;
-import main.sorting.SortingManager;
+import main.sorting.SortingWindow;
 import main.stack.StackWindowUsable;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -16,7 +16,7 @@ import static main.interfaces.MacroInterface.*;
 public final class MainCardPanel extends JPanel {
     private final MainMenuBar menuBarMain = MainMenuBar.getInstance(this);
     private static final HomePage homePage = new HomePage();
-    private static final SortingManager sortingManager = new SortingManager();
+    private static final SortingWindow SORTING_WINDOW = new SortingWindow();
     private static final LinkedListImplementation linkedListPanel= new LinkedListImplementation();
     private static final LinkedListCycleDetection cycleDetectionPanel = new LinkedListCycleDetection();
     private static final StackWindowUsable stackWindow=new StackWindowUsable();
