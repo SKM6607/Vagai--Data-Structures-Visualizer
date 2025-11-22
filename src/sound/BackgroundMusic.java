@@ -2,11 +2,7 @@ package sound;
 import javax.sound.sampled.*;
 import java.io.File;
 
-public class BackgroundMusic implements Runnable {
-    private final String filePath;
-    public BackgroundMusic(String filePath) {
-        this.filePath = filePath;
-    }
+public record BackgroundMusic(String filePath) implements Runnable {
     @Override
     public void run() {
         try {

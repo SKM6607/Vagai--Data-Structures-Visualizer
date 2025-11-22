@@ -16,7 +16,7 @@ class QRCodeDisplayer(parent: Window?) : JDialog(parent){
         isResizable=false
         qrLabel.preferredSize= Dimension(256,256)
         size= Dimension(300,300)
-        qrLabel.background= DefaultWindowsInterface.themeColorBG
+        qrLabel.background= DefaultWindowsInterface.backgroundColor
         this.add(qrLabel)
         setLocationRelativeTo(parent)
     }

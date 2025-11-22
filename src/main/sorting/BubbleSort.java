@@ -5,6 +5,8 @@ import main.dialogs.LegendDialog;
 import javax.swing.*;
 import java.awt.*;
 
+import static main.interfaces.MacroInterface.BUBBLE_SORTING;
+
 
 public final class BubbleSort extends Sorting {
     public BubbleSort(JPanel parent){

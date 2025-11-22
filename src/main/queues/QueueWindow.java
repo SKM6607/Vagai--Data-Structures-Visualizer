@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import static main.abstractClasses.ComponentUtilities.createTextField;
+import static utils.ComponentUtilities.createTextField;
 /**
  * <code>QueueWindow</code> is an abstract sealed class, that enables the inheritors to use the children of Queue class
  *
@@ -19,7 +19,7 @@ public sealed abstract class QueueWindow <T extends Queue>
     JPanel speedPanel;
     final T visualQueue;
     JLabel infoLabel;
-    JTextField textField = createTextField(font, themeColorBG);
+    JTextField textField = createTextField(font, backgroundColor);
     JButton enqueueButton = getEnqueueButton();
     JButton dequeueButton = getDequeueButton();
     public QueueWindow(T visualQueue){

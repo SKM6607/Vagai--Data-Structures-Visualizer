@@ -1,7 +1,7 @@
 package main.queues;
 import javax.swing.*;
 import java.awt.*;
-import static main.abstractClasses.ComponentUtilities.*;
+import static utils.ComponentUtilities.*;
 final class CircularQueue extends Queue {
     private final int capacity = 12;
     private final int centerX;
@@ -261,7 +261,7 @@ public final class CircularQueueWindow extends QueueWindow<CircularQueue> {
         JPanel inputPanel = new JPanel(new GridLayout(1, 3, 5, 5));
         inputPanel.setBackground(new Color(0, 18, 121));
         Font font = new Font(Font.SANS_SERIF, Font.BOLD, 18);
-        textField = createTextField(font, themeColorBG);
+        textField = createTextField(font, backgroundColor);
         enqueueButton.addActionListener(_ -> {
             if (verifyInput()) {
                 visualQueue.enqueue(Integer.parseInt(textField.getText()));

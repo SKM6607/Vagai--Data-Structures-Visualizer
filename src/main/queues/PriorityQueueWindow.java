@@ -330,7 +330,7 @@ public final class PriorityQueueWindow extends QueueWindow<PriorityQueue> {
         JTextField field = new JTextField();
         field.setFont(font);
         field.setHorizontalAlignment(JTextField.CENTER);
-        field.setBackground(themeColorBG);
+        field.setBackground(backgroundColor);
         field.setForeground(Color.WHITE);
         field.setToolTipText(tooltip);
         field.setInputVerifier(new InputVerifier() {

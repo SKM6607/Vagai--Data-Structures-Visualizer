@@ -3,7 +3,7 @@ package main.interfaces;
 import javax.swing.*;
 import java.awt.*;
 
-import static main.abstractClasses.ComponentUtilities.createButton;
+import static utils.ComponentUtilities.createButton;
 
 public interface QueueLightWeightInterface extends DefaultWindowsInterface {
     Font font = new Font(Font.SANS_SERIF, Font.BOLD, 18);

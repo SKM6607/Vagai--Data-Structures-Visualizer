@@ -5,6 +5,8 @@ import main.dialogs.LegendDialog;
 import javax.swing.*;
 import java.awt.*;
 
+import static main.interfaces.MacroInterface.INSERTION_SORTING;
+
 public final class InsertionSort extends Sorting {
     public InsertionSort(JPanel parent) {
         super(parent);
