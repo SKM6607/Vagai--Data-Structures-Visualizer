@@ -15,20 +15,23 @@ import java.awt.*;
 import static main.interfaces.MacroInterface.*;
 public final class MainCardPanel extends JPanel {
     private final MainMenuBar menuBarMain = MainMenuBar.getInstance(this);
-    private static final HomePage homePage = new HomePage();
-    private static final SortingWindow SORTING_WINDOW = new SortingWindow();
+    private final HomePage homePage = new HomePage(this);
+    private static final SortingWindow sortingWindow = new SortingWindow();
     private static final LinkedListImplementation linkedListPanel= new LinkedListImplementation();
     private static final LinkedListCycleDetection cycleDetectionPanel = new LinkedListCycleDetection();
     private static final StackWindowUsable stackWindow=new StackWindowUsable();
     private static final SimpleQueueWindow simpleQueueWindow = new SimpleQueueWindow();
     private static final CircularQueueWindow circularQueueWindow = new CircularQueueWindow();
     private static final PriorityQueueWindow priorityQueueWindow = new PriorityQueueWindow();
+    public final CardLayout cardLayout=new CardLayout();
     private MainCardPanel(JFrame parentFrame) {
-        super(new CardLayout());
+        setLayout(cardLayout);
         parentFrame.setJMenuBar(menuBarMain);
+        add(homePage, DEFAULT);
+        cardLayout.show(this,DEFAULT);
+        add(sortingWindow,SORTING_ALGORITHMS);
         add(linkedListPanel, LINKED_LIST);
         add(cycleDetectionPanel, CYCLE_DETECTION);
-        add(homePage, DEFAULT);
         add(stackWindow, STACK);
         add(simpleQueueWindow, SIMPLE_QUEUE);
         add(circularQueueWindow, CIRCULAR_QUEUE);

@@ -2,6 +2,7 @@ package main.menu;
 
 import main.dialogs.LegendDialog;
 import main.dialogs.QRCodeDisplayer;
+import utils.mainWindow.MainCardPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,11 +14,11 @@ public sealed abstract class GenericMenu extends JMenu
         SortingMenu,
         QueueMenu,
         StackMenu {
-    public JMenuItem[] menuItems;
-    private CardLayout layout;
-    protected GenericMenu(String menuName, String[] menuItems, JPanel parent) {
+    protected JMenuItem[] menuItems;
+    private LayoutManager layout;
+    protected GenericMenu(String menuName, String[] menuItems, MainCardPanel parent) {
         super(menuName);
-        layout = (CardLayout) parent.getLayout();
+        layout = parent.getLayout();
         this.menuItems = new JMenuItem[menuItems.length];
         setForeground(foregroundColor);
         setBackground(backgroundColor);
@@ -29,12 +30,13 @@ public sealed abstract class GenericMenu extends JMenu
             this.menuItems[i].setForeground(foregroundColor);
             this.menuItems[i].setBackground(backgroundColor);
             int effectivelyFinalI = i;
-            this.menuItems[i].addActionListener(_->{
-                closeChildWindows();
-                layout.show(parent,menuItems[effectivelyFinalI]);
-            });
+            this.menuItems[i].addActionListener(_-> defaultOnClickOperation(parent,menuItems[effectivelyFinalI]));
             this.setFont(menuFont);
         }
+    }
+    protected final void defaultOnClickOperation(JPanel parent,String s){
+        closeChildWindows();
+        ((CardLayout)layout).show(parent,s);
     }
     protected static void closeChildWindows() {
         for (Window window : Window.getWindows()) {

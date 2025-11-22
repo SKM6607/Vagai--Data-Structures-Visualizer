@@ -2,11 +2,12 @@ package main.menu;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import utils.mainWindow.MainCardPanel;
 
 import javax.swing.*;
 import static main.interfaces.MacroInterface.*;
 public final class StackMenu extends GenericMenu {
-    private StackMenu(JPanel parent) {
+    private StackMenu(MainCardPanel parent) {
         super(STACK,STACK_ARRAY,parent);
     }
     /**
@@ -14,7 +15,7 @@ public final class StackMenu extends GenericMenu {
      * @return <code>StackMenu</code>
      */
     @Contract(" -> new")
-    public static @NotNull StackMenu getInstance(JPanel parent) {
+    public static @NotNull StackMenu getInstance(MainCardPanel parent) {
         return new StackMenu(parent);
     }
 }

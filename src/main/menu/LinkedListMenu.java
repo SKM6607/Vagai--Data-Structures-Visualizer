@@ -1,12 +1,10 @@
 package main.menu;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-
-import javax.swing.*;
-
+import utils.mainWindow.MainCardPanel;
 import static main.interfaces.MacroInterface.*;
 public final class LinkedListMenu extends GenericMenu {
-    private LinkedListMenu(JPanel parent){
+    private LinkedListMenu(MainCardPanel parent){
         super(LINKED_LIST,LINKED_LIST_ARRAY,parent);
     }
     /**
@@ -14,7 +12,7 @@ public final class LinkedListMenu extends GenericMenu {
      * @return <code>LinkedListMenu</code>
      */
     @Contract(" -> new")
-    public static @NotNull LinkedListMenu getInstance(JPanel parent){
+    public static @NotNull LinkedListMenu getInstance(MainCardPanel parent){
         return new LinkedListMenu(parent);
     }
 }

@@ -1,17 +1,17 @@
 package main.pages;
-import main.interfaces.DefaultWindowsInterface;
+import static main.interfaces.DefaultWindowsInterface.*;
+import static main.interfaces.MacroInterface.*;
+import utils.mainWindow.MainCardPanel;
+
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 
-public class HomePage extends JPanel implements DefaultWindowsInterface {
+public class HomePage extends JPanel {
     public static final Font newFont;
     private static final JButton startButton;
     private static final JLabel startLabel;
-    public JButton returnControlOfLoadButton(){
-        return startButton;
-    }
     static {
         startLabel=new JLabel("Vagai - An Algorithms Demonstrator");
         try {
@@ -21,9 +21,10 @@ public class HomePage extends JPanel implements DefaultWindowsInterface {
         }
         startButton=new JButton("Start Learning!");
     }
-    public HomePage() {
+    public HomePage(JPanel parent) {
         setLayout(null);
         setBackground(backgroundColor);
+        startButton.addActionListener(_-> ((MainCardPanel)parent).cardLayout.show(parent,SORTING_ALGORITHMS));
         setPreferredSize(new Dimension(1800,1000));
         startLabel.setBounds(width/6,height/6,1200,300);
         startLabel.setForeground(foregroundColor);

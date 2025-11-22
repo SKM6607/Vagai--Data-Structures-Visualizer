@@ -3,8 +3,12 @@ import main.dialogs.LegendDialog;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+
+import static main.interfaces.MacroInterface.SELECTION_SORTING;
+
 /**
  * The <code>Sorting</code> abstract class is the class with the most basic methods for designing <code>Sorting Algorithms</code>
  * @author Sri Koushik JK
@@ -18,16 +22,25 @@ public sealed abstract class Sorting
     protected String algoName;
     protected final ArrayList<ArrayBlock> blocks = new ArrayList<>();
     public LegendDialog legendDialog;
-    protected Map<String, Color> legend;
-    protected Window parentWindow;
-
+    protected Map<String, Color> legend=new HashMap<>();
+    protected final Window parentWindow;
+    protected final JPanel parentPanel;
     public Sorting(JPanel parent) {
         parentWindow = SwingUtilities.getWindowAncestor(parent);
-        algoName=null;
+        parentPanel=parent;
+        algoName = SELECTION_SORTING;
+        legend.put("Successfully Sorted Elements", Color.GREEN);
+        legend.put("Current Minimum", Color.BLUE);
+        legend.put("Comparisons", Color.YELLOW);
+        legend.put("Next Minimum", Color.RED);
+        legend.put("Finished Sorting", Color.CYAN);
+        legendDialog = new LegendDialog(parentWindow, "Legend: Selection Sort", legend);
+        legend.clear();
+        initAnimation();
+        invokeLegend();
+        repaint();
     }
-    public final String getAlgoName(){
-        return algoName;
-    }
+
     protected final void initAnimation() {
         blocks.clear();
         Random random = new Random();
@@ -46,6 +59,9 @@ public sealed abstract class Sorting
      * @since 0.0.3
      * */
     public abstract void sort();
+    protected void paintComponent(Graphics g){
+        drawElements((Graphics2D) g);
+    }
     public final void invokeLegend() {
         legendDialog.setVisible(true);
     }
@@ -59,27 +75,28 @@ public sealed abstract class Sorting
         }
     }
     protected final void displaySuccess() {
-        for (int j = 0; j < blocks.size(); j++) {
-            blocks.get(j).color = Color.CYAN;
+        for (ArrayBlock block : blocks) {
+            block.color = Color.CYAN;
             repaint();
         }
     }
-
     protected final boolean isSorted() {
         boolean isSorted = true;
         for (int i = 1; i < blocks.size(); i++) {
-            if (blocks.get(i).height < blocks.get(i - 1).height) isSorted = false;
+            if (blocks.get(i).height < blocks.get(i - 1).height) {
+                isSorted = false;
+                break;
+            }
         }
+        ((SortingWindow)parentPanel).returnCtrl();
         return isSorted;
     }
-
     protected final void quickReset() {
-        for (int i = 0; i < blocks.size(); i++) {
-            blocks.get(i).color = Color.WHITE;
+        for (ArrayBlock block : blocks) {
+            block.color = Color.WHITE;
             repaint();
         }
     }
-
     public final void sleep() {
         try {
             Thread.sleep(500);
@@ -87,7 +104,6 @@ public sealed abstract class Sorting
             Thread.currentThread().interrupt();
         }
     }
-
     protected static final class ArrayBlock {
         int x, y, height;
         Color color;
@@ -98,14 +114,12 @@ public sealed abstract class Sorting
             this.color = color;
         }
     }
-
     protected static final class SortingHelper {
         public static void swapBlocks(ArrayBlock block1, ArrayBlock block2) {
             int temp = block1.height;
             block1.height = block2.height;
             block2.height = temp;
         }
-
         public static void swapHeights(ArrayList<ArrayBlock> arrayList, int i0, int i1) {
             int temp = arrayList.get(i1).height;
             arrayList.get(i1).height = arrayList.get(i0).height;

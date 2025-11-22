@@ -6,12 +6,11 @@ import main.menu.StackMenu;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
+
+import static main.interfaces.DefaultWindowsInterface.*;
 public final class MainMenuBar extends JMenuBar {
-    private final SortingMenu sortingMenu;
-    private final StackMenu stackMenu;
-    private final LinkedListMenu linkedListMenu;
-    private final QueueMenu queueMenu;
-    private MainMenuBar(JPanel parent) {
+
+    private MainMenuBar(MainCardPanel parent) {
         SortingMenu sortingMenu = SortingMenu.getInstance(parent);
         QueueMenu queueMenu = QueueMenu.getInstance(parent);
         LinkedListMenu linkedListMenu = LinkedListMenu.getInstance(parent);
@@ -29,7 +28,7 @@ public final class MainMenuBar extends JMenuBar {
         add(queueMenu);
     }
     @Contract(" -> new")
-    public static @NotNull MainMenuBar getInstance(JPanel parent) {
+    public static @NotNull MainMenuBar getInstance(MainCardPanel parent) {
         return new MainMenuBar(parent);
     }
 }

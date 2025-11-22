@@ -1,23 +1,10 @@
 package main.sorting;
-
-import main.dialogs.LegendDialog;
-
 import javax.swing.*;
 import java.awt.*;
-
-import static main.interfaces.MacroInterface.SELECTION_SORTING;
 import static main.sorting.Sorting.SortingHelper.swapBlocks;
-
 public final class SelectionSort extends Sorting {
     public SelectionSort(JPanel parent) {
         super(parent);
-        algoName = SELECTION_SORTING;
-        legend.put("Successfully Sorted Elements", Color.GREEN);
-        legend.put("Current Minimum", Color.BLUE);
-        legend.put("Comparisons", Color.YELLOW);
-        legend.put("Next Minimum", Color.RED);
-        legend.put("Finished Sorting", Color.CYAN);
-        legendDialog = new LegendDialog(parentWindow, "Legend: Insertion Sort", legend);
     }
 
     @Override

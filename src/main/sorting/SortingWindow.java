@@ -1,10 +1,10 @@
 package main.sorting;
+import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 import java.awt.*;
-
 import static main.interfaces.MacroInterface.*;
-public final class SortingWindow<T extends Sorting> extends JPanel {
-    T sortingAlgorithm;
+public final class SortingWindow extends JPanel {
+    Sorting sortingAlgorithm=new SelectionSort(this);
     private JButton startButton;
     private JLabel label;
     private JSlider slider;
@@ -12,7 +12,6 @@ public final class SortingWindow<T extends Sorting> extends JPanel {
     JLabel algorithmName = new JLabel(SELECTION_SORTING);
     JPanel returnPanel = new JPanel();
     public SortingWindow() {
-
         add(getUserPanel(), BorderLayout.WEST);
         setBackground(new Color(0xA0F29));
     }
@@ -24,7 +23,7 @@ public final class SortingWindow<T extends Sorting> extends JPanel {
         label.setBackground(Color.BLACK);
         int LIMIT = 50;
         slider = new JSlider(0, LIMIT, MAX_ELEMENTS);
-        slider.addChangeListener(e -> {
+        slider.addChangeListener(_ -> {
             label.setText(String.format("Current Array Elements: %d", slider.getValue()));
             MAX_ELEMENTS = slider.getValue();
         });
@@ -46,9 +45,11 @@ public final class SortingWindow<T extends Sorting> extends JPanel {
         returnPanel.setBackground(Color.BLACK);
         return returnPanel;
     }
-    private JButton getButton(JSlider slider) {
+    private @NotNull JButton getButton(@NotNull JSlider slider)
+    {
         JButton startButton = new JButton("Start");
-        startButton.addActionListener(e -> {
+        startButton.addActionListener(_ -> {
+                sortingAlgorithm.sort();
                 slider.setEnabled(false);
                 startButton.setEnabled(false);
         });
@@ -56,20 +57,25 @@ public final class SortingWindow<T extends Sorting> extends JPanel {
         startButton.setSize(150, 50);
         return startButton;
     }
-    public void switchAlgorithm(String algorithm){
+    public void switchAlgorithm(@NotNull String algorithm)
+    {
         switch (algorithm) {
             case INSERTION_SORTING:
+                sortingAlgorithm=new InsertionSort(this);
                 break;
             case BUBBLE_SORTING:
+                sortingAlgorithm=new BubbleSort(this);
                 break;
             case QUICK_SORTING:
+                sortingAlgorithm=new QuickSort(this);
                 break;
             case SELECTION_SORTING:
             default:
+                sortingAlgorithm=new SelectionSort(this);
                 break;
         }
    }
-    private void returnCtrl() {
+    public void returnCtrl() {
         startButton.setEnabled(true);
         slider.setEnabled(true);
     }

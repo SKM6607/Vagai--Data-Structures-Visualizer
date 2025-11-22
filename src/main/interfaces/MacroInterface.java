@@ -1,11 +1,9 @@
 package main.interfaces;
 
 public interface MacroInterface extends DefaultWindowsInterface {
-    String MORE = "More";
-    String UPDATE_DIALOG = "Update Dialog";
     String LINKED_LIST = "Linked List";
     String CYCLE_DETECTION = "Cycle Detection";
-    String DEFAULT = "LoadingPage";
+    String DEFAULT = "Loading Page";
     String STACK = "Stack";
     String QUEUE = "Queue";
     String SIMPLE_QUEUE = "Simple Queue";
