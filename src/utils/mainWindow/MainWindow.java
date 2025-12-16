@@ -8,7 +8,7 @@ import java.awt.*;
 import static main.interfaces.MacroInterface.*;
 
 public final class MainWindow extends JFrame {
-    private static final Thread backgroundMusicThread = new Thread(new BackgroundMusic("src/resources/Granius.wav"));
+    private static final Thread backgroundMusicThread = new Thread(BackgroundMusic.getInstance());
     private static final CardLayout cardLayout = new CardLayout();
     private static final String WINDOW_TITLE = "VAGAI- Algorithms Visualizer";
     private static MainWindow singleton = null;

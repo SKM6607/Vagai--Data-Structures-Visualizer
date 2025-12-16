@@ -1,6 +1,6 @@
 package main.pages;
-import static main.interfaces.DefaultWindowsInterface.*;
-import static main.interfaces.MacroInterface.*;
+
+import org.jetbrains.annotations.NotNull;
 import utils.mainWindow.MainCardPanel;
 
 import javax.swing.*;
@@ -8,32 +8,40 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 
+import static main.interfaces.DefaultWindowsInterface.*;
+import static main.interfaces.MacroInterface.SORTING_ALGORITHMS;
+
 public class HomePage extends JPanel {
     public static final Font newFont;
     private static final JButton startButton;
     private static final JLabel startLabel;
+    private static HomePage singleton;
     static {
-        startLabel=new JLabel("Vagai - An Algorithms Demonstrator");
+        startLabel = new JLabel("Vagai - An Algorithms Demonstrator");
         try {
-            newFont = Font.createFont(Font.TRUETYPE_FONT,new File("src/resources/PressStart2P.ttf"));
+            newFont = Font.createFont(Font.TRUETYPE_FONT, new File("src/resources/PressStart2P.ttf"));
         } catch (FontFormatException | IOException e) {
             throw new RuntimeException(e);
         }
-        startButton=new JButton("Start Learning!");
+        startButton = new JButton("START LEARNING");
     }
-    public HomePage(JPanel parent) {
+    private HomePage(JPanel parent) {
         setLayout(null);
         setBackground(backgroundColor);
-        startButton.addActionListener(_-> ((MainCardPanel)parent).cardLayout.show(parent,SORTING_ALGORITHMS));
-        setPreferredSize(new Dimension(1800,1000));
-        startLabel.setBounds(width/6,height/6,1200,300);
+        startButton.addActionListener(_ -> ((MainCardPanel) parent).cardLayout.show(parent, SORTING_ALGORITHMS));
+        setPreferredSize(new Dimension(1800, 1000));
+        startLabel.setBounds(width / 6, height / 6, 1200, 300);
         startLabel.setForeground(foregroundColor);
         startLabel.setFont(newFont.deriveFont(32f));
         startButton.setFont(newFont.deriveFont(24.2f));
-        startButton.setBounds(width/2 -200,height/2,400,50);
+        startButton.setBounds(width / 2 - 200, height / 2, 400, 50);
         startButton.setForeground(backgroundColor);
         startButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
         add(startLabel);
         add(startButton);
+    }
+
+    public static @NotNull HomePage getInstance(JPanel parent) {
+        return (singleton == null) ? singleton = new HomePage(parent) : singleton;
     }
 }

@@ -1,15 +1,19 @@
 package utils.mainWindow;
+
 import main.menu.LinkedListMenu;
 import main.menu.QueueMenu;
 import main.menu.SortingMenu;
 import main.menu.StackMenu;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+
 import javax.swing.*;
 
-import static main.interfaces.DefaultWindowsInterface.*;
-public final class MainMenuBar extends JMenuBar {
+import static main.interfaces.DefaultWindowsInterface.backgroundColor;
+import static main.interfaces.DefaultWindowsInterface.foregroundColor;
 
+public final class MainMenuBar extends JMenuBar {
+    private static MainMenuBar singleton = null;
     private MainMenuBar(MainCardPanel parent) {
         SortingMenu sortingMenu = SortingMenu.getInstance(parent);
         QueueMenu queueMenu = QueueMenu.getInstance(parent);
@@ -29,6 +33,6 @@ public final class MainMenuBar extends JMenuBar {
     }
     @Contract(" -> new")
     public static @NotNull MainMenuBar getInstance(MainCardPanel parent) {
-        return new MainMenuBar(parent);
+        return (singleton == null) ? singleton = new MainMenuBar(parent) : singleton;
     }
 }
