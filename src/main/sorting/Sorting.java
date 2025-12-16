@@ -1,5 +1,8 @@
 package main.sorting;
+
 import main.dialogs.LegendDialog;
+import main.interfaces.GridInterface;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
@@ -11,38 +14,36 @@ import static main.interfaces.MacroInterface.SELECTION_SORTING;
 
 /**
  * The <code>Sorting</code> abstract class is the class with the most basic methods for designing <code>Sorting Algorithms</code>
+ *
  * @author Sri Koushik JK
  * @since 0.0.3
- * */
+ *
+ */
 public sealed abstract class Sorting
         extends JPanel
-        permits SelectionSort, InsertionSort, BubbleSort, QuickSort
-{
+        implements GridInterface
+        permits SelectionSort, InsertionSort, BubbleSort, QuickSort {
     protected final int widthX = 20;
-    protected String algoName;
     protected final ArrayList<ArrayBlock> blocks = new ArrayList<>();
-    public LegendDialog legendDialog;
-    protected Map<String, Color> legend=new HashMap<>();
     protected final Window parentWindow;
     protected final JPanel parentPanel;
+    public LegendDialog legendDialog;
+    protected String algoName;
+    protected Map<String, Color> legend = new HashMap<>();
+    int i = 0;
+
     public Sorting(JPanel parent) {
         parentWindow = SwingUtilities.getWindowAncestor(parent);
-        parentPanel=parent;
+        parentPanel = parent;
         algoName = SELECTION_SORTING;
-        legend.put("Successfully Sorted Elements", Color.GREEN);
-        legend.put("Current Minimum", Color.BLUE);
-        legend.put("Comparisons", Color.YELLOW);
-        legend.put("Next Minimum", Color.RED);
-        legend.put("Finished Sorting", Color.CYAN);
-        legendDialog = new LegendDialog(parentWindow, "Legend: Selection Sort", legend);
-        legend.clear();
         initAnimation();
         invokeLegend();
-        repaint();
     }
 
+    protected abstract void legendSetup();
+
     protected final void initAnimation() {
-        blocks.clear();
+        if (!blocks.isEmpty()) blocks.clear();
         Random random = new Random();
         int spacingX = 10;
         int startX = -spacingX + 5;
@@ -52,19 +53,28 @@ public sealed abstract class Sorting
         }
         repaint();
     }
+
     /**
      * The <code>sort</code> method is an abstract method needed to be implemented whenever you are writing <code>Sorting Algorithms</code>
-     * @see Sorting
+     *
      * @author Sri Koushik JK
-     * @since 0.0.3
-     * */
+     * @see Sorting
+     * @since v0.0.3
+     *
+     */
     public abstract void sort();
-    protected void paintComponent(Graphics g){
-        drawElements((Graphics2D) g);
+
+    protected void paintComponent(Graphics g1) {
+        Graphics2D g = (Graphics2D) g1;
+        drawGrid(g, g.getColor());
+        drawElements(g);
+        i++;
     }
+
     public final void invokeLegend() {
         legendDialog.setVisible(true);
     }
+
     protected final void drawElements(Graphics2D g) {
         g.setColor(Color.WHITE);
         g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
@@ -74,12 +84,14 @@ public sealed abstract class Sorting
             g.drawString(String.format("%d", element.height), element.x, element.y + 30);
         }
     }
+
     protected final void displaySuccess() {
         for (ArrayBlock block : blocks) {
             block.color = Color.CYAN;
             repaint();
         }
     }
+
     protected final boolean isSorted() {
         boolean isSorted = true;
         for (int i = 1; i < blocks.size(); i++) {
@@ -88,15 +100,17 @@ public sealed abstract class Sorting
                 break;
             }
         }
-        ((SortingWindow)parentPanel).returnCtrl();
+        ((SortingWindow) parentPanel).returnCtrl();
         return isSorted;
     }
+
     protected final void quickReset() {
         for (ArrayBlock block : blocks) {
             block.color = Color.WHITE;
             repaint();
         }
     }
+
     public final void sleep() {
         try {
             Thread.sleep(500);
@@ -104,9 +118,11 @@ public sealed abstract class Sorting
             Thread.currentThread().interrupt();
         }
     }
+
     protected static final class ArrayBlock {
         int x, y, height;
         Color color;
+
         public ArrayBlock(int x, int y, int height, Color color) {
             this.x = x;
             this.y = y;
@@ -114,12 +130,14 @@ public sealed abstract class Sorting
             this.color = color;
         }
     }
+
     protected static final class SortingHelper {
         public static void swapBlocks(ArrayBlock block1, ArrayBlock block2) {
             int temp = block1.height;
             block1.height = block2.height;
             block2.height = temp;
         }
+
         public static void swapHeights(ArrayList<ArrayBlock> arrayList, int i0, int i1) {
             int temp = arrayList.get(i1).height;
             arrayList.get(i1).height = arrayList.get(i0).height;

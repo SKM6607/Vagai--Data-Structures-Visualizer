@@ -7,6 +7,10 @@ import static main.interfaces.MacroInterface.QUICK_SORTING;
 public final class QuickSort extends Sorting{
     public QuickSort(JPanel parent){
         super(parent);
+       legendSetup();
+    }
+    @Override
+    protected void legendSetup() {
         algoName=QUICK_SORTING;
         legend.put("Pivot Selected", Color.GREEN);
         legend.put("Start Element",Color.YELLOW);
@@ -15,6 +19,7 @@ public final class QuickSort extends Sorting{
         legend.put("Finished Sorting",Color.CYAN);
         legendDialog = new LegendDialog(parentWindow, "Legend: Quick Sort", legend);
     }
+
     private void quickSortHelper(ArrayList<ArrayBlock> arrayList, int low, int high) {
 
         if (low >= high) return;

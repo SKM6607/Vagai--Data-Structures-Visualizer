@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import static main.interfaces.MacroInterface.*;
 public final class SortingWindow extends JPanel {
-    Sorting sortingAlgorithm=new SelectionSort(this);
+    Sorting sortingAlgorithm;
     private JButton startButton;
     private JLabel label;
     private JSlider slider;
@@ -13,6 +13,7 @@ public final class SortingWindow extends JPanel {
     JPanel returnPanel = new JPanel();
     public SortingWindow() {
         add(getUserPanel(), BorderLayout.WEST);
+        sortingAlgorithm=new SelectionSort(this);
         setBackground(new Color(0xA0F29));
     }
     private JPanel getUserPanel() {
@@ -47,7 +48,7 @@ public final class SortingWindow extends JPanel {
     }
     private @NotNull JButton getButton(@NotNull JSlider slider)
     {
-        JButton startButton = new JButton("Start");
+        JButton startButton = new JButton("START");
         startButton.addActionListener(_ -> {
                 sortingAlgorithm.sort();
                 slider.setEnabled(false);

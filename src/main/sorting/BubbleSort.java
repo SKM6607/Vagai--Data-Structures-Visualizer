@@ -11,6 +11,11 @@ import static main.interfaces.MacroInterface.BUBBLE_SORTING;
 public final class BubbleSort extends Sorting {
     public BubbleSort(JPanel parent){
         super(parent);
+       legendSetup();
+    }
+
+    @Override
+    protected void legendSetup() {
         algoName=BUBBLE_SORTING;
         legend.put("Successfully Sorted Elements", Color.GREEN);
         legend.put("Current Comparison", Color.RED);

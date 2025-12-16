@@ -1,21 +1,17 @@
 package main.menu;
-
 import main.dialogs.LegendDialog;
 import main.dialogs.QRCodeDisplayer;
 import utils.mainWindow.MainCardPanel;
-
 import javax.swing.*;
 import java.awt.*;
-
 import static main.interfaces.DefaultWindowsInterface.*;
-
 public sealed abstract class GenericMenu extends JMenu
         permits LinkedListMenu,
         SortingMenu,
         QueueMenu,
         StackMenu {
     protected JMenuItem[] menuItems;
-    private LayoutManager layout;
+    private final LayoutManager layout;
     protected GenericMenu(String menuName, String[] menuItems, MainCardPanel parent) {
         super(menuName);
         layout = parent.getLayout();
@@ -26,25 +22,27 @@ public sealed abstract class GenericMenu extends JMenu
         setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         for (int i = 0; i < menuItems.length; i++) {
             this.menuItems[i] = new JMenuItem(menuItems[i]);
-            this.menuItems[i].setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-            this.menuItems[i].setForeground(foregroundColor);
-            this.menuItems[i].setBackground(backgroundColor);
+            var ref = this.menuItems[i];
+            ref.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            ref.setForeground(foregroundColor);
+            ref.setBackground(backgroundColor);
+            ref.setFont(menuFont);
             int effectivelyFinalI = i;
-            this.menuItems[i].addActionListener(_-> defaultOnClickOperation(parent,menuItems[effectivelyFinalI]));
+            ref.addActionListener(_ -> defaultOnClickOperation(parent, menuItems[effectivelyFinalI]));
             this.setFont(menuFont);
+            add(ref);
         }
     }
-    protected final void defaultOnClickOperation(JPanel parent,String s){
-        closeChildWindows();
-        ((CardLayout)layout).show(parent,s);
-    }
+
     protected static void closeChildWindows() {
         for (Window window : Window.getWindows()) {
             if (window instanceof LegendDialog) {
                 window.dispose();
             }
         }
+        closeQRWindow();
     }
+
     protected static void closeQRWindow() {
         for (Window window : Window.getWindows()) {
             if (window instanceof QRCodeDisplayer) {
@@ -52,6 +50,12 @@ public sealed abstract class GenericMenu extends JMenu
             }
         }
     }
+
+    protected final void defaultOnClickOperation(JPanel parent, String s) {
+        closeChildWindows();
+        ((CardLayout) layout).show(parent, s);
+    }
+
     public void onClickMenuItem(String menuItem, Runnable r) {
         for (int i = 0; i < menuItems.length; i++) {
             if (menuItem.equals(menuItems[i].getText())) {
