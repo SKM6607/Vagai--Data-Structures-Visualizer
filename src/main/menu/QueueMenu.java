@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import utils.mainWindow.MainCardPanel;
 import static main.interfaces.MacroInterface.*;
 public final class QueueMenu extends GenericMenu{
+    private static QueueMenu singleton;
     private QueueMenu(MainCardPanel parent){
         super(QUEUE,QUEUE_ARRAY,parent);
     }
@@ -13,6 +14,6 @@ public final class QueueMenu extends GenericMenu{
      */
     @Contract(" -> new")
     public static @NotNull QueueMenu getInstance(MainCardPanel parent){
-        return new QueueMenu(parent);
+        return (singleton == null) ? singleton = new QueueMenu(parent): singleton;
     }
 }

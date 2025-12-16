@@ -11,6 +11,6 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Music {
     String name() default "";
-    String path() default "C:\\";
+    String path();
     boolean isBackground() default false;
 }

@@ -16,6 +16,7 @@ public class HomePage extends JPanel {
     private static final JButton startButton;
     private static final JLabel startLabel;
     private static HomePage singleton;
+
     static {
         startLabel = new JLabel("Vagai - An Algorithms Demonstrator");
         try {
@@ -25,10 +26,13 @@ public class HomePage extends JPanel {
         }
         startButton = new JButton("START LEARNING");
     }
+    private void onStart(MainCardPanel parent){
+        parent.cardLayout.show(parent, SORTING_ALGORITHMS);
+    }
     private HomePage(JPanel parent) {
         setLayout(null);
         setBackground(backgroundColor);
-        startButton.addActionListener(_ -> ((MainCardPanel) parent).cardLayout.show(parent, SORTING_ALGORITHMS));
+        startButton.addActionListener(_ -> onStart((MainCardPanel) parent));
         setPreferredSize(new Dimension(1800, 1000));
         startLabel.setBounds(width / 6, height / 6, 1200, 300);
         startLabel.setForeground(foregroundColor);

@@ -23,9 +23,7 @@ public final class BackgroundMusic implements Runnable {
         filePath = m.path();
     }
 
-    private BackgroundMusic() {
-
-    }
+    private BackgroundMusic() {}
 
     public static @NotNull BackgroundMusic getInstance() {
         return (singleton == null) ? singleton = new BackgroundMusic() : singleton;

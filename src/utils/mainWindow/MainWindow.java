@@ -20,18 +20,22 @@ public final class MainWindow extends JFrame {
         setBackground(backgroundColor);
         setForeground(foregroundColor);
         MainCardPanel mainPanel = MainCardPanel.getInstance(this);
+        setJMenuBar(MainMenuBar.getInstance(mainPanel));
         add(mainPanel, BorderLayout.CENTER);
         setLayout(cardLayout);
         setVisible(true);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
+
     /**
      * This Method is the entry point.
      * <br><i>Initiates the class </i><code>MainWindow</code>
-     * @since v0.0.4
+     *
      * @author Sri Koushik JK
      * @see MainWindow
      * @see MainCardPanel
      * @see MainMenuBar
+     * @since v0.0.4
      */
     public static void startVAGAI() {
         if (singleton == null) singleton = new MainWindow();

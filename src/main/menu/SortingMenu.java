@@ -11,6 +11,7 @@ import static main.interfaces.MacroInterface.SORTING_ALGORITHMS;
 import static main.interfaces.MacroInterface.SORTING_ARRAY;
 
 public final class SortingMenu extends GenericMenu {
+    private static SortingMenu singleton;
     SortingWindow sortingWindow = new SortingWindow();
     private SortingMenu(MainCardPanel parent) {
         super(SORTING_ALGORITHMS, SORTING_ARRAY, parent);
@@ -27,6 +28,6 @@ public final class SortingMenu extends GenericMenu {
      */
     @Contract(" -> new")
     public static @NotNull SortingMenu getInstance(MainCardPanel parent) {
-        return new SortingMenu(parent);
+        return (singleton == null) ? singleton = new SortingMenu(parent): singleton;
     }
 }

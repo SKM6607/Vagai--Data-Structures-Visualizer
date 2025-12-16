@@ -24,11 +24,8 @@ public final class MainCardPanel extends JPanel {
     private static final PriorityQueueWindow priorityQueueWindow = new PriorityQueueWindow();
     private static MainCardPanel singleTon=null;
     public final CardLayout cardLayout = new CardLayout();
-
     private MainCardPanel(JFrame parentFrame) {
         setLayout(cardLayout);
-        MainMenuBar menuBarMain = MainMenuBar.getInstance(this);
-        parentFrame.setJMenuBar(menuBarMain);
         HomePage homePage = HomePage.getInstance(this);
         add(homePage, DEFAULT);
         cardLayout.show(this, DEFAULT);
