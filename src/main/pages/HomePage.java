@@ -16,7 +16,7 @@ public class HomePage extends JPanel {
     private static final JButton startButton;
     private static final JLabel startLabel;
     private static HomePage singleton;
-
+    private Runnable onStartTask;
     static {
         startLabel = new JLabel("Vagai - An Algorithms Demonstrator");
         try {
@@ -28,6 +28,7 @@ public class HomePage extends JPanel {
     }
     private void onStart(MainCardPanel parent){
         parent.cardLayout.show(parent, SORTING_ALGORITHMS);
+        onStartTask.run();
     }
     private HomePage(JPanel parent) {
         setLayout(null);
@@ -47,5 +48,9 @@ public class HomePage extends JPanel {
 
     public static @NotNull HomePage getInstance(JPanel parent) {
         return (singleton == null) ? singleton = new HomePage(parent) : singleton;
+    }
+
+    public void setOnStartTask(Runnable onStartTask) {
+        this.onStartTask = onStartTask;
     }
 }

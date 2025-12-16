@@ -12,6 +12,7 @@ public final class MainWindow extends JFrame {
     private static final CardLayout cardLayout = new CardLayout();
     private static final String WINDOW_TITLE = "VAGAI- Algorithms Visualizer";
     private static MainWindow singleton = null;
+
     private MainWindow() {
         super(WINDOW_TITLE);
         setSize(width, height);
@@ -19,8 +20,10 @@ public final class MainWindow extends JFrame {
         backgroundMusicThread.start();
         setBackground(backgroundColor);
         setForeground(foregroundColor);
-        MainCardPanel mainPanel = MainCardPanel.getInstance(this);
-        setJMenuBar(MainMenuBar.getInstance(mainPanel));
+        MainCardPanel mainPanel = MainCardPanel.getInstance();
+        MainMenuBar menuBar = MainMenuBar.getInstance(mainPanel);
+        setJMenuBar(menuBar);
+        mainPanel.setMenuBarForAppearance(menuBar);
         add(mainPanel, BorderLayout.CENTER);
         setLayout(cardLayout);
         setVisible(true);

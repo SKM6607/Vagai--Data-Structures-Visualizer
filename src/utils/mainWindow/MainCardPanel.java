@@ -10,8 +10,10 @@ import main.sorting.SortingWindow;
 import main.stack.StackWindowUsable;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+
 import javax.swing.*;
 import java.awt.*;
+
 import static main.interfaces.MacroInterface.*;
 
 public final class MainCardPanel extends JPanel {
@@ -22,11 +24,12 @@ public final class MainCardPanel extends JPanel {
     private static final SimpleQueueWindow simpleQueueWindow = new SimpleQueueWindow();
     private static final CircularQueueWindow circularQueueWindow = new CircularQueueWindow();
     private static final PriorityQueueWindow priorityQueueWindow = new PriorityQueueWindow();
-    private static MainCardPanel singleTon=null;
+    private static MainCardPanel singleTon = null;
     public final CardLayout cardLayout = new CardLayout();
-    private MainCardPanel(JFrame parentFrame) {
+    private final HomePage homePage = HomePage.getInstance(this);
+
+    private MainCardPanel() {
         setLayout(cardLayout);
-        HomePage homePage = HomePage.getInstance(this);
         add(homePage, DEFAULT);
         cardLayout.show(this, DEFAULT);
         add(sortingWindow, SORTING_ALGORITHMS);
@@ -39,8 +42,12 @@ public final class MainCardPanel extends JPanel {
     }
 
     @Contract("_ -> new")
-    public static @NotNull MainCardPanel getInstance(JFrame parentFrame) {
-        if (singleTon == null) singleTon = new MainCardPanel(parentFrame);
+    public static @NotNull MainCardPanel getInstance() {
+        if (singleTon == null) singleTon = new MainCardPanel();
         return singleTon;
+    }
+
+    public void setMenuBarForAppearance(MainMenuBar menuBar) {
+        homePage.setOnStartTask(() -> menuBar.setVisible(true));
     }
 }
