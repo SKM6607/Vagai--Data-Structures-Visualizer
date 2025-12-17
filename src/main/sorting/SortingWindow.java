@@ -1,25 +1,38 @@
 package main.sorting;
+
 import org.jetbrains.annotations.NotNull;
+
 import javax.swing.*;
 import java.awt.*;
+
 import static main.interfaces.MacroInterface.*;
+
 public final class SortingWindow extends JPanel {
-    Sorting sortingAlgorithm;
+    private static SortingWindow singleton;
+    private final Sorting defaultAlgorithm = new SelectionSort(this);
+    Sorting sorting;
     JLabel algorithm = new JLabel(SELECTION_SORTING);
     JPanel returnPanel = new JPanel();
     private JButton startButton;
     private JLabel label;
     private JSlider slider;
     private int MAX_ELEMENTS = 5;
-    public SortingWindow() {
-        add(getUserPanel(), BorderLayout.WEST);
-        sortingAlgorithm = new SelectionSort(this);
-        setBackground(new Color(0xA0F29));
+
+    private SortingWindow() {
+        setLayout(new BorderLayout());
+        add(getUserPanel(), BorderLayout.NORTH);
+        sorting = defaultAlgorithm;
+        add(sorting, BorderLayout.CENTER);
+    }
+
+    public static @NotNull SortingWindow getInstance() {
+        return (singleton == null) ? singleton = new SortingWindow() : singleton;
     }
 
     private JPanel getUserPanel() {
         GridLayout layout = new GridLayout(1, 4);
         label = new JLabel("Current Array Elements: 5");
+        label.setHorizontalAlignment(SwingConstants.CENTER);
         label.setOpaque(true);
         label.setForeground(Color.WHITE);
         label.setBackground(Color.BLACK);
@@ -28,10 +41,11 @@ public final class SortingWindow extends JPanel {
         slider.addChangeListener(_ -> {
             label.setText(String.format("Current Array Elements: %d", slider.getValue()));
             MAX_ELEMENTS = slider.getValue();
+            sorting.setBlocks(MAX_ELEMENTS);
         });
         slider.setOpaque(false);
         slider.setBackground(Color.BLACK);
-        startButton = getButton(slider);
+        startButton = getButton();
         returnPanel.setLayout(layout);
         returnPanel.add(label);
         returnPanel.add(slider);
@@ -48,10 +62,10 @@ public final class SortingWindow extends JPanel {
         return returnPanel;
     }
 
-    private @NotNull JButton getButton(@NotNull JSlider slider) {
+    private @NotNull JButton getButton() {
         JButton startButton = new JButton("START");
         startButton.addActionListener(_ -> {
-            sortingAlgorithm.sort();
+            sorting.sort();
             slider.setEnabled(false);
             startButton.setEnabled(false);
         });
@@ -63,17 +77,17 @@ public final class SortingWindow extends JPanel {
     public void switchAlgorithm(@NotNull String algorithm) {
         switch (algorithm) {
             case INSERTION_SORTING:
-                sortingAlgorithm = new InsertionSort(this);
+                sorting = new InsertionSort(this);
                 break;
             case BUBBLE_SORTING:
-                sortingAlgorithm = new BubbleSort(this);
+                sorting = new BubbleSort(this);
                 break;
             case QUICK_SORTING:
-                sortingAlgorithm = new QuickSort(this);
+                sorting = new QuickSort(this);
                 break;
             case SELECTION_SORTING:
             default:
-                if (!(sortingAlgorithm instanceof SelectionSort)) sortingAlgorithm = new SelectionSort(this);
+                if (!(sorting instanceof SelectionSort)) sorting = new SelectionSort(this);
                 break;
         }
     }

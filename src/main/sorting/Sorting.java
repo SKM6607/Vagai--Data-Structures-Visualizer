@@ -23,6 +23,7 @@ public sealed abstract class Sorting
         extends JPanel
         implements GridInterface
         permits SelectionSort, InsertionSort, BubbleSort, QuickSort {
+    private static final Color backgroundColor = new Color(0xA0F29);
     protected final int widthX = 20;
     protected final ArrayList<ArrayBlock> blocks = new ArrayList<>();
     protected final Window parentWindow;
@@ -30,27 +31,39 @@ public sealed abstract class Sorting
     public LegendDialog legendDialog;
     protected String algoName;
     protected Map<String, Color> legend = new HashMap<>();
-    int i = 0;
 
     public Sorting(JPanel parent) {
         parentWindow = SwingUtilities.getWindowAncestor(parent);
         parentPanel = parent;
         algoName = SELECTION_SORTING;
+        setBackground(backgroundColor);
         legendSetup();
-        initAnimation();
         invokeLegend();
+        initAnimation();
     }
 
     protected abstract void legendSetup();
 
+    public final void setBlocks(int n) {
+        Random random=new Random();
+        final int dx = 10;
+        int startX = 5;
+        for (int i = 0; i < n; i++) {
+            int randomRange=random.nextInt(10,500);
+            blocks.add(new ArrayBlock(startX, HEIGHT - 200, randomRange, Color.WHITE));
+            startX += widthX + dx;
+        }
+        repaint();
+    }
+
     protected final void initAnimation() {
-        if (!blocks.isEmpty()) blocks.clear();
         Random random = new Random();
         int spacingX = 10;
         int startX = -spacingX + 5;
         for (int i = 0; i < 5; i++) {
             int randomRange = random.nextInt(10, 500);
-            blocks.add(new ArrayBlock(startX += widthX + spacingX, HEIGHT - 200, randomRange, Color.WHITE));
+            blocks.add(new ArrayBlock(startX, HEIGHT - 200, randomRange, Color.WHITE));
+            startX += widthX + spacingX;
         }
         repaint();
     }
@@ -66,10 +79,10 @@ public sealed abstract class Sorting
     public abstract void sort();
 
     protected void paintComponent(Graphics g1) {
+        super.paintComponent(g1);
         Graphics2D g = (Graphics2D) g1;
-        drawGrid(g, g.getColor());
+        drawGrid(g);
         drawElements(g);
-        i++;
     }
 
     public final void invokeLegend() {
@@ -79,11 +92,13 @@ public sealed abstract class Sorting
     protected final void drawElements(Graphics2D g) {
         g.setColor(Color.WHITE);
         g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
-        for (ArrayBlock element : blocks) {
-            g.setColor(element.color);
-            g.fillRect(element.x, element.y - element.height, widthX, element.height);
-            g.drawString(String.format("%d", element.height), element.x, element.y + 30);
-        }
+        if (!blocks.isEmpty())
+            for (ArrayBlock element : blocks) {
+                g.setColor(element.color);
+                g.fillRect(element.x, element.y - element.height, widthX, element.height);
+                g.drawString(String.format("%d", element.height), element.x, element.y + 30);
+            }
+
     }
 
     protected final void displaySuccess() {

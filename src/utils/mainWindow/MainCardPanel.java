@@ -17,14 +17,14 @@ import java.awt.*;
 import static main.interfaces.MacroInterface.*;
 
 public final class MainCardPanel extends JPanel {
-    private static final SortingWindow sortingWindow = new SortingWindow();
+    private static final SortingWindow sortingWindow = SortingWindow.getInstance();
     private static final LinkedListImplementation linkedListPanel = new LinkedListImplementation();
     private static final LinkedListCycleDetection cycleDetectionPanel = new LinkedListCycleDetection();
     private static final StackWindowUsable stackWindow = new StackWindowUsable();
     private static final SimpleQueueWindow simpleQueueWindow = new SimpleQueueWindow();
     private static final CircularQueueWindow circularQueueWindow = new CircularQueueWindow();
     private static final PriorityQueueWindow priorityQueueWindow = new PriorityQueueWindow();
-    private static MainCardPanel singleTon = null;
+    private static MainCardPanel singleton = null;
     public final CardLayout cardLayout = new CardLayout();
     private final HomePage homePage = HomePage.getInstance(this);
 
@@ -43,8 +43,8 @@ public final class MainCardPanel extends JPanel {
 
     @Contract("_ -> new")
     public static @NotNull MainCardPanel getInstance() {
-        if (singleTon == null) singleTon = new MainCardPanel();
-        return singleTon;
+        if (singleton == null) singleton = new MainCardPanel();
+        return singleton;
     }
 
     public void setMenuBarForAppearance(MainMenuBar menuBar) {
