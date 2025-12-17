@@ -10,7 +10,6 @@ import static main.interfaces.MacroInterface.INSERTION_SORTING;
 public final class InsertionSort extends Sorting {
     public InsertionSort(JPanel parent) {
         super(parent);
-        legendSetup();
     }
 
     @Override

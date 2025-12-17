@@ -7,7 +7,6 @@ import static main.interfaces.MacroInterface.QUICK_SORTING;
 public final class QuickSort extends Sorting{
     public QuickSort(JPanel parent){
         super(parent);
-       legendSetup();
     }
     @Override
     protected void legendSetup() {

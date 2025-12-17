@@ -16,7 +16,7 @@ import static main.interfaces.MacroInterface.SELECTION_SORTING;
  * The <code>Sorting</code> abstract class is the class with the most basic methods for designing <code>Sorting Algorithms</code>
  *
  * @author Sri Koushik JK
- * @since 0.0.3
+ * @since v0.0.3
  *
  */
 public sealed abstract class Sorting
@@ -36,6 +36,7 @@ public sealed abstract class Sorting
         parentWindow = SwingUtilities.getWindowAncestor(parent);
         parentPanel = parent;
         algoName = SELECTION_SORTING;
+        legendSetup();
         initAnimation();
         invokeLegend();
     }

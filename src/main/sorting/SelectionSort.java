@@ -7,7 +7,6 @@ import static main.sorting.Sorting.SortingHelper.swapBlocks;
 public final class SelectionSort extends Sorting {
     public SelectionSort(JPanel parent) {
         super(parent);
-        legendSetup();
     }
 
     @Override
