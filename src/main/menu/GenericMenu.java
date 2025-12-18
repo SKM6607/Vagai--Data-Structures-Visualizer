@@ -53,12 +53,10 @@ public sealed abstract class GenericMenu extends JMenu
 
     protected void closeChildWindows() {
         for (Window window : Window.getWindows()) {
-            var currentWindow = (LegendDialog) window;
-            if (currentWindow != null) {
-                var currentAlgorithm = currentWindow.getTitle().split(":")[1].trim();
-                if (!currentAlgorithm.equals(this.currentItem.getText())) {
-                    window.dispose();
-                }
+            if (!(window instanceof LegendDialog currentWindow)) return;
+            var currentAlgorithm = currentWindow.getTitle().split(":")[1].trim();
+            if (!currentAlgorithm.equals(this.currentItem.getText())) {
+                window.dispose();
             }
         }
         closeQRWindow();

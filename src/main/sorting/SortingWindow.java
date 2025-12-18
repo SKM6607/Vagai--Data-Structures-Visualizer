@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Arrays;
 
 import static main.interfaces.MacroInterface.*;
 
@@ -84,26 +85,17 @@ public final class SortingWindow extends JPanel {
         return startButton;
     }
 
-    public void switchAlgorithm(@NotNull String algorithm) {
+    public void switchAlgorithm(String algorithm) {
         switch (algorithm) {
-            case INSERTION_SORTING:
-                sorting = new InsertionSort(this);
-                this.algorithm.setText(INSERTION_SORTING);
-                break;
-            case BUBBLE_SORTING:
-                sorting = new BubbleSort(this);
-                this.algorithm.setText(BUBBLE_SORTING);
-                break;
-            case QUICK_SORTING:
-                sorting = new QuickSort(this);
-                this.algorithm.setText(QUICK_SORTING);
-                break;
-            case SELECTION_SORTING:
-            default:
-                if (!(sorting instanceof SelectionSort)) sorting = new SelectionSort(this);
-                this.algorithm.setText(SELECTION_SORTING);
+            case INSERTION_SORTING -> sorting = new InsertionSort(this);
+            case BUBBLE_SORTING -> sorting = new BubbleSort(this);
+            case QUICK_SORTING -> sorting = new QuickSort(this);
+            default -> sorting = new SelectionSort(this);
         }
+        if (Arrays.binarySearch(SORTING_ARRAY, algorithm) != -1) this.algorithm.setText(algorithm);
+        else this.algorithm.setText(SELECTION_SORTING);
     }
+
 
     private void ctrl(boolean s) {
         startButton.setEnabled(s);
