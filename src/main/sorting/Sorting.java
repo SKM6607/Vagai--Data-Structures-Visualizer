@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
-
+import static main.interfaces.DefaultWindowsInterface.*;
 import static main.interfaces.MacroInterface.SELECTION_SORTING;
 
 /**
@@ -43,40 +43,37 @@ public sealed abstract class Sorting
     /**
      * The <code>legendSetup()</code> method is an abstract method required to be implemented whenever one is writing a sorting algorithm.
      * <br>This helps opening a window that provides a legend for explaining sort algorithm
+     *
+     * @author Sri Koushik JK
      * @see Sorting
      * @since v0.0.5
-     * @author Sri Koushik JK
-     * */
+     *
+     */
     protected abstract void legendSetup();
 
     /**
      * Allows you to set the number of blocks for display
+     *
      * @param n Number of Blocks
-     * @since v0.0.5
      * @author Sri Koushik JK
-     * */
+     * @since v0.0.5
+     *
+     */
     public final void setBlocks(int n) {
-        Random random=new Random();
+        if(!blocks.isEmpty()) blocks.clear();
+        Random random = new Random();
         final int dx = 10;
         int startX = 5;
         for (int i = 0; i < n; i++) {
-            int randomRange=random.nextInt(10,500);
-            blocks.add(new ArrayBlock(startX, HEIGHT - 200, randomRange, Color.WHITE));
+            int randomRange = random.nextInt(10, 500);
+            blocks.add(new ArrayBlock(startX, height - 200, randomRange, Color.WHITE));
             startX += widthX + dx;
         }
         repaint();
     }
 
     protected final void initAnimation() {
-        Random random = new Random();
-        int spacingX = 10;
-        int startX = -spacingX + 5;
-        for (int i = 0; i < 5; i++) {
-            int randomRange = random.nextInt(10, 500);
-            blocks.add(new ArrayBlock(startX, HEIGHT - 200, randomRange, Color.WHITE));
-            startX += widthX + spacingX;
-        }
-        repaint();
+        setBlocks(5);
     }
 
     /**
@@ -103,13 +100,11 @@ public sealed abstract class Sorting
     protected final void drawElements(Graphics2D g) {
         g.setColor(Color.WHITE);
         g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
-        if (!blocks.isEmpty())
-            for (ArrayBlock element : blocks) {
-                g.setColor(element.color);
-                g.fillRect(element.x, element.y - element.height, widthX, element.height);
-                g.drawString(String.format("%d", element.height), element.x, element.y + 30);
-            }
-
+        for (ArrayBlock element : blocks) {
+            g.setColor(element.color);
+            g.fillRect(element.x, element.y - element.height, widthX, element.height);
+            g.drawString(String.format("%d", element.height), element.x, element.y + 30);
+        }
     }
 
     protected final void displaySuccess() {
