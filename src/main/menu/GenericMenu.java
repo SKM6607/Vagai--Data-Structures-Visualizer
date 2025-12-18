@@ -1,7 +1,7 @@
 package main.menu;
 import main.dialogs.LegendDialog;
 import main.dialogs.QRCodeDisplayer;
-import utils.mainWindow.MainCardPanel;
+import utils.main.MainCardPanel;
 import javax.swing.*;
 import java.awt.*;
 import static main.interfaces.DefaultWindowsInterface.*;

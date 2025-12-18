@@ -2,7 +2,7 @@ package main.menu;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import utils.mainWindow.MainCardPanel;
+import utils.main.MainCardPanel;
 
 import static main.interfaces.MacroInterface.LINKED_LIST;
 import static main.interfaces.MacroInterface.LINKED_LIST_ARRAY;

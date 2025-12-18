@@ -1,7 +1,7 @@
 package main.menu;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import utils.mainWindow.MainCardPanel;
+import utils.main.MainCardPanel;
 import static main.interfaces.MacroInterface.*;
 public final class QueueMenu extends GenericMenu{
     private static QueueMenu singleton;

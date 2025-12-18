@@ -1,7 +1,7 @@
 package main.pages;
 
 import org.jetbrains.annotations.NotNull;
-import utils.mainWindow.MainCardPanel;
+import utils.main.MainCardPanel;
 
 import javax.swing.*;
 import java.awt.*;
