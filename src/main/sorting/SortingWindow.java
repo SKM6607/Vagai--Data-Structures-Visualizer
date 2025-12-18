@@ -64,9 +64,19 @@ public final class SortingWindow extends JPanel {
     private @NotNull JButton getButton() {
         JButton startButton = new JButton("START");
         startButton.addActionListener(_ -> {
-            sorting.sort();
-            slider.setEnabled(false);
-            startButton.setEnabled(false);
+            ctrl(false);
+            SwingWorker<Void,Void> swingWorker=new SwingWorker<>() {
+                @Override
+                protected Void doInBackground(){
+                    sorting.sort();
+                    return null;
+                }
+                @Override
+                protected void done(){
+                    ctrl(true);
+                }
+            };
+            swingWorker.execute();
         });
         startButton.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 25));
         startButton.setSize(150, 50);
@@ -91,8 +101,9 @@ public final class SortingWindow extends JPanel {
         }
     }
 
-    public void returnCtrl() {
-        startButton.setEnabled(true);
-        slider.setEnabled(true);
+    private void ctrl(boolean s) {
+        startButton.setEnabled(s);
+        slider.setEnabled(s);
     }
+
 }

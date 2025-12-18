@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
-import static main.interfaces.DefaultWindowsInterface.*;
 import static main.interfaces.MacroInterface.SELECTION_SORTING;
 
 /**
@@ -26,14 +25,12 @@ public sealed abstract class Sorting
     protected final int widthX = 20;
     protected final ArrayList<ArrayBlock> blocks = new ArrayList<>();
     protected final Window parentWindow;
-    protected final JPanel parentPanel;
     public LegendDialog legendDialog;
     protected String algoName;
     protected Map<String, Color> legend = new HashMap<>();
 
     public Sorting(JPanel parent) {
         parentWindow = SwingUtilities.getWindowAncestor(parent);
-        parentPanel = parent;
         algoName = SELECTION_SORTING;
         setBackground(backgroundColor);
         legendSetup();
@@ -122,7 +119,6 @@ public sealed abstract class Sorting
                 break;
             }
         }
-        ((SortingWindow) parentPanel).returnCtrl();
         return isSorted;
     }
 
