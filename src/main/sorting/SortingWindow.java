@@ -65,14 +65,15 @@ public final class SortingWindow extends JPanel {
         JButton startButton = new JButton("START");
         startButton.addActionListener(_ -> {
             ctrl(false);
-            SwingWorker<Void,Void> swingWorker=new SwingWorker<>() {
+            SwingWorker<Void, Void> swingWorker = new SwingWorker<>() {
                 @Override
-                protected Void doInBackground(){
+                protected Void doInBackground() {
                     sorting.sort();
                     return null;
                 }
+
                 @Override
-                protected void done(){
+                protected void done() {
                     ctrl(true);
                 }
             };
@@ -87,17 +88,20 @@ public final class SortingWindow extends JPanel {
         switch (algorithm) {
             case INSERTION_SORTING:
                 sorting = new InsertionSort(this);
+                this.algorithm.setText(INSERTION_SORTING);
                 break;
             case BUBBLE_SORTING:
                 sorting = new BubbleSort(this);
+                this.algorithm.setText(BUBBLE_SORTING);
                 break;
             case QUICK_SORTING:
                 sorting = new QuickSort(this);
+                this.algorithm.setText(QUICK_SORTING);
                 break;
             case SELECTION_SORTING:
             default:
                 if (!(sorting instanceof SelectionSort)) sorting = new SelectionSort(this);
-                break;
+                this.algorithm.setText(SELECTION_SORTING);
         }
     }
 

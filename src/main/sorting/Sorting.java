@@ -34,6 +34,7 @@ public sealed abstract class Sorting
         algoName = SELECTION_SORTING;
         setBackground(backgroundColor);
         legendSetup();
+        System.out.println(legend.toString());
         invokeLegend();
         initAnimation();
     }

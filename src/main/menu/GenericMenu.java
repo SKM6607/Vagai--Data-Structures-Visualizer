@@ -1,17 +1,23 @@
 package main.menu;
+
 import main.dialogs.LegendDialog;
 import main.dialogs.QRCodeDisplayer;
 import utils.main.MainCardPanel;
+
 import javax.swing.*;
 import java.awt.*;
+
 import static main.interfaces.DefaultWindowsInterface.*;
+
 public sealed abstract class GenericMenu extends JMenu
         permits LinkedListMenu,
         SortingMenu,
         QueueMenu,
         StackMenu {
-    protected JMenuItem[] menuItems;
     private final LayoutManager layout;
+    protected JMenuItem[] menuItems;
+    protected JMenuItem currentItem;
+
     protected GenericMenu(String menuName, String[] menuItems, MainCardPanel parent) {
         super(menuName);
         layout = parent.getLayout();
@@ -27,20 +33,14 @@ public sealed abstract class GenericMenu extends JMenu
             ref.setForeground(foregroundColor);
             ref.setBackground(backgroundColor);
             ref.setFont(menuFont);
-            int effectivelyFinalI = i;
-            ref.addActionListener(_ -> defaultOnClickOperation(parent, menuItems[effectivelyFinalI]));
+            final int effectivelyFinalI = i;
+            ref.addActionListener(e -> {
+                currentItem = (JMenuItem) e.getSource();
+                defaultOnClickOperation(parent, menuItems[effectivelyFinalI]);
+            });
             this.setFont(menuFont);
             add(ref);
         }
-    }
-
-    protected static void closeChildWindows() {
-        for (Window window : Window.getWindows()) {
-            if (window instanceof LegendDialog) {
-                window.dispose();
-            }
-        }
-        closeQRWindow();
     }
 
     protected static void closeQRWindow() {
@@ -51,16 +51,22 @@ public sealed abstract class GenericMenu extends JMenu
         }
     }
 
+    protected void closeChildWindows() {
+        for (Window window : Window.getWindows()) {
+            var currentWindow = (LegendDialog) window;
+            if (currentWindow != null) {
+                var currentAlgorithm = currentWindow.getTitle().split(":")[1].trim();
+                if (!currentAlgorithm.equals(this.currentItem.getText())) {
+                    window.dispose();
+                }
+            }
+        }
+        closeQRWindow();
+    }
+
     protected final void defaultOnClickOperation(JPanel parent, String s) {
         closeChildWindows();
         ((CardLayout) layout).show(parent, s);
     }
 
-    public void onClickMenuItem(String menuItem, Runnable r) {
-        for (int i = 0; i < menuItems.length; i++) {
-            if (menuItem.equals(menuItems[i].getText())) {
-                menuItems[i].addActionListener(_ -> r.run());
-            }
-        }
-    }
 }
