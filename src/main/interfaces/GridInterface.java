@@ -1,7 +1,13 @@
 package main.interfaces;
 
 import java.awt.*;
-
+/**
+ * The <code>GridInterface</code> contains methods to draw grids with custom width and colors depending on requirements.
+ * @author Sri Koushik JK
+ * @since v0.0.1
+ * @version v0.0.5
+ * @see DefaultWindowsInterface
+ * */
 public interface GridInterface extends DefaultWindowsInterface {
     int SPACING = 25;
 

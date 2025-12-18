@@ -9,7 +9,6 @@ import static main.interfaces.MacroInterface.*;
 
 public final class SortingWindow extends JPanel {
     private static SortingWindow singleton;
-    private final Sorting defaultAlgorithm = new SelectionSort(this);
     Sorting sorting;
     JLabel algorithm = new JLabel(SELECTION_SORTING);
     JPanel returnPanel = new JPanel();
@@ -21,7 +20,7 @@ public final class SortingWindow extends JPanel {
     private SortingWindow() {
         setLayout(new BorderLayout());
         add(getUserPanel(), BorderLayout.NORTH);
-        sorting = defaultAlgorithm;
+        sorting = new SelectionSort(this);
         add(sorting, BorderLayout.CENTER);
     }
 

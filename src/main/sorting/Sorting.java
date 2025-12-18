@@ -13,11 +13,10 @@ import java.util.Random;
 import static main.interfaces.MacroInterface.SELECTION_SORTING;
 
 /**
- * The <code>Sorting</code> abstract class is the class with the most basic methods for designing <code>Sorting Algorithms</code>
+ * The <code>Sorting</code> abstract class is the class with the most basic methods for designing  and implementing <code>Sorting Algorithms</code>
  *
  * @author Sri Koushik JK
  * @since v0.0.3
- *
  */
 public sealed abstract class Sorting
         extends JPanel
@@ -41,9 +40,21 @@ public sealed abstract class Sorting
         invokeLegend();
         initAnimation();
     }
-
+    /**
+     * The <code>legendSetup()</code> method is an abstract method required to be implemented whenever one is writing a sorting algorithm.
+     * <br>This helps opening a window that provides a legend for explaining sort algorithm
+     * @see Sorting
+     * @since v0.0.5
+     * @author Sri Koushik JK
+     * */
     protected abstract void legendSetup();
 
+    /**
+     * Allows you to set the number of blocks for display
+     * @param n Number of Blocks
+     * @since v0.0.5
+     * @author Sri Koushik JK
+     * */
     public final void setBlocks(int n) {
         Random random=new Random();
         final int dx = 10;
