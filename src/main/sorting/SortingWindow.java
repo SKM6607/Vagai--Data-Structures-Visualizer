@@ -1,11 +1,11 @@
 package main.sorting;
 
 import org.jetbrains.annotations.NotNull;
-
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.util.Arrays;
-
 import static main.interfaces.MacroInterface.*;
 
 public final class SortingWindow extends JPanel {
@@ -17,7 +17,6 @@ public final class SortingWindow extends JPanel {
     private JLabel label;
     private JSlider slider;
     private int MAX_ELEMENTS = 5;
-
     private SortingWindow() {
         setLayout(new BorderLayout());
         add(getUserPanel(), BorderLayout.NORTH);
@@ -38,9 +37,8 @@ public final class SortingWindow extends JPanel {
         label.setBackground(Color.BLACK);
         int LIMIT = 50;
         slider = new JSlider(0, LIMIT, MAX_ELEMENTS);
-        slider.addChangeListener(_ -> {
-            label.setText(String.format("Current Array Elements: %d", slider.getValue()));
-            MAX_ELEMENTS = slider.getValue();
+        slider.addChangeListener( _->{
+            basicSliderSetup();
             sorting.setBlocks(MAX_ELEMENTS);
         });
         slider.setOpaque(false);
@@ -84,18 +82,24 @@ public final class SortingWindow extends JPanel {
         startButton.setSize(150, 50);
         return startButton;
     }
-
+    private void basicSliderSetup(){
+        label.setText(String.format("Current Array Elements: %d", slider.getValue()));
+        MAX_ELEMENTS = slider.getValue();
+    }
     public void switchAlgorithm(String algorithm) {
+        remove(sorting);
         switch (algorithm) {
             case INSERTION_SORTING -> sorting = new InsertionSort(this);
             case BUBBLE_SORTING -> sorting = new BubbleSort(this);
             case QUICK_SORTING -> sorting = new QuickSort(this);
             default -> sorting = new SelectionSort(this);
         }
+        add(sorting);
+        revalidate();
+        repaint();
         if (Arrays.binarySearch(SORTING_ARRAY, algorithm) != -1) this.algorithm.setText(algorithm);
         else this.algorithm.setText(SELECTION_SORTING);
     }
-
 
     private void ctrl(boolean s) {
         startButton.setEnabled(s);

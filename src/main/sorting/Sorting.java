@@ -28,7 +28,6 @@ public sealed abstract class Sorting
     public LegendDialog legendDialog;
     protected String algoName;
     protected Map<String, Color> legend = new HashMap<>();
-
     public Sorting(JPanel parent) {
         parentWindow = SwingUtilities.getWindowAncestor(parent);
         algoName = SELECTION_SORTING;
