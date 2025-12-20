@@ -1,4 +1,6 @@
 package main.queues;
+import org.jetbrains.annotations.NotNull;
+
 import javax.swing.*;
 import java.awt.*;
 import static utils.ComponentUtilities.*;
@@ -250,6 +252,11 @@ final class CircularQueue extends Queue {
     
     public void setAnimationSpeed(int speed) {
         this.animationSpeed = speed;
+    }
+
+    @Override
+    protected <T extends VisualNode> void enqueue(@NotNull T node, int... args) {
+
     }
 
 }

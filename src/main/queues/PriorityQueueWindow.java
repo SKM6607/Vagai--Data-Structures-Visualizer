@@ -1,4 +1,7 @@
 package main.queues;
+import main.interfaces.LinkedListInterface;
+import org.jetbrains.annotations.NotNull;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -6,9 +9,8 @@ import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.List;
 final class PriorityQueue extends Queue{
-    private final List<PriorityNode> queue = new ArrayList<>();
+    private final ArrayList<PriorityNode> queue = new ArrayList<>();
     private int animationSpeed = 300;
-    private int dynamicWidth = width;
     PriorityQueue() {
         setPreferredSize(new Dimension(width, height));
         setBackground(new Color(0xA0F29));
@@ -73,7 +75,7 @@ final class PriorityQueue extends Queue{
             // Draw value
             g.setColor(Color.WHITE);
             g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 28));
-            String valueStr = String.valueOf(node.value);
+            String valueStr = String.valueOf(node.data);
             fm = g.getFontMetrics();
             g.drawString(valueStr, 
                 node.xPos + nodeWidth / 2 - fm.stringWidth(valueStr) / 2,
@@ -160,8 +162,7 @@ final class PriorityQueue extends Queue{
     }
     
     private void animateInsertion(PriorityNode node, int index) {
-        int targetX = startX + index * (nodeWidth + spacing);
-        node.xPos = targetX;
+        node.xPos = startX + index * (nodeWidth + spacing);
         node.yPos = -nodeHeight;
         
         Timer timer = new Timer(15, null);
@@ -203,7 +204,7 @@ final class PriorityQueue extends Queue{
             node.yPos -= 10;
             if (node.yPos < -nodeHeight - 50) {
                 timer.stop();
-                queue.remove(0);
+                queue.removeFirst();
                 repositionNodes();
                 animateShift();
             } else {
@@ -237,21 +238,18 @@ final class PriorityQueue extends Queue{
     }
     
     private void resize() {
-        if (queue.isEmpty()) {
-            dynamicWidth = width;
-        } else {
-            int lastX = queue.get(queue.size() - 1).xPos;
-            dynamicWidth = Math.max(width, lastX + nodeWidth + 100);
-        }
-        setPreferredSize(new Dimension(dynamicWidth, height));
-        revalidate();
-        repaint();
+        super.resize(queue);
     }
     
     public void setAnimationSpeed(int speed) {
         this.animationSpeed = speed;
     }
-    
+
+    @Override
+    protected void enqueue(@NotNull VisualNode node,int... args) {
+
+    }
+
     public boolean isEmpty() {
         return queue.isEmpty();
     }

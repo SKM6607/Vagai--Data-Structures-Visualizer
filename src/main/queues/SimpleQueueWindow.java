@@ -1,8 +1,10 @@
 package main.queues;
+import org.jetbrains.annotations.NotNull;
 import shapes.MyArrow;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+
 final class SimpleQueue extends Queue{
     private final ArrayList<VisualNode> queue = new ArrayList<>();
     private final MyArrow arrow = new MyArrow(80, 12);
@@ -19,9 +21,9 @@ final class SimpleQueue extends Queue{
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         drawGrid(g, new Color(0x1C233D));
         drawQueueLabels(g);
-        
-        for (int i = 0; i < queue.size(); i++) {
-            drawNode(g, queue.get(i));
+
+        for (VisualNode visualNode : queue) {
+            drawNode(g, visualNode);
         }
     }
     
@@ -33,7 +35,7 @@ final class SimpleQueue extends Queue{
             // Front label
             g.drawString("FRONT →", 50, height / 2 + 10);
             // Rear label
-            int rearX = queue.get(queue.size() - 1).xPos + nodeWidth + 40;
+            int rearX = queue.getLast().xPos + nodeWidth + 40;
             g.drawString("← REAR", rearX, height / 2 + 10);
         } else {
             g.drawString("QUEUE EMPTY", width / 2 - 100, height / 2);
@@ -47,39 +49,20 @@ final class SimpleQueue extends Queue{
             return;
         }
         
-        int xPos = queue.isEmpty() ? 200 : queue.get(queue.size() - 1).xPos + nodeWidth + spacing;
+        int xPos = queue.isEmpty() ? 200 : queue.getLast().xPos + nodeWidth + spacing;
         int yPos = height / 2 - nodeHeight / 2;
         
         VisualNode newNode = new VisualNode(value, xPos, yPos);
         if (!queue.isEmpty()) {
-            queue.get(queue.size() - 1).nextNode = newNode;
-            queue.get(queue.size() - 1).nextAddress = newNode.address;
+            queue.getLast().nextNode = newNode;
+            queue.getLast().nextAddress = newNode.address;
         }
         queue.add(newNode);
-        
         // Smooth animation
-        animateEnqueue(newNode);
-        resize();
+        enqueue(newNode);
+        super.resize(queue);
     }
-    
-    private void animateEnqueue(VisualNode node) {
-        final int originalY = node.yPos;
-        node.yPos = -nodeHeight;
-        
-        Timer timer = new Timer(15, null);
-        timer.addActionListener(e -> {
-            if (node.yPos < originalY) {
-                node.yPos += 8;
-                repaint();
-            } else {
-                node.yPos = originalY;
-                timer.stop();
-                repaint();
-            }
-        });
-        timer.start();
-    }
-    
+
     @Override
     public void dequeue() {
         if (isEmpty()) {
@@ -87,9 +70,8 @@ final class SimpleQueue extends Queue{
             return;
         }
         
-        VisualNode front = queue.get(0);
-        int value = front.data;
-        
+        VisualNode front = queue.getFirst();
+
         // Animate removal
         animateDequeue(front);
 
@@ -97,11 +79,11 @@ final class SimpleQueue extends Queue{
     
     private void animateDequeue(VisualNode node) {
         Timer timer = new Timer(15, null);
-        timer.addActionListener(e -> {
+        timer.addActionListener(_ -> {
             node.yPos -= 10;
             if (node.yPos < -nodeHeight - 50) {
                 timer.stop();
-                queue.remove(0);
+                queue.removeFirst();
                 if (!queue.isEmpty()) {
                     queue.get(0).nextAddress = queue.size() > 1 ? queue.get(1).address : null;
                 }
@@ -122,7 +104,7 @@ final class SimpleQueue extends Queue{
         final int steps = 20;
         
         Timer timer = new Timer(animationSpeed / steps, null);
-        timer.addActionListener(e -> {
+        timer.addActionListener(_ -> {
             step[0]++;
             float progress = (float) step[0] / steps;
             
@@ -135,7 +117,7 @@ final class SimpleQueue extends Queue{
             
             if (step[0] >= steps) {
                 timer.stop();
-                resize();
+                super.resize(queue);
             }
         });
         timer.start();
@@ -156,21 +138,14 @@ final class SimpleQueue extends Queue{
         int maxCapacity = 15;
         return queue.size() >= maxCapacity;
     }
-    
-    private void resize() {
-        if (queue.isEmpty()) {
-            dynamicWidth = width;
-        } else {
-            int lastX = queue.get(queue.size() - 1).xPos;
-            dynamicWidth = Math.max(width, lastX + nodeWidth + 200);
-        }
-        setPreferredSize(new Dimension(dynamicWidth, height));
-        revalidate();
-        repaint();
-    }
-    
+
     public void setAnimationSpeed(int speed) {
         this.animationSpeed = speed;
+    }
+
+    @Override
+    protected <T extends VisualNode> void enqueue(@NotNull T node, int... args) {
+        
     }
 
     protected void drawNode(Graphics2D g, VisualNode node) {
@@ -220,7 +195,7 @@ public final class SimpleQueueWindow extends QueueWindow<SimpleQueue> {
         controlPanel.setBackground(new Color(0, 18, 121));
         JPanel inputPanel = new JPanel(new GridLayout(1, 3, 5, 5));
         inputPanel.setBackground(new Color(0, 18, 121));
-        enqueueButton.addActionListener(e -> {
+        enqueueButton.addActionListener(_ -> {
             if (verifyInput()) {
                 visualQueue.enqueue(Integer.parseInt(textField.getText()));
                 textField.setText("");

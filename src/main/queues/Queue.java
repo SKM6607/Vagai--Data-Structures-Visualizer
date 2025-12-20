@@ -1,15 +1,21 @@
 package main.queues;
 
 import main.interfaces.GridInterface;
+import main.interfaces.LinkedListInterface.VisualNode;
 import main.interfaces.QueueInterface;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+
 /**
  * The class Queue is an abstract class that provides with the most basic fields and methods for queue implementations
  * @see QueueInterface
  * @see GridInterface
  * @since v0.0.3
+ * @version v0.0.5
+ * @author Sri Koushik JK
  * */
 public sealed abstract class Queue
         extends JPanel
@@ -27,26 +33,26 @@ public sealed abstract class Queue
     protected int rear = -1;
     protected abstract void drawNode(Graphics2D g, VisualNode node);
     public abstract void setAnimationSpeed(int value);
-    protected sealed static class Node{
-        int value;
-        int xPos;
-        int yPos;
-        Color color;
-        public String nextAddress;
-        public Node next;
-        public Node(int value,Color color,int xPos,int yPos){
-            this.value=value;
-            this.color=color;
-            this.xPos=xPos;
-            this.yPos=yPos;
+    protected <T extends VisualNode>void resize(ArrayList<T> nodeList){
+        if (nodeList.isEmpty()) {
+            dynamicWidth= width;
+        } else {
+            int lastX = nodeList.getLast().xPos;
+            dynamicWidth = Math.max(width, lastX + nodeWidth + 200);
         }
+        setPreferredSize(new Dimension(dynamicWidth, height));
+        revalidate();
+        repaint();
     }
-    protected static final class PriorityNode extends Node {
-        int value;
+    protected abstract <T extends VisualNode>void enqueue(@NotNull T node,int... args) ;
+    public abstract void dequeue();
+    protected static final class PriorityNode extends VisualNode {
         int priority;
+        Color color;
         PriorityNode(int value,int xPos,int yPos,int priority) {
-            super(value,new Color(0x1E3A8A),xPos,yPos);
+            super(value,xPos,yPos);
             this.priority = priority;
+            this.color=new Color(0x1E3A8A);
         }
     }
 }
