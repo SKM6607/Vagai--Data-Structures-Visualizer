@@ -12,8 +12,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static utils.AnimationHelper.insertNode;
-
 final class CycleDetectionVisual extends LinkedList{
     private final List<VisualNode> nodes = new ArrayList<>();
     private final MyArrow arrow = new MyArrow(80, 15);
@@ -244,8 +242,8 @@ final class CycleDetectionVisual extends LinkedList{
         resize();
     }
 
-    private void animateNodeAppear(VisualNode node) {
-        insertNode(node,this);
+    private void animateNodeAppear(VisualNode node){
+//        e(node,this);
     }
     public void createCycle(int cycleToIndex) {
         if (detectionRunning) return;

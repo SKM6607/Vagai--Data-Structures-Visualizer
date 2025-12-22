@@ -12,11 +12,18 @@ import static main.interfaces.MacroInterface.SORTING_ARRAY;
 
 public final class SortingMenu extends GenericMenu {
     private static SortingMenu singleton;
-    SortingWindow sortingWindow =SortingWindow.getInstance();
+    SortingWindow sortingWindow = SortingWindow.getInstance();
+
     private SortingMenu(MainCardPanel parent) {
         super(SORTING_ALGORITHMS, SORTING_ARRAY, parent);
         for (JMenuItem jMenuItem : menuItems) {
-            jMenuItem.addActionListener(_ -> sortingWindow.switchAlgorithm(jMenuItem.getText()));
+            jMenuItem.addActionListener(_ -> {
+                var p=parent.getCurrentPanel();
+                if (!p.equals(SORTING_ALGORITHMS)){
+                    parent.showCard(SORTING_ALGORITHMS);
+                }
+                sortingWindow.switchAlgorithm(jMenuItem.getText());
+            });
         }
     }
 
@@ -27,6 +34,6 @@ public final class SortingMenu extends GenericMenu {
      */
     @Contract(" -> new")
     public static @NotNull SortingMenu getInstance(MainCardPanel parent) {
-        return (singleton == null) ? singleton = new SortingMenu(parent): singleton;
+        return (singleton == null) ? singleton = new SortingMenu(parent) : singleton;
     }
 }

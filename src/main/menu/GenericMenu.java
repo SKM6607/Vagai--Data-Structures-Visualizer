@@ -14,13 +14,11 @@ public sealed abstract class GenericMenu extends JMenu
         SortingMenu,
         QueueMenu,
         StackMenu {
-    private final LayoutManager layout;
     protected JMenuItem[] menuItems;
     protected JMenuItem currentItem;
 
     protected GenericMenu(String menuName, String[] menuItems, MainCardPanel parent) {
         super(menuName);
-        layout = parent.getLayout();
         this.menuItems = new JMenuItem[menuItems.length];
         setForeground(foregroundColor);
         setBackground(backgroundColor);
@@ -62,9 +60,9 @@ public sealed abstract class GenericMenu extends JMenu
         closeQRWindow();
     }
 
-    protected final void defaultOnClickOperation(JPanel parent, String s) {
+    protected final void defaultOnClickOperation(MainCardPanel parent, String s) {
         closeChildWindows();
-        ((CardLayout) layout).show(parent, s);
+        parent.showCard(s);
     }
 
 }

@@ -25,7 +25,7 @@ public final class MainCardPanel extends JPanel {
     private static MainCardPanel singleton = null;
     public final CardLayout cardLayout = new CardLayout();
     private final HomePage homePage = HomePage.getInstance(this);
-
+    private String currentPanel=SORTING_ALGORITHMS;
     private MainCardPanel() {
         setLayout(cardLayout);
         add(homePage, DEFAULT);
@@ -37,6 +37,15 @@ public final class MainCardPanel extends JPanel {
         add(simpleQueueWindow, SIMPLE_QUEUE);
         add(circularQueueWindow, CIRCULAR_QUEUE);
         add(priorityQueueWindow, PRIORITY_QUEUE);
+    }
+
+    public void showCard(String panelName){
+        this.cardLayout.show(this,panelName);
+        this.currentPanel=panelName;
+    }
+
+    public String getCurrentPanel(){
+        return currentPanel;
     }
 
     public static @NotNull MainCardPanel getInstance() {
