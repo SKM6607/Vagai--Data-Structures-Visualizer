@@ -9,11 +9,13 @@ import java.awt.*;
 
 import static main.interfaces.DefaultWindowsInterface.*;
 
-public sealed abstract class GenericMenu extends JMenu
+public sealed abstract class GenericMenu
+        extends JMenu
         permits LinkedListMenu,
         SortingMenu,
         QueueMenu,
-        StackMenu {
+        StackMenu
+{
     protected JMenuItem[] menuItems;
     protected JMenuItem currentItem;
 

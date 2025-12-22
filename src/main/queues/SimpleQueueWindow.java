@@ -30,11 +30,8 @@ final class SimpleQueue extends Queue{
     private void drawQueueLabels(Graphics2D g) {
         g.setColor(Color.WHITE);
         g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 24));
-        
         if (!queue.isEmpty()) {
-            // Front label
             g.drawString("FRONT →", 50, height / 2 + 10);
-            // Rear label
             int rearX = queue.getLast().xPos + nodeWidth + 40;
             g.drawString("← REAR", rearX, height / 2 + 10);
         } else {
@@ -58,7 +55,6 @@ final class SimpleQueue extends Queue{
             queue.getLast().nextAddress = newNode.address;
         }
         queue.add(newNode);
-        // Smooth animation
         enqueue(newNode);
         super.resize(queue);
     }
@@ -187,14 +183,15 @@ final class SimpleQueue extends Queue{
 public final class SimpleQueueWindow extends QueueWindow<SimpleQueue> {
     public SimpleQueueWindow() {
         super(new SimpleQueue());
+        final Color color=new Color(0, 18, 121);
         JScrollPane scrollPane = new JScrollPane(visualQueue,
                 JScrollPane.VERTICAL_SCROLLBAR_NEVER,
                 JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         scrollPane.getHorizontalScrollBar().setUnitIncrement(20);
         JPanel controlPanel = new JPanel(new GridLayout(3, 1, 5, 5));
-        controlPanel.setBackground(new Color(0, 18, 121));
+        controlPanel.setBackground(color);
         JPanel inputPanel = new JPanel(new GridLayout(1, 3, 5, 5));
-        inputPanel.setBackground(new Color(0, 18, 121));
+        inputPanel.setBackground(color);
         enqueueButton.addActionListener(_ -> {
             if (verifyInput()) {
                 visualQueue.enqueue(Integer.parseInt(textField.getText()));
@@ -209,6 +206,12 @@ public final class SimpleQueueWindow extends QueueWindow<SimpleQueue> {
         controlPanel.add(infoLabel);
         controlPanel.add(inputPanel);
         controlPanel.add(speedPanel);
+        JPanel containerPanel=new JPanel();
+        containerPanel.setLayout(new BoxLayout(containerPanel,BoxLayout.Y_AXIS));
+        inputPanel.setSize(new Dimension(0,60));
+        containerPanel.add(inputPanel);
+        containerPanel.add(controlPanel);
+        add(containerPanel,BorderLayout.SOUTH);
         add(scrollPane, BorderLayout.CENTER);
     }
 }

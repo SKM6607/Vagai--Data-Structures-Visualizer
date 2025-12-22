@@ -9,6 +9,7 @@ import java.awt.event.KeyListener;
 final class LinkedListVisual extends LinkedList {
     public static final int nodeSpacing = (3 * nodeWidth) / 2 + SPACING;
     private static final MyArrow arrow = new MyArrow(nodeWidth / 2, 20);
+    private static final Color color = new Color(0x1C233D);
     VisualNode head = new VisualNode(0, width / 4, height / 2 - nodeHeight);
     private int dynamicWidth = width;
     private int size = 1;
@@ -20,19 +21,18 @@ final class LinkedListVisual extends LinkedList {
         Graphics2D g = (Graphics2D) g1;
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        
-        drawGrid(g, new Color(0x1C233D));
+        drawGrid(g, color, dynamicWidth);
         drawInitialDetails(g);
-        
+
         VisualNode temp = head;
         while (temp != null) {
             drawNode(g, temp);
             temp = temp.nextNode;
         }
     }
-    
+
     protected void drawInitialDetails(Graphics2D g) {
-        drawTitle(g,"Linked List Visualization",width / 2 - 180, 50);
+        drawTitle(g, "Linked List Visualization", width / 2 - 180, 50);
         g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 18));
         g.setColor(new Color(0xFFD700));
         g.drawString("Size: " + size, width / 2 - 30, 80);
@@ -41,7 +41,7 @@ final class LinkedListVisual extends LinkedList {
         g.setColor(Color.GREEN);
         g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
         g.drawString("HEAD", head.xPos + nodeWidth / 2 - 25, head.yPos - 40);
-        
+
         // Draw arrow to head
         g.setStroke(new BasicStroke(3f));
         g.drawLine(head.xPos + nodeWidth / 2, head.yPos - 35, head.xPos + nodeWidth / 2, head.yPos - 10);
@@ -70,7 +70,7 @@ final class LinkedListVisual extends LinkedList {
         resize();
         animateAppend(newNode, head.yPos);
     }
-    
+
     private void animateAppend(VisualNode node, int targetY) {
         isAnimating = true;
         Timer timer = new Timer(15, null);
@@ -89,8 +89,8 @@ final class LinkedListVisual extends LinkedList {
     }
 
     @Override
-    public Dimension getPreferredSize(){
-        return new Dimension(dynamicWidth,height);
+    public Dimension getPreferredSize() {
+        return new Dimension(dynamicWidth, height);
     }
 
     protected void resize() {
@@ -106,24 +106,24 @@ final class LinkedListVisual extends LinkedList {
 
     public void setCamCentered(JScrollPane scrollPane) {
         if (isAnimating) return;
-        
+
         SwingUtilities.invokeLater(() -> {
             JViewport viewport = scrollPane.getViewport();
             Rectangle rectangle = viewport.getViewRect();
             int currentX = rectangle.x;
             int targetX = Math.max(0, calculateSize() - rectangle.width / 2);
-            
+
             // Smooth scroll animation
             Timer scrollTimer = new Timer(20, null);
             final int[] step = {0};
             final int steps = 10;
-            
+
             scrollTimer.addActionListener(e -> {
                 step[0]++;
                 float progress = utils.AnimationHelper.easeInOut((float) step[0] / steps);
                 int newX = (int) (currentX + (targetX - currentX) * progress);
                 viewport.setViewPosition(new Point(newX, rectangle.y));
-                
+
                 if (step[0] >= steps) {
                     scrollTimer.stop();
                     viewport.setViewPosition(new Point(targetX, rectangle.y));
@@ -137,22 +137,22 @@ final class LinkedListVisual extends LinkedList {
     @Override
     public void delete() {
         if (size == 1 || isAnimating) return;
-        
+
         VisualNode temp = head, prev = head;
         while (temp.nextNode != null) {
             prev = temp;
             temp = temp.nextNode;
         }
-        
+
         final VisualNode nodeToRemove = temp;
         prev.nextNode = null;
         prev.nextAddress = null;
         size--;
-        
+
         // Smooth fade-out animation
         animatePop(nodeToRemove);
     }
-    
+
     private void animatePop(VisualNode node) {
         isAnimating = true;
         Timer timer = new Timer(15, null);
@@ -183,52 +183,52 @@ final class LinkedListVisual extends LinkedList {
         int x = node.xPos;
         int y = node.yPos;
         int value = node.data;
-        
+
         // Draw shadow for depth
         g.setColor(new Color(0, 0, 0, 50));
         g.fillRoundRect(x + 4, y + 4, nodeWidth, nodeHeight, 10, 10);
-        
+
         // Draw main node with rounded corners
         g.setColor(new Color(0x1E3A8A));
         g.fillRoundRect(x, y, nodeWidth, nodeHeight, 10, 10);
-        
+
         // Draw border
         g.setStroke(new BasicStroke(4f));
         g.setColor(new Color(0xFFD700));
         g.drawRoundRect(x, y, nodeWidth, nodeHeight, 10, 10);
-        
+
         // Draw vertical divider
         g.setStroke(new BasicStroke(3f));
         g.drawLine(x + nodeWidth / 2, y + 5, x + nodeWidth / 2, y + nodeHeight - 5);
-        
+
         // Draw data section
         g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 28));
         g.setColor(Color.WHITE);
         String valueStr = String.valueOf(value);
         FontMetrics fm = g.getFontMetrics();
         g.drawString(valueStr, x + nodeWidth / 4 - fm.stringWidth(valueStr) / 2, y + nodeHeight / 2 + 10);
-        
+
         // Draw data label
         g.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         g.setColor(new Color(0xFFD700));
         g.drawString("Data", x + nodeWidth / 4 - 15, y + 20);
-        
+
         // Draw next pointer section
         g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 14));
         g.setColor(Color.WHITE);
         String nextAddr = node.isLast() ? "NULL" : node.nextAddress.substring(0, Math.min(6, node.nextAddress.length()));
         g.drawString(nextAddr, x + 3 * nodeWidth / 5 - 12, y + nodeHeight / 2 + 10);
-        
+
         g.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         g.setColor(new Color(0xFFD700));
         g.drawString("Next", x + 3 * nodeWidth / 5 - 5, y + 20);
-        
+
         // Draw address above node
         g.setColor(Color.WHITE);
         g.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 11));
         String shortAddr = node.address.substring(0, Math.min(10, node.address.length()));
         g.drawString(shortAddr, x + nodeWidth / 2 - fm.stringWidth(shortAddr) / 2, y - 10);
-        
+
         // Draw arrow to next node
         if (!node.isLast()) {
             arrow.draw(g, x + nodeWidth, y + nodeHeight / 2, new Color(0xFFD700));
@@ -237,8 +237,9 @@ final class LinkedListVisual extends LinkedList {
 }
 
 public class LinkedListImplementation extends JPanel implements DefaultWindowsInterface {
+    private static final Font font = new Font(Font.SANS_SERIF, Font.BOLD, 20);
     private final JTextField textField;
-    private static final Font font =  new Font(Font.SANS_SERIF, Font.BOLD, 20);
+
     public LinkedListImplementation() {
         JLayeredPane layeredPane = new JLayeredPane();
         LinkedListVisual visualPanel = new LinkedListVisual();
@@ -252,7 +253,7 @@ public class LinkedListImplementation extends JPanel implements DefaultWindowsIn
         layeredPane.add(wrapper, JLayeredPane.DEFAULT_LAYER);
         mainPanel.setLayout(new GridLayout(2, 1, 10, 10));
         mainPanel.setBackground(new Color(0, 0, 0, 180));
-        mainPanel.setBounds(width / 2 - 170, height -200, 300, 100);
+        mainPanel.setBounds(width / 2 - 170, height - 200, 300, 100);
         {
             basicButtons[0] = new JButton("APPEND");
             basicButtons[1] = new JButton("POP");
@@ -284,13 +285,13 @@ public class LinkedListImplementation extends JPanel implements DefaultWindowsIn
         textField.addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
-                if (verifyTextField(textField) && e.getKeyChar()=='\n'){
+                if (verifyTextField(textField) && e.getKeyChar() == '\n') {
                     visualPanel.insert(Integer.parseInt(textField.getText()));
                     textField.setText("");
                     visualPanel.setCamCentered(wrapper);
                     visualPanel.repaint();
                 }
-                if(e.getKeyChar()==127){
+                if (e.getKeyChar() == 127) {
                     visualPanel.delete();
                     visualPanel.setCamCentered(wrapper);
                     visualPanel.repaint();
