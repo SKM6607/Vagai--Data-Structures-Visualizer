@@ -1,11 +1,12 @@
 package main.linkedList;
+import main.base_panels.VisualizerGridPanel;
 import main.interfaces.GridInterface;
 import main.interfaces.LinkedListInterface;
 import main.interfaces.LinkedListLightWeightInterface;
 import javax.swing.*;
 import java.awt.*;
 public sealed abstract class LinkedList
-        extends JPanel
+        extends VisualizerGridPanel
         implements LinkedListInterface, LinkedListLightWeightInterface, GridInterface
         permits LinkedListVisual, LinkedListCycleDetectionVisual
 {

@@ -23,7 +23,7 @@ final class LinkedListVisual extends LinkedList {
         Graphics2D g = (Graphics2D) g1;
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        drawGrid(g, color, dynamicWidth);
+        paintGrid(g,null,color);
         drawInitialDetails(g);
 
         VisualNode temp = head;

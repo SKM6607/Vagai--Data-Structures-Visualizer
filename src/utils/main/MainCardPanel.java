@@ -1,7 +1,7 @@
 package utils.main;
 import main.linkedList.LinkedListCycleDetectionWindow;
 import main.linkedList.LinkedListWindow;
-import main.pages.HomePage;
+import main.base_panels.HomePanel;
 import main.queues.CircularQueueWindow;
 import main.queues.PriorityQueueWindow;
 import main.queues.SimpleQueueWindow;
@@ -10,7 +10,6 @@ import main.stack.StackWindowUsable;
 import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 import java.awt.*;
-
 import static main.interfaces.MacroInterface.*;
 
 public final class MainCardPanel extends JPanel {
@@ -23,12 +22,12 @@ public final class MainCardPanel extends JPanel {
     private static final PriorityQueueWindow priorityQueueWindow = PriorityQueueWindow.createPriorityQueueWindow();
     private static MainCardPanel singleton = null;
     public final CardLayout cardLayout = new CardLayout();
-    private final HomePage homePage = HomePage.getInstance(this);
+    private final HomePanel homePanel = HomePanel.getInstance(this);
     private String currentPanel = SORTING_ALGORITHMS;
 
     private MainCardPanel() {
         setLayout(cardLayout);
-        add(homePage, DEFAULT);
+        add(homePanel, DEFAULT);
         cardLayout.show(this, DEFAULT);
         add(sortingWindow, SORTING_ALGORITHMS);
         add(linkedListPanel, LINKED_LIST);
@@ -54,6 +53,6 @@ public final class MainCardPanel extends JPanel {
     }
 
     public void setMenuBarForAppearance(MainMenuBar menuBar) {
-        homePage.setOnStartTask(() -> menuBar.setVisible(true));
+        homePanel.setOnStartTask(() -> menuBar.setVisible(true));
     }
 }

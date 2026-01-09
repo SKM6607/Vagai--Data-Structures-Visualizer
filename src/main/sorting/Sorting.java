@@ -1,5 +1,6 @@
 package main.sorting;
 
+import main.base_panels.VisualizerGridPanel;
 import main.dialogs.LegendDialog;
 import main.interfaces.GridInterface;
 
@@ -18,7 +19,7 @@ import static main.interfaces.MacroInterface.SELECTION_SORTING;
  * @since v0.0.3
  */
 public sealed abstract class Sorting
-        extends JPanel
+        extends VisualizerGridPanel
         implements GridInterface
         permits SelectionSort, InsertionSort, BubbleSort, QuickSort {
     private static final Color backgroundColor = new Color(0xA0F29);
@@ -85,7 +86,7 @@ public sealed abstract class Sorting
     protected void paintComponent(Graphics g1) {
         super.paintComponent(g1);
         Graphics2D g = (Graphics2D) g1;
-        drawGrid(g);
+        super.paintGrid(g);
         drawElements(g);
     }
 

@@ -24,9 +24,7 @@ final class SimpleQueue extends Queue {
     }
 
     private void drawNodes(Graphics2D g){
-        for (VisualNode visualNode : queue) {
-            drawNode(g, visualNode);
-        }
+        for (VisualNode visualNode : queue) drawNode(g, visualNode);
     }
 
     private void drawQueueLabels(Graphics2D g) {
@@ -40,11 +38,6 @@ final class SimpleQueue extends Queue {
             g.drawString("QUEUE EMPTY", width / 2 - 100, height / 2);
         }
     }
-
-    public void enqueue(int value) {
-
-    }
-
 
     @Override
     public Object[] dequeue() {
@@ -71,8 +64,8 @@ final class SimpleQueue extends Queue {
             if (node.yPos < -nodeHeight - 50) {
                 timer.stop();
                 queue.removeFirst();
-                if (!queue.isEmpty()) {
-                    queue.get(0).setNextAddress(queue.size() > 1 ? queue.get(1).getAddress() : null);
+                if (!isEmpty()) {
+                    queue.getFirst().setNextAddress(queue.size() > 1 ? queue.get(1).getAddress() : null);
                 }
                 shiftLeft();
                 repaint();
@@ -108,18 +101,15 @@ final class SimpleQueue extends Queue {
         });
         timer.start();
     }
+
     @Override
     public int sizeQ() {
         return queue.size();
     }
+
     @Override
     public boolean isEmpty() {
         return queue.isEmpty();
-    }
-    @Override
-    public boolean isFull() {
-        int maxCapacity = 15;
-        return queue.size() >= maxCapacity;
     }
 
     @Override
@@ -177,11 +167,10 @@ final class SimpleQueue extends Queue {
         int yPos = height / 2 - nodeHeight / 2;
         enqueue(new VisualNode(args[0],xPos,yPos));
     }
-}
 
+}
 public final class SimpleQueueWindow extends QueueWindow<SimpleQueue> {
     private static SimpleQueueWindow singleton = null;
-
     private SimpleQueueWindow() {
         super(new SimpleQueue());
         final Color color = new Color(0, 18, 121);

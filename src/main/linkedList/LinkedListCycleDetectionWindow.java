@@ -21,7 +21,7 @@ final class LinkedListCycleDetectionVisual extends LinkedList {
     private final int nodeHeight = 80;
     private final int spacing = 30;
     private final Set<VisualNode> visitedNodes = new HashSet<>();
-    private int dynamicWidth = width;
+
     private int animationSpeed = 500;
     private VisualNode slowPointer = null;
     private VisualNode fastPointer = null;
@@ -52,7 +52,7 @@ final class LinkedListCycleDetectionVisual extends LinkedList {
         super.paintComponent(g1);
         Graphics2D g = (Graphics2D) g1;
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        drawGrid(g, new Color(0x1C233D), dynamicWidth);
+        paintGrid(g, null,new Color(0x1C233D));
         drawInitialDetails(g);
         drawNodes(g);
         drawPointers(g);
@@ -93,9 +93,6 @@ final class LinkedListCycleDetectionVisual extends LinkedList {
         }
     }
 
-    @Override
-    public void insert(int value) {
-    }
 
     @Override
     public void delete() {
@@ -226,7 +223,8 @@ final class LinkedListCycleDetectionVisual extends LinkedList {
         }
     }
 
-    public void appendNode(int value) {
+    public void insert(int value) {
+        rebuildGrid();
         if (detectionRunning) {
             JOptionPane.showMessageDialog(this, "Wait for detection to complete!", "Info", JOptionPane.INFORMATION_MESSAGE);
             return;
@@ -447,11 +445,13 @@ final class LinkedListCycleDetectionVisual extends LinkedList {
         slowPointer = null;
         fastPointer = null;
         visitedNodes.clear();
+        rebuildGrid();
         repaint();
     }
 
     protected void resize() {
-        if (nodes.isEmpty()) {
+        invalidateGrid();
+        /*if (nodes.isEmpty()) {
             dynamicWidth = width;
         } else {
             int lastX = nodes.get(nodes.size() - 1).xPos;
@@ -459,7 +459,7 @@ final class LinkedListCycleDetectionVisual extends LinkedList {
         }
         setPreferredSize(new Dimension(dynamicWidth, height));
         revalidate();
-        repaint();
+        repaint();*/
     }
 
     public void setAnimationSpeed(int speed) {
@@ -492,7 +492,7 @@ public class LinkedListCycleDetectionWindow extends JPanel implements DefaultWin
         JButton addBtn = createButton("ADD NODE", new Color(0, 18, 121));
         addBtn.addActionListener(e -> {
             if (verifyInput(valueField)) {
-                visualPanel.appendNode(Integer.parseInt(valueField.getText()));
+                visualPanel.insert(Integer.parseInt(valueField.getText()));
                 valueField.setText("");
             }
         });
@@ -555,7 +555,7 @@ public class LinkedListCycleDetectionWindow extends JPanel implements DefaultWin
             @Override
             public void keyTyped(KeyEvent e) {
                 if (e.getKeyChar() == '\n' && verifyInput(valueField)) {
-                    visualPanel.appendNode(Integer.parseInt(valueField.getText()));
+                    visualPanel.insert(Integer.parseInt(valueField.getText()));
                     valueField.setText("");
                 }
             }
