@@ -7,7 +7,7 @@ import java.awt.*;
 public sealed abstract class LinkedList
         extends JPanel
         implements LinkedListInterface, LinkedListLightWeightInterface, GridInterface
-        permits LinkedListVisual,CycleDetectionVisual
+        permits LinkedListVisual, LinkedListCycleDetectionVisual
 {
     public LinkedList(){
         setPreferredSize(new Dimension(width, height));

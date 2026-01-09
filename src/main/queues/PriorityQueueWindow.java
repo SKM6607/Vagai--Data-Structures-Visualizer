@@ -1,37 +1,38 @@
 package main.queues;
-import main.interfaces.LinkedListInterface;
-import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
-import java.util.List;
-final class PriorityQueue extends Queue{
+
+final class PriorityQueue extends Queue {
+    private static final Color gridColor = new Color(0x1C233D);
     private final ArrayList<PriorityNode> queue = new ArrayList<>();
-    private int animationSpeed = 300;
+
     PriorityQueue() {
+        animationSpeed = 300;
         setPreferredSize(new Dimension(width, height));
         setBackground(new Color(0xA0F29));
     }
+
     @Override
     protected void paintComponent(Graphics g1) {
         super.paintComponent(g1);
         Graphics2D g = (Graphics2D) g1;
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        drawGrid(g, new Color(0x1C233D));
+        drawGrid(g, gridColor);
         drawTitle(g);
         drawNodes(g);
         drawPriorityLegend(g);
     }
-    
+
     private void drawTitle(Graphics2D g) {
         g.setColor(Color.WHITE);
         g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 24));
         g.drawString("Priority Queue (Higher Priority → Lower Number)", width / 2 - 300, 50);
-        
-        if (queue.isEmpty()) {
+
+        if (isEmpty()) {
             g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 32));
             g.drawString("QUEUE EMPTY", width / 2 - 120, height / 2);
         } else {
@@ -40,91 +41,42 @@ final class PriorityQueue extends Queue{
             g.drawString("HIGHEST PRIORITY →", 20, startY + nodeHeight / 2);
         }
     }
-    
+
     private void drawNodes(Graphics2D g) {
-        for (PriorityNode node : queue) {
-            // Draw shadow
-            g.setColor(new Color(0, 0, 0, 50));
-            g.fillRoundRect(node.xPos + 4, node.yPos + 4, nodeWidth, nodeHeight, 15, 15);
-            
-            // Draw node with gradient effect
-            GradientPaint gradient = new GradientPaint(
-                node.xPos, node.yPos, node.color,
-                node.xPos, node.yPos + nodeHeight, node.color.darker()
-            );
-            g.setPaint(gradient);
-            g.fillRoundRect(node.xPos, node.yPos, nodeWidth, nodeHeight, 15, 15);
-            
-            // Draw border
-            g.setColor(getPriorityColor(node.priority));
-            g.setStroke(new BasicStroke(4f));
-            g.drawRoundRect(node.xPos, node.yPos, nodeWidth, nodeHeight, 15, 15);
-            
-            // Draw priority badge
-            int badgeSize = 30;
-            g.setColor(getPriorityColor(node.priority));
-            g.fillOval(node.xPos + nodeWidth - badgeSize - 5, node.yPos + 5, badgeSize, badgeSize);
-            g.setColor(Color.WHITE);
-            g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 14));
-            String priorityStr = "P" + node.priority;
-            FontMetrics fm = g.getFontMetrics();
-            g.drawString(priorityStr, 
-                node.xPos + nodeWidth - badgeSize / 2 - fm.stringWidth(priorityStr) / 2 - 5,
-                node.yPos + 22);
-            
-            // Draw value
-            g.setColor(Color.WHITE);
-            g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 28));
-            String valueStr = String.valueOf(node.data);
-            fm = g.getFontMetrics();
-            g.drawString(valueStr, 
-                node.xPos + nodeWidth / 2 - fm.stringWidth(valueStr) / 2,
-                node.yPos + nodeHeight / 2 + 10);
-            
-            // Draw label
-            g.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-            g.setColor(Color.YELLOW);
-            g.drawString("Value", node.xPos + nodeWidth / 2 - 15, node.yPos + nodeHeight - 10);
-            
-            // Draw arrow
-            if (queue.indexOf(node) < queue.size() - 1) {
-                drawArrow(g, node.xPos + nodeWidth, node.yPos + nodeHeight / 2,
-                         node.xPos + nodeWidth + spacing, node.yPos + nodeHeight / 2);
-            }
-        }
+        for (PriorityNode node : queue) drawNode(g, node);
     }
-    
+
     private void drawArrow(Graphics2D g, int x1, int y1, int x2, int y2) {
         g.setColor(new Color(0xFFD700));
         g.setStroke(new BasicStroke(3f));
         g.drawLine(x1, y1, x2, y2);
-        
+
         // Arrow head
         int arrowSize = 8;
         int[] xPoints = {x2, x2 - arrowSize, x2 - arrowSize};
         int[] yPoints = {y1, y1 - arrowSize, y1 + arrowSize};
         g.fillPolygon(xPoints, yPoints, 3);
     }
-    
+
     private void drawPriorityLegend(Graphics2D g) {
         int legendX = width - 250;
         int legendY = 100;
-        
+
         g.setColor(new Color(0, 0, 0, 180));
         g.fillRoundRect(legendX - 10, legendY - 30, 230, 180, 10, 10);
-        
+
         g.setColor(Color.WHITE);
         g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 16));
         g.drawString("Priority Legend:", legendX, legendY);
-        
+
         String[] priorities = {"P0 - Critical", "P1 - High", "P2 - Medium", "P3+ - Low"};
         Color[] colors = {
-            new Color(0xFF0000),
-            new Color(0xFF6600),
-            new Color(0xFFD700),
-            new Color(0x00FF00)
+                new Color(0xFF0000),
+                new Color(0xFF6600),
+                new Color(0xFFD700),
+                new Color(0x00FF00)
         };
-        
+
         for (int i = 0; i < priorities.length; i++) {
             int y = legendY + 30 + i * 30;
             g.setColor(colors[i]);
@@ -134,7 +86,7 @@ final class PriorityQueue extends Queue{
             g.drawString(priorities[i], legendX + 30, y);
         }
     }
-    
+
     private Color getPriorityColor(int priority) {
         return switch (priority) {
             case 0 -> new Color(0xFF0000);      // Red - Critical
@@ -143,8 +95,8 @@ final class PriorityQueue extends Queue{
             default -> new Color(0x00FF00);     // Green - Low
         };
     }
-    
-    public void enqueue(int value, int priority) {
+
+    private void enqueue(int value, int priority) {
         PriorityNode newNode = new PriorityNode(value, priority, 0, startY);
         // Find correct position based on priority
         int insertIndex = 0;
@@ -155,16 +107,16 @@ final class PriorityQueue extends Queue{
             }
             insertIndex = i + 1;
         }
-        
+
         queue.add(insertIndex, newNode);
         repositionNodes();
         animateInsertion(newNode, insertIndex);
     }
-    
+
     private void animateInsertion(PriorityNode node, int index) {
         node.xPos = startX + index * (nodeWidth + spacing);
         node.yPos = -nodeHeight;
-        
+
         Timer timer = new Timer(15, null);
         timer.addActionListener(e -> {
             if (node.yPos < startY) {
@@ -179,23 +131,26 @@ final class PriorityQueue extends Queue{
         timer.start();
     }
 
-    @Override
-    public void enqueue(int value) {
 
-    }
-
-    public void dequeue() {
-        if (queue.isEmpty()) {
+    public Object[] dequeue() {
+        if (isEmpty()) {
             JOptionPane.showMessageDialog(this, "Queue is empty!", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
+            return null;
         }
-        PriorityNode front = queue.get(0);
+        PriorityNode front = queue.getFirst();
+        Object[] o = {
+                front.data,
+                front.priority,
+                front.getAddress(),
+                front.getNextAddress()
+        };
         animateRemoval(front);
+        return o;
     }
 
     @Override
     public int sizeQ() {
-        return 0;
+        return queue.size();
     }
 
     private void animateRemoval(PriorityNode node) {
@@ -213,41 +168,95 @@ final class PriorityQueue extends Queue{
         });
         timer.start();
     }
-    
+
     private void repositionNodes() {
         for (int i = 0; i < queue.size(); i++) {
             queue.get(i).xPos = startX + i * (nodeWidth + spacing);
         }
         resize();
     }
-    
+
     private void animateShift() {
         final int[] step = {0};
         final int steps = 15;
-        
+
         Timer timer = new Timer(animationSpeed / steps, null);
         timer.addActionListener(e -> {
             step[0]++;
             repaint();
-            
+
             if (step[0] >= steps) {
                 timer.stop();
             }
         });
         timer.start();
     }
-    
+
     private void resize() {
         super.resize(queue);
     }
-    
-    public void setAnimationSpeed(int speed) {
-        this.animationSpeed = speed;
-    }
 
     @Override
-    protected void enqueue(@NotNull VisualNode node,int... args) {
+    protected void drawNode(Graphics2D g, Node n, int... args) {
+        PriorityNode node = (PriorityNode) n;
+        // Draw shadow
+        g.setColor(new Color(0, 0, 0, 50));
+        g.fillRoundRect(node.xPos + 4, node.yPos + 4, nodeWidth, nodeHeight, 15, 15);
 
+        // Draw node with gradient effect
+        GradientPaint gradient = new GradientPaint(
+                node.xPos, node.yPos, node.color,
+                node.xPos, node.yPos + nodeHeight, node.color.darker()
+        );
+        g.setPaint(gradient);
+        g.fillRoundRect(node.xPos, node.yPos, nodeWidth, nodeHeight, 15, 15);
+
+        // Draw border
+        g.setColor(getPriorityColor(node.priority));
+        g.setStroke(new BasicStroke(4f));
+        g.drawRoundRect(node.xPos, node.yPos, nodeWidth, nodeHeight, 15, 15);
+
+        // Draw priority badge
+        int badgeSize = 30;
+        g.setColor(getPriorityColor(node.priority));
+        g.fillOval(node.xPos + nodeWidth - badgeSize - 5, node.yPos + 5, badgeSize, badgeSize);
+        g.setColor(Color.WHITE);
+        g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 14));
+        String priorityStr = "P" + node.priority;
+        FontMetrics fm = g.getFontMetrics();
+        g.drawString(priorityStr,
+                node.xPos + nodeWidth - badgeSize / 2 - fm.stringWidth(priorityStr) / 2 - 5,
+                node.yPos + 22);
+
+        // Draw value
+        g.setColor(Color.WHITE);
+        g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 28));
+        String valueStr = String.valueOf(node.data);
+        fm = g.getFontMetrics();
+        g.drawString(valueStr,
+                node.xPos + nodeWidth / 2 - fm.stringWidth(valueStr) / 2,
+                node.yPos + nodeHeight / 2 + 10);
+
+        // Draw label
+        g.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        g.setColor(Color.YELLOW);
+        g.drawString("Value", node.xPos + nodeWidth / 2 - 15, node.yPos + nodeHeight - 10);
+
+        // Draw arrow
+        if (queue.indexOf(node) < queue.size() - 1) {
+            drawArrow(g, node.xPos + nodeWidth, node.yPos + nodeHeight / 2,
+                    node.xPos + nodeWidth + spacing, node.yPos + nodeHeight / 2);
+        }
+    }
+
+    /**
+     * @param args 0 should be value, 1 should be priority
+     * */
+    @Override
+    public void enqueue(int... args) {
+        int value = args[0];
+        int priority = args[1];
+        enqueue(value, priority);
     }
 
     public boolean isEmpty() {
@@ -256,19 +265,18 @@ final class PriorityQueue extends Queue{
 
     @Override
     public boolean isFull() {
+        //TODO ADD SOME CAPACITY
         return false;
     }
 
-    @Override
-    protected void drawNode(Graphics2D g, VisualNode node) {
-
-    }
 }
-public final class PriorityQueueWindow extends QueueWindow<PriorityQueue> {
-    private final JTextField priorityField;
-    public PriorityQueueWindow() {
-        super(new PriorityQueue());
 
+public final class PriorityQueueWindow extends QueueWindow<PriorityQueue> {
+    private static PriorityQueueWindow singleton = null;
+    private final JTextField priorityField;
+
+    private PriorityQueueWindow() {
+        super(new PriorityQueue());
         JScrollPane scrollPane = new JScrollPane(visualQueue,
                 JScrollPane.VERTICAL_SCROLLBAR_NEVER,
                 JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
@@ -297,7 +305,7 @@ public final class PriorityQueueWindow extends QueueWindow<PriorityQueue> {
         inputPanel.add(priorityField);
         inputPanel.add(enqueueButton);
         inputPanel.add(dequeueButton);
-        infoLabel=setInfoLabel("Priority Queue - Elements ordered by Priority");
+        infoLabel = setInfoLabel("Priority Queue - Elements ordered by Priority");
         controlPanel.add(infoLabel);
         controlPanel.add(inputPanel);
         controlPanel.add(speedPanel);
@@ -316,14 +324,21 @@ public final class PriorityQueueWindow extends QueueWindow<PriorityQueue> {
                     }
                 }
             }
-            
+
             @Override
-            public void keyPressed(KeyEvent e) {}
-            
+            public void keyPressed(KeyEvent e) {
+            }
+
             @Override
-            public void keyReleased(KeyEvent e) {}
+            public void keyReleased(KeyEvent e) {
+            }
         });
     }
+
+    public static PriorityQueueWindow createPriorityQueueWindow() {
+        return (singleton == null) ? singleton = new PriorityQueueWindow() : singleton;
+    }
+
     private JTextField createTextField(String tooltip) {
         JTextField field = new JTextField();
         field.setFont(font);
@@ -344,6 +359,7 @@ public final class PriorityQueueWindow extends QueueWindow<PriorityQueue> {
         });
         return field;
     }
+
     private boolean verifyInput(JTextField field) {
         return field.getInputVerifier().verify(field);
     }

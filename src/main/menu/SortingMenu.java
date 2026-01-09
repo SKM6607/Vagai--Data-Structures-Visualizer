@@ -12,7 +12,7 @@ import static main.interfaces.MacroInterface.SORTING_ARRAY;
 
 public final class SortingMenu extends GenericMenu {
     private static SortingMenu singleton;
-    SortingWindow sortingWindow = SortingWindow.getInstance();
+    SortingWindow sortingWindow = SortingWindow.createSortingWindow();
 
     private SortingMenu(MainCardPanel parent) {
         super(SORTING_ALGORITHMS, SORTING_ARRAY, parent);

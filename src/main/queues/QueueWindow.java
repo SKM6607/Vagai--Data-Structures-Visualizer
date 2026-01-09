@@ -1,4 +1,5 @@
 package main.queues;
+import main.interfaces.LinkedListInterface;
 import main.interfaces.QueueLightWeightInterface;
 import javax.swing.*;
 import java.awt.*;

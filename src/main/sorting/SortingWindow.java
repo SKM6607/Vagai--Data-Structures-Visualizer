@@ -2,8 +2,6 @@ package main.sorting;
 
 import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.util.Arrays;
 import static main.interfaces.MacroInterface.*;
@@ -24,7 +22,7 @@ public final class SortingWindow extends JPanel {
         add(sorting, BorderLayout.CENTER);
     }
 
-    public static @NotNull SortingWindow getInstance() {
+    public static @NotNull SortingWindow createSortingWindow() {
         return (singleton == null) ? singleton = new SortingWindow() : singleton;
     }
 
