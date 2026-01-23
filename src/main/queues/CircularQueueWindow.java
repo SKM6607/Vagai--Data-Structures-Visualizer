@@ -1,23 +1,35 @@
 package main.queues;
+
 import javax.swing.*;
 import java.awt.*;
+
 import static utils.ComponentUtilities.createTextField;
+
 final class CircularQueue extends Queue {
+    private static final Color shadowColor = new Color(0, 0, 0, 50);
+    private static final Color borderColor = new Color(0xFFD700);
+    private static final Stroke nodeStroke = new BasicStroke(3f);
+    private static final Font indexFont = new Font(Font.SANS_SERIF, Font.BOLD, 12);
+    private static final Font nodeFont = new Font(Font.SANS_SERIF, Font.BOLD, 20);
+    private static final Font nodeArrowFont = new Font(Font.SANS_SERIF, Font.BOLD, 18);
+    private static final Font emptyFont = new Font(Font.SANS_SERIF, Font.BOLD, 24);
+    private static final Color normalNodeColor = new Color(0x1E3A8A);
+    private static final Color emptyOrFullNodeColor = new Color(0x2D3748);
     private static CircularQueue singleton = null;
     private final int capacity = 12;
     private final int centerX;
     private final int centerY;
     private final int radius = 250;
+    private final Node[] queue;
     private Integer highlightIndex = null;
     private Color highlightColor = Color.GREEN;
-    private final Node[] queue;
+
     private CircularQueue() {
         animationSpeed = 300;
         queue = new Node[capacity];
         centerX = width / 2;
         centerY = height / 2;
         setPreferredSize(new Dimension(width, height));
-        setBackground(new Color(0xA0F29));
     }
 
     public static CircularQueue createCircularQueue() {
@@ -29,15 +41,15 @@ final class CircularQueue extends Queue {
         super.paintComponent(g1);
         Graphics2D g = (Graphics2D) g1;
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        drawGrid(g, new Color(0x1C233D));
+        paintGrid(g, null, gridColor);
         drawCircularStructure(g);
         drawNodes(g);
         drawPointers(g);
     }
 
     private void drawCircularStructure(Graphics2D g) {
-        g.setColor(new Color(0x1E3A8A));
-        g.setStroke(new BasicStroke(3f));
+        g.setColor(normalNodeColor);
+        g.setStroke(nodeStroke);
         g.drawOval(centerX - radius, centerY - radius, radius * 2, radius * 2);
         // Draw connection lines
         g.setStroke(new BasicStroke(1f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{5}, 0));
@@ -58,7 +70,7 @@ final class CircularQueue extends Queue {
     private void drawPointers(Graphics2D g) {
         if (isEmpty()) {
             g.setColor(Color.WHITE);
-            g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 24));
+            g.setFont(emptyFont);
             g.drawString("QUEUE EMPTY", centerX - 80, centerY);
             return;
         }
@@ -69,7 +81,7 @@ final class CircularQueue extends Queue {
         int frontY = centerY + (int) ((radius + 80) * Math.sin(frontAngle));
 
         g.setColor(Color.GREEN);
-        g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 18));
+        g.setFont(nodeArrowFont);
         g.drawString("FRONT", frontX - 25, frontY);
 
         // Draw arrow to front
@@ -101,7 +113,7 @@ final class CircularQueue extends Queue {
 
         // Draw size info in center
         g.setColor(Color.WHITE);
-        g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
+        g.setFont(nodeFont);
         String sizeStr = "Size: " + sizeQ();
         FontMetrics fm = g.getFontMetrics();
         g.drawString(sizeStr, centerX - fm.stringWidth(sizeStr) / 2, centerY + 5);
@@ -126,11 +138,11 @@ final class CircularQueue extends Queue {
 
     private boolean isOccupied(int index) {
         if (isEmpty()) return false;
-        if (front <= rear) {
+        if (front <= rear)
             return index >= front && index <= rear;
-        } else {
+        else
             return index >= front || index <= rear;
-        }
+
     }
 
     @Override
@@ -144,7 +156,7 @@ final class CircularQueue extends Queue {
         } else {
             rear = (rear + 1) % capacity;
         }
-        queue[rear] =node;
+        queue[rear] = node;
         animateHighlight(rear, Color.GREEN);
     }
 
@@ -154,8 +166,8 @@ final class CircularQueue extends Queue {
             return null;
         }
         animateHighlight(front, Color.RED);
-        var frontNode=queue[front];
-        Object[] o={frontNode.data, frontNode.getAddress()};
+        var frontNode = queue[front];
+        Object[] o = {frontNode.data, frontNode.getAddress()};
         Timer timer = new Timer(animationSpeed, _ -> {
             if (front == rear) {
                 front = rear = -1;
@@ -208,7 +220,7 @@ final class CircularQueue extends Queue {
         int y = centerY + (int) (radius * Math.sin(angle)) - nodeSize / 2;
 
         // Draw shadow
-        g.setColor(new Color(0, 0, 0, 50));
+        g.setColor(shadowColor);
         g.fillOval(x + 3, y + 3, nodeSize, nodeSize);
 
         Color nodeColor = getNodeColor(i);
@@ -218,12 +230,12 @@ final class CircularQueue extends Queue {
         g.fillOval(x, y, nodeSize, nodeSize);
 
         // Draw border
-        g.setColor(new Color(0xFFD700));
-        g.setStroke(new BasicStroke(3f));
+        g.setColor(borderColor);
+        g.setStroke(nodeStroke);
         g.drawOval(x, y, nodeSize, nodeSize);
 
         // Draw index
-        g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
+        g.setFont(indexFont);
         g.setColor(Color.YELLOW);
         String indexStr = String.valueOf(i);
         FontMetrics fm = g.getFontMetrics();
@@ -231,7 +243,7 @@ final class CircularQueue extends Queue {
 
         // Draw value if position is occupied
         if (!isEmpty() && isOccupied(i)) {
-            g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
+            g.setFont(nodeFont);
             g.setColor(Color.WHITE);
             String valueStr = String.valueOf(queue[i]);
             fm = g.getFontMetrics();
@@ -250,13 +262,13 @@ final class CircularQueue extends Queue {
         if (highlightIndex != null && highlightIndex == i) {
             nodeColor = highlightColor;
         } else if (isEmpty()) {
-            nodeColor = new Color(0x2D3748);
+            nodeColor = emptyOrFullNodeColor;
         } else if (front == rear && i == front) {
-            nodeColor = new Color(0x1E3A8A);
+            nodeColor = normalNodeColor;
         } else if (front <= rear && i >= front && i <= rear) {
-            nodeColor = new Color(0x1E3A8A);
+            nodeColor = normalNodeColor;
         } else if (front > rear && (i >= front || i <= rear)) {
-            nodeColor = new Color(0x1E3A8A);
+            nodeColor = normalNodeColor;
         } else {
             nodeColor = new Color(0x2D3748);
         }
@@ -267,13 +279,12 @@ final class CircularQueue extends Queue {
 
 public final class CircularQueueWindow extends QueueWindow<CircularQueue> {
     public static CircularQueueWindow singleton = null;
-
     private CircularQueueWindow() {
         super(CircularQueue.createCircularQueue());
         JPanel controlPanel = new JPanel(new GridLayout(3, 1, 5, 5));
-        controlPanel.setBackground(new Color(0, 18, 121));
+        controlPanel.setBackground(backgroundColor);
         JPanel inputPanel = new JPanel(new GridLayout(1, 3, 5, 5));
-        inputPanel.setBackground(new Color(0, 18, 121));
+        inputPanel.setBackground(backgroundColor);
         Font font = new Font(Font.SANS_SERIF, Font.BOLD, 18);
         textField = createTextField(font, backgroundColor);
         enqueueButton.addActionListener(_ -> {

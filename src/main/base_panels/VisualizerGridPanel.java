@@ -5,18 +5,23 @@ import main.interfaces.GridInterface;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-
+/**
+ * <li>The class VisualizerGridPanel is used to draw a static background for drawing upon.</li>
+ * <li>This class can be used to make drawing Grid more efficient.</li>
+ * @author Sri Koushik JK
+ * @see GridInterface
+ * @since v0.0.5
+ * @version v0.0.5
+ * */
 public abstract class VisualizerGridPanel
         extends JPanel
         implements GridInterface {
-    protected Color color=getGraphics().getColor();
+    protected Color color;
     private BufferedImage bufferedImage;
     private Dimension cachedSize;
-
     protected void paintGrid(Graphics2D g, Color... colors) {
         color = g.getColor();
-        Color fg = g.getColor();
-        if (colors.length >= 1 && colors[0] != null) fg = colors[0];
+        if (colors.length >= 1 && colors[0] != null) color=colors[0];
         if (colors.length == 2) g.setColor(colors[1]);
         if (bufferedImage == null || !getSize().equals(cachedSize)) {
             rebuildGrid();

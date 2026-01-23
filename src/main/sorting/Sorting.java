@@ -20,7 +20,6 @@ import static main.interfaces.MacroInterface.SELECTION_SORTING;
  */
 public sealed abstract class Sorting
         extends VisualizerGridPanel
-        implements GridInterface
         permits SelectionSort, InsertionSort, BubbleSort, QuickSort {
     private static final Color backgroundColor = new Color(0xA0F29);
     protected final int widthX = 20;

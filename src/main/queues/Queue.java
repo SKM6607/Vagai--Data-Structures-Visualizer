@@ -1,5 +1,6 @@
 package main.queues;
 
+import main.base_panels.VisualizerGridPanel;
 import main.interfaces.GridInterface;
 import main.interfaces.QueueInterface;
 
@@ -18,38 +19,32 @@ import java.util.ArrayList;
  *
  */
 public sealed abstract class Queue
-        extends JPanel
+        extends VisualizerGridPanel
         implements QueueInterface, GridInterface
         permits PriorityQueue, SimpleQueue, CircularQueue {
     protected final int nodeWidth = 100;
     protected final int nodeHeight = 120;
     protected final int spacing = 30;
     protected final int startX = 100;
+    protected static final Color gridColor=new Color(0x1C233D);
     protected final int startY = 150;
-    protected int dynamicWidth = width;
     protected int front = -1;
     protected int rear = -1;
     protected int animationSpeed;
     protected int capacity = 15;
 
     protected abstract void drawNode(Graphics2D g, Node node, int... args);
-
+    public Queue(){
+        setBackground(new Color(0xA0F29));
+    }
     public void setAnimationSpeed(int s) {
         this.animationSpeed = s;
     }
 
     public abstract void enqueue(int... args);
 
-    protected <T extends VisualNode> void resize(ArrayList<T> nodeList) {
-        if (nodeList.isEmpty()) {
-            dynamicWidth = width;
-        } else {
-            int lastX = nodeList.getLast().xPos;
-            dynamicWidth = Math.max(width, lastX + nodeWidth + 200);
-        }
-        setPreferredSize(new Dimension(dynamicWidth, height));
-        revalidate();
-        repaint();
+    protected void resize() {
+        invalidateGrid();
     }
 
     @Override

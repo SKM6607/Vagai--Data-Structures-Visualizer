@@ -1,5 +1,5 @@
 package utils.main;
-import main.linkedList.LinkedListCycleDetectionWindow;
+import main.linkedList.CycleDetectionWindow;
 import main.linkedList.LinkedListWindow;
 import main.base_panels.HomePanel;
 import main.queues.CircularQueueWindow;
@@ -15,7 +15,7 @@ import static main.interfaces.MacroInterface.*;
 public final class MainCardPanel extends JPanel {
     private static final SortingWindow sortingWindow = SortingWindow.createSortingWindow();
     private static final LinkedListWindow linkedListPanel = LinkedListWindow.createLinkedListWindow();
-    private static final LinkedListCycleDetectionWindow cycleDetectionPanel = LinkedListCycleDetectionWindow.createLinkedListCycleDetectionWindow();
+    private static final CycleDetectionWindow cycleDetectionPanel = CycleDetectionWindow.createLinkedListCycleDetectionWindow();
     private static final StackWindowUsable stackWindow = new StackWindowUsable();
     private static final SimpleQueueWindow simpleQueueWindow = SimpleQueueWindow.createSimpleQueueWindow();
     private static final CircularQueueWindow circularQueueWindow = CircularQueueWindow.createCircularQueueWindow();

@@ -5,12 +5,11 @@ import java.awt.*;
 import java.util.ArrayList;
 final class SimpleQueue extends Queue {
     private final ArrayList<VisualNode> queue = new ArrayList<>();
-    private static final Color gridColor=new Color(0x1C233D);
     private final MyArrow arrow = new MyArrow(80, 12);
+    private static final Font TEXT_FONT=new Font(Font.SANS_SERIF, Font.BOLD, 24);
     SimpleQueue() {
         animationSpeed = 300;
         setPreferredSize(new Dimension(width, height));
-        setBackground(new Color(0xA0F29));
     }
 
     @Override
@@ -18,7 +17,7 @@ final class SimpleQueue extends Queue {
         super.paintComponent(g1);
         Graphics2D g = (Graphics2D) g1;
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        drawGrid(g, gridColor);
+        paintGrid(g,null, gridColor);
         drawQueueLabels(g);
         drawNodes(g);
     }
@@ -29,7 +28,7 @@ final class SimpleQueue extends Queue {
 
     private void drawQueueLabels(Graphics2D g) {
         g.setColor(Color.WHITE);
-        g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 24));
+        g.setFont(TEXT_FONT);
         if (!isEmpty()) {
             g.drawString("FRONT →", 50, height / 2 + 10);
             int rearX = queue.getLast().xPos + nodeWidth + 40;
@@ -96,7 +95,7 @@ final class SimpleQueue extends Queue {
 
             if (step[0] >= steps) {
                 timer.stop();
-                super.resize(queue);
+                super.resize();
             }
         });
         timer.start();

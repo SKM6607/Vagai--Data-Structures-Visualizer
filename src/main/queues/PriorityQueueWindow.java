@@ -7,13 +7,59 @@ import java.awt.event.KeyListener;
 import java.util.ArrayList;
 
 final class PriorityQueue extends Queue {
-    private static final Color gridColor = new Color(0x1C233D);
     private final ArrayList<PriorityNode> queue = new ArrayList<>();
+    // ===== Colors =====
+    private static final Color SHADOW_COLOR = new Color(0, 0, 0, 50);
+    private static final Color BADGE_TEXT_COLOR = Color.WHITE;
+    private static final Color VALUE_TEXT_COLOR = Color.WHITE;
+    private static final Color LABEL_COLOR = Color.YELLOW;
+
+    // ===== Fonts =====
+    private static final Font BADGE_FONT = new Font(Font.SANS_SERIF, Font.BOLD, 14);
+    private static final Font VALUE_FONT = new Font(Font.SANS_SERIF, Font.BOLD, 28);
+    private static final Font LABEL_FONT = new Font(Font.SANS_SERIF, Font.PLAIN, 12);
+    private static final Font TITLE_FONT = new Font(Font.SANS_SERIF, Font.PLAIN, 24);
+    private static final Font TEXT_FONT = new Font(Font.SANS_SERIF, Font.PLAIN, 20);
+    private static final Font EMPTY_FONT = new Font(Font.SANS_SERIF, Font.PLAIN, 32);
+
+    // ===== Stroke =====
+    private static final BasicStroke BORDER_STROKE = new BasicStroke(4f);
+    // ===== Arrow styling =====
+    private static final Color ARROW_COLOR = new Color(0xFFD700);
+    private static final BasicStroke ARROW_STROKE = new BasicStroke(3f);
+    private static final int ARROW_SIZE = 8;
+
+    // ===== Legend styling =====
+    private static final Color LEGEND_BG_COLOR = new Color(0, 0, 0, 180);
+    private static final Color LEGEND_TEXT_COLOR = Color.WHITE;
+    private static final Font LEGEND_TITLE_FONT = new Font(Font.SANS_SERIF, Font.BOLD, 16);
+    private static final Font LEGEND_ITEM_FONT = new Font(Font.SANS_SERIF, Font.PLAIN, 14);
+
+    // ===== Priority colors =====
+    private static final Color PRIORITY_CRITICAL_COLOR = new Color(0xFF0000);
+    private static final Color PRIORITY_HIGH_COLOR = new Color(0xFF6600);
+    private static final Color PRIORITY_MEDIUM_COLOR = new Color(0xFFD700);
+    private static final Color PRIORITY_LOW_COLOR = new Color(0x00FF00);
+
+    // ===== Legend labels =====
+    private static final String[] PRIORITY_LABELS = {
+            "P0 - Critical",
+            "P1 - High",
+            "P2 - Medium",
+            "P3+ - Low"
+    };
+
+    // ===== Legend color map =====
+    private static final Color[] PRIORITY_COLORS = {
+            PRIORITY_CRITICAL_COLOR,
+            PRIORITY_HIGH_COLOR,
+            PRIORITY_MEDIUM_COLOR,
+            PRIORITY_LOW_COLOR
+    };
 
     PriorityQueue() {
         animationSpeed = 300;
         setPreferredSize(new Dimension(width, height));
-        setBackground(new Color(0xA0F29));
     }
 
     @Override
@@ -21,7 +67,7 @@ final class PriorityQueue extends Queue {
         super.paintComponent(g1);
         Graphics2D g = (Graphics2D) g1;
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        drawGrid(g, gridColor);
+        paintGrid(g, null, gridColor);
         drawTitle(g);
         drawNodes(g);
         drawPriorityLegend(g);
@@ -29,14 +75,14 @@ final class PriorityQueue extends Queue {
 
     private void drawTitle(Graphics2D g) {
         g.setColor(Color.WHITE);
-        g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 24));
+        g.setFont(TITLE_FONT);
         g.drawString("Priority Queue (Higher Priority → Lower Number)", width / 2 - 300, 50);
 
         if (isEmpty()) {
-            g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 32));
+            g.setFont(EMPTY_FONT);
             g.drawString("QUEUE EMPTY", width / 2 - 120, height / 2);
         } else {
-            g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
+            g.setFont(TEXT_FONT);
             g.setColor(Color.GREEN);
             g.drawString("HIGHEST PRIORITY →", 20, startY + nodeHeight / 2);
         }
@@ -47,14 +93,13 @@ final class PriorityQueue extends Queue {
     }
 
     private void drawArrow(Graphics2D g, int x1, int y1, int x2, int y2) {
-        g.setColor(new Color(0xFFD700));
-        g.setStroke(new BasicStroke(3f));
+        g.setColor(ARROW_COLOR);
+        g.setStroke(ARROW_STROKE);
         g.drawLine(x1, y1, x2, y2);
 
         // Arrow head
-        int arrowSize = 8;
-        int[] xPoints = {x2, x2 - arrowSize, x2 - arrowSize};
-        int[] yPoints = {y1, y1 - arrowSize, y1 + arrowSize};
+        int[] xPoints = {x2, x2 - ARROW_SIZE, x2 - ARROW_SIZE};
+        int[] yPoints = {y1, y1 - ARROW_SIZE, y1 + ARROW_SIZE};
         g.fillPolygon(xPoints, yPoints, 3);
     }
 
@@ -62,39 +107,34 @@ final class PriorityQueue extends Queue {
         int legendX = width - 250;
         int legendY = 100;
 
-        g.setColor(new Color(0, 0, 0, 180));
+        g.setColor(LEGEND_BG_COLOR);
         g.fillRoundRect(legendX - 10, legendY - 30, 230, 180, 10, 10);
 
-        g.setColor(Color.WHITE);
-        g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 16));
+        g.setColor(LEGEND_TEXT_COLOR);
+        g.setFont(LEGEND_TITLE_FONT);
         g.drawString("Priority Legend:", legendX, legendY);
 
-        String[] priorities = {"P0 - Critical", "P1 - High", "P2 - Medium", "P3+ - Low"};
-        Color[] colors = {
-                new Color(0xFF0000),
-                new Color(0xFF6600),
-                new Color(0xFFD700),
-                new Color(0x00FF00)
-        };
-
-        for (int i = 0; i < priorities.length; i++) {
+        for (int i = 0; i < PRIORITY_LABELS.length; i++) {
             int y = legendY + 30 + i * 30;
-            g.setColor(colors[i]);
+
+            g.setColor(PRIORITY_COLORS[i]);
             g.fillRect(legendX, y - 12, 20, 20);
-            g.setColor(Color.WHITE);
-            g.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14));
-            g.drawString(priorities[i], legendX + 30, y);
+
+            g.setColor(LEGEND_TEXT_COLOR);
+            g.setFont(LEGEND_ITEM_FONT);
+            g.drawString(PRIORITY_LABELS[i], legendX + 30, y);
         }
     }
 
     private Color getPriorityColor(int priority) {
         return switch (priority) {
-            case 0 -> new Color(0xFF0000);      // Red - Critical
-            case 1 -> new Color(0xFF6600);      // Orange - High
-            case 2 -> new Color(0xFFD700);      // Gold - Medium
-            default -> new Color(0x00FF00);     // Green - Low
+            case 0 -> PRIORITY_CRITICAL_COLOR;
+            case 1 -> PRIORITY_HIGH_COLOR;
+            case 2 -> PRIORITY_MEDIUM_COLOR;
+            default -> PRIORITY_LOW_COLOR;
         };
     }
+
 
     private void enqueue(int value, int priority) {
         PriorityNode newNode = new PriorityNode(value, priority, 0, startY);
@@ -192,18 +232,15 @@ final class PriorityQueue extends Queue {
         timer.start();
     }
 
-    private void resize() {
-        super.resize(queue);
-    }
 
-    @Override
     protected void drawNode(Graphics2D g, Node n, int... args) {
         PriorityNode node = (PriorityNode) n;
+
         // Draw shadow
-        g.setColor(new Color(0, 0, 0, 50));
+        g.setColor(SHADOW_COLOR);
         g.fillRoundRect(node.xPos + 4, node.yPos + 4, nodeWidth, nodeHeight, 15, 15);
 
-        // Draw node with gradient effect
+        // Draw node with gradient effect (must stay dynamic)
         GradientPaint gradient = new GradientPaint(
                 node.xPos, node.yPos, node.color,
                 node.xPos, node.yPos + nodeHeight, node.color.darker()
@@ -213,15 +250,16 @@ final class PriorityQueue extends Queue {
 
         // Draw border
         g.setColor(getPriorityColor(node.priority));
-        g.setStroke(new BasicStroke(4f));
+        g.setStroke(BORDER_STROKE);
         g.drawRoundRect(node.xPos, node.yPos, nodeWidth, nodeHeight, 15, 15);
 
         // Draw priority badge
         int badgeSize = 30;
         g.setColor(getPriorityColor(node.priority));
         g.fillOval(node.xPos + nodeWidth - badgeSize - 5, node.yPos + 5, badgeSize, badgeSize);
-        g.setColor(Color.WHITE);
-        g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 14));
+
+        g.setColor(BADGE_TEXT_COLOR);
+        g.setFont(BADGE_FONT);
         String priorityStr = "P" + node.priority;
         FontMetrics fm = g.getFontMetrics();
         g.drawString(priorityStr,
@@ -229,8 +267,8 @@ final class PriorityQueue extends Queue {
                 node.yPos + 22);
 
         // Draw value
-        g.setColor(Color.WHITE);
-        g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 28));
+        g.setColor(VALUE_TEXT_COLOR);
+        g.setFont(VALUE_FONT);
         String valueStr = String.valueOf(node.data);
         fm = g.getFontMetrics();
         g.drawString(valueStr,
@@ -238,20 +276,23 @@ final class PriorityQueue extends Queue {
                 node.yPos + nodeHeight / 2 + 10);
 
         // Draw label
-        g.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        g.setColor(Color.YELLOW);
+        g.setFont(LABEL_FONT);
+        g.setColor(LABEL_COLOR);
         g.drawString("Value", node.xPos + nodeWidth / 2 - 15, node.yPos + nodeHeight - 10);
 
         // Draw arrow
         if (queue.indexOf(node) < queue.size() - 1) {
-            drawArrow(g, node.xPos + nodeWidth, node.yPos + nodeHeight / 2,
+            drawArrow(g,
+                    node.xPos + nodeWidth, node.yPos + nodeHeight / 2,
                     node.xPos + nodeWidth + spacing, node.yPos + nodeHeight / 2);
         }
     }
 
+
     /**
      * @param args 0 should be value, 1 should be priority
-     * */
+     *
+     */
     @Override
     public void enqueue(int... args) {
         int value = args[0];
@@ -282,9 +323,9 @@ public final class PriorityQueueWindow extends QueueWindow<PriorityQueue> {
                 JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         scrollPane.getHorizontalScrollBar().setUnitIncrement(20);
         JPanel controlPanel = new JPanel(new GridLayout(3, 1, 5, 5));
-        controlPanel.setBackground(new Color(0, 18, 121));
+        controlPanel.setBackground(backgroundColor);
         JPanel inputPanel = new JPanel(new GridLayout(1, 4, 5, 5));
-        inputPanel.setBackground(new Color(0, 18, 121));
+        inputPanel.setBackground(backgroundColor);
         textField = createTextField("Value");
         priorityField = createTextField("Priority (0-9)");
         enqueueButton.addActionListener(_ -> {

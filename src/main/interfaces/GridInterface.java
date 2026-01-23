@@ -10,19 +10,6 @@ import java.awt.*;
  * */
 public interface GridInterface extends DefaultWindowsInterface {
     int SPACING = 25;
-
-    /**
-     * The method is to draw Grid.
-     * The color of the grid is the current color of graphics context provided. Uses <code>g.getColor()</code> for color
-     *
-     * @param g Graphics Context
-     * @author Sri Koushik JK
-     * @since v0.0.2
-     */
-    default void drawGrid(Graphics2D g) {
-        drawGrid(g, g.getColor());
-    }
-
     /**
      * The method is to draw Grid
      *
@@ -34,7 +21,6 @@ public interface GridInterface extends DefaultWindowsInterface {
     default void drawGrid(Graphics2D g, Color color) {
         drawGrid(g, color, width);
     }
-
     /**
      * This one is for scrolling and dynamic updating
      *

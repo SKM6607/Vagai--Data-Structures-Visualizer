@@ -157,7 +157,7 @@ final class LinkedListVisual extends LinkedList {
     private void animatePop(VisualNode node) {
         isAnimating = true;
         Timer timer = new Timer(15, null);
-        timer.addActionListener(e -> {
+        timer.addActionListener(_ -> {
             if (node.yPos > -nodeHeight) {
                 node.yPos -= 12;
                 repaint();
