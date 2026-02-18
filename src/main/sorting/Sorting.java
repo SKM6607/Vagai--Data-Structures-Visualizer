@@ -2,7 +2,6 @@ package main.sorting;
 
 import main.base_panels.VisualizerGridPanel;
 import main.dialogs.LegendDialog;
-import main.interfaces.GridInterface;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,7 +12,8 @@ import java.util.Random;
 import static main.interfaces.MacroInterface.SELECTION_SORTING;
 
 /**
- * The <code>Sorting</code> abstract class is the class with the most basic methods for designing  and implementing <code>Sorting Algorithms</code>
+ * The <code>Sorting</code> abstract class is the class with the most basic
+ * methods for designing and implementing <code>Sorting Algorithms</code>
  *
  * @author Sri Koushik JK
  * @since v0.0.3
@@ -28,6 +28,7 @@ public sealed abstract class Sorting
     public LegendDialog legendDialog;
     protected String algoName;
     protected Map<String, Color> legend = new HashMap<>();
+
     public Sorting(JPanel parent) {
         parentWindow = SwingUtilities.getWindowAncestor(parent);
         algoName = SELECTION_SORTING;
@@ -36,9 +37,13 @@ public sealed abstract class Sorting
         invokeLegend();
         initAnimation();
     }
+
     /**
-     * The <code>legendSetup()</code> method is an abstract method required to be implemented whenever one is writing a sorting algorithm.
-     * <br>This helps opening a window that provides a legend for explaining sort algorithm
+     * The <code>legendSetup()</code> method is an abstract method required to be
+     * implemented whenever one is writing a sorting algorithm.
+     * <br>
+     * This helps opening a window that provides a legend for explaining sort
+     * algorithm
      *
      * @author Sri Koushik JK
      * @see Sorting
@@ -56,7 +61,8 @@ public sealed abstract class Sorting
      *
      */
     public final void setBlocks(int n) {
-        if(!blocks.isEmpty()) blocks.clear();
+        if (!blocks.isEmpty())
+            blocks.clear();
         Random random = new Random();
         final int dx = 10;
         int startX = 5;
@@ -73,7 +79,8 @@ public sealed abstract class Sorting
     }
 
     /**
-     * The <code>sort</code> method is an abstract method needed to be implemented whenever you are writing <code>Sorting Algorithms</code>
+     * The <code>sort</code> method is an abstract method needed to be implemented
+     * whenever you are writing <code>Sorting Algorithms</code>
      *
      * @author Sri Koushik JK
      * @see Sorting
@@ -136,29 +143,4 @@ public sealed abstract class Sorting
         }
     }
 
-    protected static final class ArrayBlock {
-        int x, y, height;
-        Color color;
-
-        public ArrayBlock(int x, int y, int height, Color color) {
-            this.x = x;
-            this.y = y;
-            this.height = height;
-            this.color = color;
-        }
-    }
-
-    protected static final class SortingHelper {
-        public static void swapBlocks(ArrayBlock block1, ArrayBlock block2) {
-            int temp = block1.height;
-            block1.height = block2.height;
-            block2.height = temp;
-        }
-
-        public static void swapHeights(ArrayList<ArrayBlock> arrayList, int i0, int i1) {
-            int temp = arrayList.get(i1).height;
-            arrayList.get(i1).height = arrayList.get(i0).height;
-            arrayList.get(i0).height = temp;
-        }
-    }
 }

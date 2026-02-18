@@ -14,11 +14,11 @@ public sealed abstract class GenericMenu
         permits LinkedListMenu,
         SortingMenu,
         QueueMenu,
-        StackMenu
+        StackMenu,
+        SearchingMenu
 {
     protected JMenuItem[] menuItems;
     protected JMenuItem currentItem;
-
     protected GenericMenu(String menuName, String[] menuItems, MainCardPanel parent) {
         super(menuName);
         this.menuItems = new JMenuItem[menuItems.length];

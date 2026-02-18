@@ -1,9 +1,6 @@
 package utils.main;
 
-import main.menu.LinkedListMenu;
-import main.menu.QueueMenu;
-import main.menu.SortingMenu;
-import main.menu.StackMenu;
+import main.menu.*;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,6 +16,7 @@ public final class MainMenuBar extends JMenuBar {
         QueueMenu queueMenu = QueueMenu.getInstance(parent);
         LinkedListMenu linkedListMenu = LinkedListMenu.getInstance(parent);
         StackMenu stackMenu = StackMenu.getInstance(parent);
+        SearchingMenu searchingMenu=SearchingMenu.getInstance(parent);
         setForeground(foregroundColor);
         setBackground(backgroundColor);
         setBorderPainted(false);
@@ -30,6 +28,8 @@ public final class MainMenuBar extends JMenuBar {
         add(stackMenu);
         add(Box.createHorizontalStrut(15));
         add(queueMenu);
+        add(Box.createHorizontalStrut(15));
+        add(searchingMenu);
     }
     @Contract(" -> new")
     public static @NotNull MainMenuBar getInstance(MainCardPanel parent) {

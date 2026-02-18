@@ -1,7 +1,5 @@
 package main.menu;
 
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 import utils.main.MainCardPanel;
 
 import static main.interfaces.MacroInterface.STACK;
@@ -19,8 +17,7 @@ public final class StackMenu extends GenericMenu {
      *
      * @return <code>StackMenu</code>
      */
-    @Contract(" -> new")
-    public static @NotNull StackMenu getInstance(MainCardPanel parent) {
-        return (singleton == null) ? singleton = new StackMenu(parent): singleton;
+    public static StackMenu getInstance(MainCardPanel parent) {
+        return (singleton == null) ? singleton = new StackMenu(parent) : singleton;
     }
 }

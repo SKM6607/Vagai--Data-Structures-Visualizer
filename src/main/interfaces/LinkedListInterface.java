@@ -40,7 +40,7 @@ public interface LinkedListInterface extends DefaultWindowsInterface {
     class VisualNode extends Node {
         public int xPos, yPos;
         private VisualNode nextNode;
-        private String nextAddress;
+        protected String nextAddress;
 
         public VisualNode(int data, int x, int y) {
             super(data);
@@ -57,8 +57,6 @@ public interface LinkedListInterface extends DefaultWindowsInterface {
         public final VisualNode getNextNode() {
             return nextNode;
         }
-
-        //TODO WORK THIS OUT
         public final void setNextNode(VisualNode node) {
             this.nextNode = node;
             if (node == null) {

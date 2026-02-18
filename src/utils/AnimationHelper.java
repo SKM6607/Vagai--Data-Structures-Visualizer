@@ -1,7 +1,6 @@
 package utils;
 
 import main.interfaces.LinkedListInterface;
-import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;

@@ -18,4 +18,9 @@ public interface MacroInterface extends DefaultWindowsInterface {
     String[] QUEUE_ARRAY = {SIMPLE_QUEUE, CIRCULAR_QUEUE, PRIORITY_QUEUE};
     String[] LINKED_LIST_ARRAY = {LINKED_LIST, CYCLE_DETECTION};
     String[] STACK_ARRAY = {STACK};
+    String SEARCHING_ALGORITHMS = "Searching Algorithms";
+    String A_STAR_ALGORITHM = "A* Algorithm";
+    String BFS_ALGORITHM = "Breadth First Search";
+    String DFS_ALGORITHM = "Depth First Search";
+    String[] SEARCHING_ARRAY = {BFS_ALGORITHM, DFS_ALGORITHM, A_STAR_ALGORITHM};
 }

@@ -1,9 +1,11 @@
 package main.sorting;
+
 import main.dialogs.LegendDialog;
 
 import javax.swing.*;
 import java.awt.*;
-import static main.sorting.Sorting.SortingHelper.swapBlocks;
+import static main.sorting.SortingHelper.swapBlocks;
+
 public final class SelectionSort extends Sorting {
     public SelectionSort(JPanel parent) {
         super(parent);

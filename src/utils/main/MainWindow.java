@@ -4,9 +4,7 @@ import sound.BackgroundMusic;
 
 import javax.swing.*;
 import java.awt.*;
-
 import static main.interfaces.MacroInterface.*;
-
 public final class MainWindow extends JFrame {
     private static final Thread backgroundMusicThread = new Thread(BackgroundMusic.getInstance());
     private static final CardLayout cardLayout = new CardLayout();
