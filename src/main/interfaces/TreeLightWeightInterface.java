@@ -7,8 +7,8 @@ public interface TreeLightWeightInterface extends TreeInterface
         public final TreeNode root;
         //TODO IMPLEMENT NODES AT EACH LEVEL
         private int depth;
-        public Tree(TreeNode root){
-            this.root=root;
+        public Tree(){
+            this.root=new TreeNode(0,0,0,null);
             this.depth=0;
             this.totalNodes=0;
         }

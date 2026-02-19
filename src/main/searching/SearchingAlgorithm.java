@@ -1,13 +1,14 @@
 package main.searching;
 
 import main.interfaces.MacroInterface;
-import main.interfaces.TreeInterface.TreeNode;
+import main.interfaces.TreeLightWeightInterface;
+
 import java.util.concurrent.Callable;
-import main.interfaces.TreeLightWeightInterface.Tree;
+
 public abstract class SearchingAlgorithm {
     protected String algorithmName = MacroInterface.SEARCHING_ALGORITHMS;
-    protected Tree tree;
-    protected SearchingAlgorithm(Tree tree){
+    protected TreeLightWeightInterface.Tree tree;
+    protected SearchingAlgorithm(TreeLightWeightInterface.Tree tree){
         this.tree=tree;
     }
 

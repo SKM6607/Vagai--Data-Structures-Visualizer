@@ -5,6 +5,9 @@ import main.base_panels.HomePanel;
 import main.queues.CircularQueueWindow;
 import main.queues.PriorityQueueWindow;
 import main.queues.SimpleQueueWindow;
+import main.searching.AStarSearchWindow;
+import main.searching.BreadthFirstSearchWindow;
+import main.searching.DepthFirstSearchWindow;
 import main.sorting.SortingWindow;
 import main.stack.StackWindowUsable;
 import org.jetbrains.annotations.NotNull;
@@ -20,6 +23,9 @@ public final class MainCardPanel extends JPanel {
     private static final SimpleQueueWindow simpleQueueWindow = SimpleQueueWindow.createSimpleQueueWindow();
     private static final CircularQueueWindow circularQueueWindow = CircularQueueWindow.createCircularQueueWindow();
     private static final PriorityQueueWindow priorityQueueWindow = PriorityQueueWindow.createPriorityQueueWindow();
+    private static final DepthFirstSearchWindow depthFirstSearchWindow=DepthFirstSearchWindow.createDepthFirstSearchWindow();
+    private static final BreadthFirstSearchWindow breadthFirstSearchWindow=BreadthFirstSearchWindow.createBreadthFirstSearchWindow();
+    private static final AStarSearchWindow aStarSearchWindow=AStarSearchWindow.createAStarSearchWindow();
     private static MainCardPanel singleton = null;
     public final CardLayout cardLayout = new CardLayout();
     private final HomePanel homePanel = HomePanel.getInstance(this);
@@ -36,6 +42,9 @@ public final class MainCardPanel extends JPanel {
         add(simpleQueueWindow, SIMPLE_QUEUE);
         add(circularQueueWindow, CIRCULAR_QUEUE);
         add(priorityQueueWindow, PRIORITY_QUEUE);
+        add(depthFirstSearchWindow,DFS_ALGORITHM);
+        add(breadthFirstSearchWindow,BFS_ALGORITHM);
+        add(aStarSearchWindow,A_STAR_ALGORITHM);
     }
 
     public static @NotNull MainCardPanel getInstance() {
