@@ -1,30 +1,33 @@
 package main.searching;
 
-import main.interfaces.GridInterface;
-import main.interfaces.TreeLightWeightInterface;
+import main.base_panels.VisualizerGridPanel;
 
-import javax.swing.*;
 import java.awt.*;
 
+import static main.interfaces.TreeLightWeightInterface.Tree;
+
 public sealed abstract class SearchingVisual
-        extends JPanel
-        implements GridInterface
+        extends VisualizerGridPanel
         permits
         BreadthFirstSearchVisual,
         DepthFirstSearchVisual,
-        AStarSearchVisual
-{
-    protected final TreeLightWeightInterface.Tree tree;
-    protected SearchingAlgorithm algorithm;
+        AStarSearchVisual {
+    protected final Tree tree;
+    protected final int MAX_WIDTH = width, MAX_HEIGHT = 3 * height / 4;
+    public SearchingAlgorithm algorithm;
 
-    protected SearchingVisual(TreeLightWeightInterface.Tree tree, SearchingAlgorithm algorithm) {
+    protected SearchingVisual(Tree tree, SearchingAlgorithm algorithm) {
         this.tree = tree;
         this.algorithm = algorithm;
+        setBackground(defaultBackgroundColor);
+        setPreferredSize(new Dimension(MAX_WIDTH,MAX_HEIGHT));
     }
 
+    @Override
     protected void paintComponent(Graphics g0) {
+        super.paintComponent(g0);
         Graphics2D g = (Graphics2D) g0;
-        drawGrid(g, g.getColor());
+        paintGrid(g);
         drawTree(g);
         drawArrows(g);
         drawText(g);

@@ -35,7 +35,7 @@ public sealed abstract class Queue
 
     protected abstract void drawNode(Graphics2D g, Node node, int... args);
     public Queue(){
-        setBackground(new Color(0xA0F29));
+        setBackground(defaultBackgroundColor);
     }
     public void setAnimationSpeed(int s) {
         this.animationSpeed = s;

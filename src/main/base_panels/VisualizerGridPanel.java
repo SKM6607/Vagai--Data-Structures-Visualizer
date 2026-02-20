@@ -16,6 +16,7 @@ import java.awt.image.BufferedImage;
 public abstract class VisualizerGridPanel
         extends JPanel
         implements GridInterface {
+    protected Color defaultBackgroundColor=new Color(0xA0F29);
     protected Color color;
     private BufferedImage bufferedImage;
     private Dimension cachedSize;
