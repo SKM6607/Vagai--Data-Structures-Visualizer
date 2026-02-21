@@ -24,6 +24,7 @@ public final class MainWindow extends JFrame {
         add(mainPanel, BorderLayout.CENTER);
         setLayout(cardLayout);
         setVisible(true);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
