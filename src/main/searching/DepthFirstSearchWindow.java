@@ -4,10 +4,11 @@ import java.awt.*;
 
 import static main.interfaces.TreeLightWeightInterface.Tree;
 
+import static main.interfaces.MacroInterface.*;
 final class DepthFirstSearch extends SearchingAlgorithm {
 
     DepthFirstSearch(Tree tree) {
-        super(tree);
+        super(tree,DFS_ALGORITHM);
     }
 
     @Override

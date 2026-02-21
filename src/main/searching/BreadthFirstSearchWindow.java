@@ -3,11 +3,11 @@ package main.searching;
 import java.awt.*;
 
 import static main.interfaces.TreeLightWeightInterface.Tree;
-
+import static main.interfaces.MacroInterface.*;
 final class BreadthFirstSearchAlgorithm extends SearchingAlgorithm {
 
     BreadthFirstSearchAlgorithm(Tree tree) {
-        super(tree);
+        super(tree,BFS_ALGORITHM);
     }
 
     @Override

@@ -4,10 +4,10 @@ import java.awt.*;
 
 import static main.interfaces.TreeLightWeightInterface.Tree;
 
+import static main.interfaces.MacroInterface.*;
 final class AStarSearchAlgorithm extends SearchingAlgorithm {
-
     AStarSearchAlgorithm(Tree tree) {
-        super(tree);
+        super(tree,A_STAR_ALGORITHM);
     }
 
     @Override
