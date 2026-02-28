@@ -4,14 +4,7 @@ import lombok.Getter;
 
 public interface TreeLightWeightInterface extends TreeInterface {
     default TreeNode setChildren(TreeNode parent, TreeNode child, TreeNode.NodeDirection direction) {
-            /*if (root == null) {
-                return new TreeNode(value);
-            }
-            if (value < root.value) {
-                root.left = insert(root.left, value);
-            } else if (value > root.value) {
-                root.right = insert(root.right, value);
-            }*/
+
         child.setYPos(parent.getYPos() + 2 * nodeRadius);
         if (parent.getRight() == null && direction.direction.equalsIgnoreCase("Right")) {
             child.setXPos(5 * parent.getXPos() / 4 - nodeRadius);
@@ -58,9 +51,6 @@ public interface TreeLightWeightInterface extends TreeInterface {
             this.totalNodes = 0;
         }
 
-        public void extendTree(TreeNode node, TreeNode.NodeDirection direction) {
-            extendTree(currentNode, node, direction);
-        }
 
         public void extendTree(TreeNode parentNode, TreeNode node, TreeNode.NodeDirection direction) {
             this.currentNode = setChildren(parentNode, node, direction);

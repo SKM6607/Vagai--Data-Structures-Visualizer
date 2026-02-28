@@ -26,7 +26,6 @@ public sealed abstract class SearchingVisual
     protected final int MAX_WIDTH = width, MAX_HEIGHT = 3 * height / 4;
     private final List<NodeListener> listenerList = new ArrayList<>();
     public SearchingAlgorithm algorithm;
-    private boolean mouseInRange = false;
     private int fontOffset;
     @Getter
     private TreeInterface.TreeNode selectedNode;
@@ -49,6 +48,22 @@ public sealed abstract class SearchingVisual
         for (NodeListener l : listenerList) {
             l.onSelected(node);
         }
+    }
+
+    public void extendTreeAtSelectedNode(TreeInterface.TreeNode node, int val) {
+        TreeInterface.TreeNode right = node.getRight();
+        TreeInterface.TreeNode child = new TreeInterface.TreeNode(val);
+        if (node.getRight() != null && node.getLeft() != null){
+            throw new IndexOutOfBoundsException("The Selected Node is Full");
+        }
+            if (right != null) {
+                System.out.println("Extend agutha?");
+                tree.extendTree(node, child, TreeInterface.TreeNode.NodeDirection.LEFT);
+            } else {
+                tree.extendTree(node, child, TreeInterface.TreeNode.NodeDirection.RIGHT);
+            }
+
+        repaint();
     }
 
     @Override
@@ -157,8 +172,7 @@ public sealed abstract class SearchingVisual
         int centerX = node.getXPos() + nodeRadius / 2;
         int centerY = node.getYPos() + nodeRadius / 2;
         double distance = Math.pow(centerX - x, 2) + Math.pow(centerY - y, 2);
-        mouseInRange = distance <= nodeRadius * nodeRadius;
-        if (mouseInRange) {
+        if (distance <= nodeRadius * nodeRadius) {
             return node;
         }
         TreeInterface.TreeNode intersectsInLeft = returnNodeOnCursorIntersectionWithAnyNode(x, y, node.getLeft());
@@ -182,16 +196,13 @@ public sealed abstract class SearchingVisual
 
     @Override
     public void mouseReleased(MouseEvent e) {
-
     }
 
     @Override
     public void mouseEntered(MouseEvent e) {
-
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
-
     }
 }

@@ -26,6 +26,7 @@ public abstract class SearchingWindow extends JPanel implements DefaultWindowsIn
     protected SearchingAlgorithm searchingAlgorithm;
     protected JPanel controlPanel;
     Font font = new Font(Font.SANS_SERIF, Font.BOLD, 18);
+    private TreeInterface.TreeNode selectedNode;
 
     protected SearchingWindow(SearchingVisual searchingVisual) {
         this.searchingVisual = searchingVisual;
@@ -139,6 +140,7 @@ public abstract class SearchingWindow extends JPanel implements DefaultWindowsIn
         String nodeData = (node.data == 0) ? "ROOT" : String.valueOf(node.data);
         String nodeAddress = "Address: " + node.getAddress();
         nodeSelectedLabel.setText(String.format("[Value: %s, %s]", nodeData, nodeAddress));
+        selectedNode = node;
         toggleFields(true);
     }
 
@@ -151,11 +153,31 @@ public abstract class SearchingWindow extends JPanel implements DefaultWindowsIn
         beginSearchButton.setEnabled(b);
     }
 
+    private void basicInputChecker() {
+        try {
+            int value = Integer.parseInt(valueToAddTextField.getText());
+            if (value < -100 || value > 100) {
+                JOptionPane.showMessageDialog(null, "Valid Range (-100,100) - {0}", "Invalid Range", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            if (value != 0) {
+                searchingVisual.extendTreeAtSelectedNode(selectedNode, value);
+            }
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(null, "Only Numeric Input Allowed", "Invalid Input", JOptionPane.WARNING_MESSAGE);
+        } catch (IndexOutOfBoundsException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.WARNING_MESSAGE);
+        }
+
+    }
+
     private void setupActionListeners() {
         valueToAddTextField.addActionListener(e -> {
-
+            basicInputChecker();
         });
         addNodeButton.addActionListener(a -> {
+            basicInputChecker();
+            valueToAddTextField.setText("");
             toggleFields(false);
             nodeSelectedLabel.setText(NO_NODE_SELECTED);
         });
