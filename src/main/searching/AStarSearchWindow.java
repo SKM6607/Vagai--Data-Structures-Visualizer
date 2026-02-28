@@ -9,7 +9,6 @@ final class AStarSearchAlgorithm extends SearchingAlgorithm {
     AStarSearchAlgorithm(Tree tree) {
         super(tree,A_STAR_ALGORITHM);
     }
-
     @Override
     int search(int value) {
         return 0;

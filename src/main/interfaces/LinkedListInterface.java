@@ -17,6 +17,9 @@ public interface LinkedListInterface extends DefaultWindowsInterface {
         private final String address = "0x" + Integer.toHexString(System.identityHashCode(this));
         public int data;
 
+        public Node() {
+            data = 0;
+        }
         public Node(int data) {
             this.data = data;
         }
@@ -39,8 +42,8 @@ public interface LinkedListInterface extends DefaultWindowsInterface {
      */
     class VisualNode extends Node {
         public int xPos, yPos;
-        private VisualNode nextNode;
         protected String nextAddress;
+        private VisualNode nextNode;
 
         public VisualNode(int data, int x, int y) {
             super(data);
@@ -57,6 +60,7 @@ public interface LinkedListInterface extends DefaultWindowsInterface {
         public final VisualNode getNextNode() {
             return nextNode;
         }
+
         public final void setNextNode(VisualNode node) {
             this.nextNode = node;
             if (node == null) {

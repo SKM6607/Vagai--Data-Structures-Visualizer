@@ -1,5 +1,7 @@
 package main.searching;
 
+import main.interfaces.TreeInterface;
+
 import java.awt.*;
 
 import static main.interfaces.TreeLightWeightInterface.Tree;
@@ -24,7 +26,17 @@ final class BreadthFirstSearchVisual extends SearchingVisual {
     }
 
     public static BreadthFirstSearchVisual initialize() {
-        return (singleton == null) ? singleton = new BreadthFirstSearchVisual(new Tree()) : singleton;
+        Tree tree=new Tree();
+        /*
+        TreeInterface.TreeNode right=new TreeInterface.TreeNode(12);
+        TreeInterface.TreeNode left=new TreeInterface.TreeNode(12);
+        TreeInterface.TreeNode right1=new TreeInterface.TreeNode(12);
+        TreeInterface.TreeNode left1=new TreeInterface.TreeNode(12);
+        tree.extendTree(tree.root,right, TreeInterface.TreeNode.NodeDirection.RIGHT);
+        tree.extendTree(tree.root,left, TreeInterface.TreeNode.NodeDirection.LEFT);
+        tree.extendTree(tree.root.getRight(),right1, TreeInterface.TreeNode.NodeDirection.RIGHT);
+        tree.extendTree(tree.root.getLeft(),left1, TreeInterface.TreeNode.NodeDirection.LEFT);*/
+        return (singleton == null) ? singleton = new BreadthFirstSearchVisual(tree) : singleton;
     }
 
     @Override
