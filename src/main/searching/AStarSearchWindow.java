@@ -1,6 +1,7 @@
 package main.searching;
 
 import java.awt.*;
+import java.awt.event.MouseEvent;
 
 import static main.interfaces.TreeLightWeightInterface.Tree;
 
@@ -25,11 +26,12 @@ final class AStarSearchVisual extends SearchingVisual {
     public static AStarSearchVisual initialize() {
         return (singleton == null) ? singleton = new AStarSearchVisual(new Tree()) : singleton;
     }
-
     @Override
     protected void drawSearch(Graphics2D g) {
 
     }
+
+
 }
 
 public class AStarSearchWindow extends SearchingWindow {
@@ -37,6 +39,7 @@ public class AStarSearchWindow extends SearchingWindow {
 
     protected AStarSearchWindow(SearchingVisual searchingVisual) {
         super(searchingVisual);
+
     }
 
     public static AStarSearchWindow createAStarSearchWindow() {

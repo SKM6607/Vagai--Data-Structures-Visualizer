@@ -1,20 +1,22 @@
 package main.searching;
 
 import main.interfaces.DefaultWindowsInterface;
+import main.interfaces.NodeListener;
+import main.interfaces.TreeInterface;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
-import javax.swing.border.Border;
 import java.awt.*;
 
-public abstract class SearchingWindow extends JPanel implements DefaultWindowsInterface {
+public abstract class SearchingWindow extends JPanel implements DefaultWindowsInterface, NodeListener {
     private static final String SELECTED_NODE = "Selected Node: ";
     private static final String ADD_NODE = "Add Node";
     private static final String DELETE_NODE = "Delete Node";
     private static final String GOAL_STATE = "Set Goal State";
     private static final String START_SEARCHING = "Start Searching";
+    private static final String NO_NODE_SELECTED = " NO NODE SELECTED ";
     private final String algorithmTitle;
-    private final JLabel nodeSelectedLabel = new JLabel("<--NO-NODE-SELECTED-->");
+    private final JLabel nodeSelectedLabel = new JLabel(NO_NODE_SELECTED);
     private final JTextField valueToAddTextField = new JTextField("");
     private final JButton addNodeButton = new JButton(ADD_NODE);
     private final JButton deleteNodeButton = new JButton(DELETE_NODE);
@@ -24,25 +26,29 @@ public abstract class SearchingWindow extends JPanel implements DefaultWindowsIn
     protected SearchingAlgorithm searchingAlgorithm;
     protected JPanel controlPanel;
     Font font = new Font(Font.SANS_SERIF, Font.BOLD, 18);
+
     protected SearchingWindow(SearchingVisual searchingVisual) {
         this.searchingVisual = searchingVisual;
         this.searchingAlgorithm = searchingVisual.algorithm;
         this.algorithmTitle = this.searchingAlgorithm.algorithmName;
         setLayout(new BorderLayout());
         this.controlPanel = setupControlPanel();
+        this.searchingVisual.addNodeListener(this);
         this.setupActionListeners();
-        searchingVisual.setPreferredSize(new Dimension(width,5*height/6));
-        add(searchingVisual,BorderLayout.CENTER);
-        controlPanel.setPreferredSize(new Dimension(width,height/6));
-        add(controlPanel,BorderLayout.SOUTH);
+        searchingVisual.setPreferredSize(new Dimension(width, 5 * height / 6));
+        add(searchingVisual, BorderLayout.CENTER);
+        controlPanel.setPreferredSize(new Dimension(width, height / 6));
+        add(controlPanel, BorderLayout.SOUTH);
+
     }
+
     private JPanel setupControlPanel() {
 
-        JLabel selectedNode = new JLabel(SELECTED_NODE,SwingConstants.CENTER);
+        JLabel selectedNode = new JLabel(SELECTED_NODE, SwingConstants.CENTER);
         // Main control panel
         JLabel title = new JLabel(algorithmTitle, SwingConstants.CENTER);
         JPanel controlPanel = new JPanel();
-        controlPanel.setLayout(new GridLayout(3,1,10,10));
+        controlPanel.setLayout(new GridLayout(3, 1, 10, 10));
         controlPanel.setBackground(backgroundColor);
         title.setFont(font.deriveFont(22.0f));
 // --- Title at top ---
@@ -69,26 +75,22 @@ public abstract class SearchingWindow extends JPanel implements DefaultWindowsIn
         valueToAddTextField.setHorizontalAlignment(SwingConstants.CENTER);
         valueToAddTextField.setBackground(backgroundColor);
         valueToAddTextField.setForeground(Color.WHITE);
-        valueToAddTextField.setEnabled(false);
         valueToAddTextField.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         row2.add(valueToAddTextField);
         addNodeButton.setFont(font);
         addNodeButton.setBackground(new Color(20, 82, 5));
         addNodeButton.setForeground(Color.WHITE);
-        addNodeButton.setEnabled(false);
         addNodeButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         row2.add(addNodeButton);
         controlPanel.add(row2);
         JPanel row3 = new JPanel(new GridLayout(1, 4, 5, 5)); // 1 row, 4 columns
         row3.setBackground(backgroundColor);
         deleteNodeButton.setFont(font);
-        deleteNodeButton.setEnabled(false);
         deleteNodeButton.setBackground(Color.RED);
         deleteNodeButton.setForeground(Color.WHITE);
         deleteNodeButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         row3.add(deleteNodeButton);
         setGoalStateButton.setFont(font);
-        setGoalStateButton.setEnabled(false);
         setGoalStateButton.setBackground(Color.YELLOW);
         setGoalStateButton.setForeground(Color.BLACK);
         setGoalStateButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -96,7 +98,7 @@ public abstract class SearchingWindow extends JPanel implements DefaultWindowsIn
 
 // Leave one empty panel for spacing
         beginSearchButton.setFont(font);
-        beginSearchButton.setEnabled(false);
+        toggleFields(false);
 // Begin search button spans last 2 columns
         beginSearchButton.setBackground(Color.BLACK);
         beginSearchButton.setForeground(Color.WHITE);
@@ -107,7 +109,7 @@ public abstract class SearchingWindow extends JPanel implements DefaultWindowsIn
         beginSearchWrapper.setBackground(backgroundColor);
         row3.add(beginSearchWrapper);
         controlPanel.add(row3);
-        BevelBorder border=new BevelBorder(BevelBorder.RAISED){
+        BevelBorder border = new BevelBorder(BevelBorder.RAISED) {
             @Override
             public Color getHighlightInnerColor() {
                 return Color.WHITE;
@@ -129,19 +131,45 @@ public abstract class SearchingWindow extends JPanel implements DefaultWindowsIn
             }
         };
         controlPanel.setBorder(border);
-       return controlPanel;
+        return controlPanel;
+    }
+
+    @Override
+    public void onSelected(TreeInterface.TreeNode node) {
+        String nodeData = (node.data == 0) ? "ROOT" : String.valueOf(node.data);
+        String nodeAddress = "Address: " + node.getAddress();
+        nodeSelectedLabel.setText(String.format("[Value: %s, %s]", nodeData, nodeAddress));
+        toggleFields(true);
+    }
+
+
+    private void toggleFields(boolean b) {
+        valueToAddTextField.setEnabled(b);
+        addNodeButton.setEnabled(b);
+        deleteNodeButton.setEnabled(b);
+        setGoalStateButton.setEnabled(b);
+        beginSearchButton.setEnabled(b);
     }
 
     private void setupActionListeners() {
         valueToAddTextField.addActionListener(e -> {
+
         });
         addNodeButton.addActionListener(a -> {
+            toggleFields(false);
+            nodeSelectedLabel.setText(NO_NODE_SELECTED);
         });
         deleteNodeButton.addActionListener(a -> {
+            toggleFields(false);
+            nodeSelectedLabel.setText(NO_NODE_SELECTED);
         });
         setGoalStateButton.addActionListener(a -> {
+            toggleFields(false);
+            nodeSelectedLabel.setText(NO_NODE_SELECTED);
         });
         beginSearchButton.addActionListener(a -> {
+            toggleFields(false);
+            nodeSelectedLabel.setText(NO_NODE_SELECTED);
         });
     }
 
