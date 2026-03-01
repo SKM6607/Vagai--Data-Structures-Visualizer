@@ -7,7 +7,7 @@ import main.interfaces.LinkedListInterface.Node;
 import java.awt.*;
 
 public interface TreeInterface extends DefaultWindowsInterface {
-    int nodeRadius = 65;
+    int nodeRadius = 70;
     @Data
     class TreeNode extends Node {
         private int xPos, yPos;

@@ -5,12 +5,14 @@ import main.base_panels.VisualizerGridPanel;
 import main.interfaces.NodeListener;
 import main.interfaces.TreeInterface;
 
+import javax.naming.CannotProceedException;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import static main.interfaces.TreeInterface.nodeRadius;
 import static main.interfaces.TreeLightWeightInterface.Tree;
@@ -27,6 +29,7 @@ public sealed abstract class SearchingVisual
     private final List<NodeListener> listenerList = new ArrayList<>();
     public SearchingAlgorithm algorithm;
     private int fontOffset;
+    private TreeInterface.TreeNode target;
     @Getter
     private TreeInterface.TreeNode selectedNode;
 
@@ -53,17 +56,67 @@ public sealed abstract class SearchingVisual
     public void extendTreeAtSelectedNode(TreeInterface.TreeNode node, int val) {
         TreeInterface.TreeNode right = node.getRight();
         TreeInterface.TreeNode child = new TreeInterface.TreeNode(val);
-        if (node.getRight() != null && node.getLeft() != null){
+        if (node.getRight() != null && node.getLeft() != null) {
             throw new IndexOutOfBoundsException("The Selected Node is Full");
         }
-            if (right != null) {
-                System.out.println("Extend agutha?");
-                tree.extendTree(node, child, TreeInterface.TreeNode.NodeDirection.LEFT);
-            } else {
-                tree.extendTree(node, child, TreeInterface.TreeNode.NodeDirection.RIGHT);
-            }
+        if (right != null) {
+            tree.extendTree(node, child, TreeInterface.TreeNode.NodeDirection.LEFT);
+        } else {
+            tree.extendTree(node, child, TreeInterface.TreeNode.NodeDirection.RIGHT);
+        }
 
         repaint();
+    }
+
+    public void removeSelectedNode(TreeInterface.TreeNode node) throws CannotProceedException {
+        if (node == tree.root) {
+            throw new CannotProceedException("Cannot delete Root Node");
+        }
+        if (removeHelper(tree.root, node)) {
+            repaint();
+        } else throw new NoSuchElementException("No such Node Found");
+    }
+
+    public void setGoalState(TreeInterface.TreeNode node) {
+        if (target != null) {
+            target.setNodeColor(backgroundColor);
+            target.setTextColor(Color.WHITE);
+        }
+        goalStateFinder(tree.root, node);
+        target.setNodeColor(Color.GREEN);
+        target.setTextColor(Color.BLACK);
+        repaint();
+    }
+
+    private void goalStateFinder(TreeInterface.TreeNode node, TreeInterface.TreeNode target) {
+        if (node == null) {
+            return;
+        }
+        if (node == target) {
+            this.target = target;
+            return;
+        }
+        goalStateFinder(node.getLeft(), target);
+        goalStateFinder(node.getRight(), target);
+    }
+
+    private boolean removeHelper(TreeInterface.TreeNode current, TreeInterface.TreeNode target) {
+        if (current == null) {
+            return false;
+        }
+        if (current.getRight() == target || current.getLeft() == target) {
+            //TODO Remove Node
+            if (current.getRight() == target) {
+                current.setRight(null);
+            }
+            if (current.getLeft() == target) {
+                current.setLeft(null);
+            }
+            return true;
+        }
+        boolean l = removeHelper(current.getLeft(), target);
+        boolean r = removeHelper(current.getRight(), target);
+        return l || r;
     }
 
     @Override

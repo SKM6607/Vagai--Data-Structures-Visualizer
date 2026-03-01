@@ -4,9 +4,11 @@ import main.interfaces.DefaultWindowsInterface;
 import main.interfaces.NodeListener;
 import main.interfaces.TreeInterface;
 
+import javax.naming.CannotProceedException;
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import java.awt.*;
+import java.util.NoSuchElementException;
 
 public abstract class SearchingWindow extends JPanel implements DefaultWindowsInterface, NodeListener {
     private static final String SELECTED_NODE = "Selected Node: ";
@@ -163,6 +165,9 @@ public abstract class SearchingWindow extends JPanel implements DefaultWindowsIn
             if (value != 0) {
                 searchingVisual.extendTreeAtSelectedNode(selectedNode, value);
             }
+            valueToAddTextField.setText("");
+            toggleFields(false);
+            nodeSelectedLabel.setText(NO_NODE_SELECTED);
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(null, "Only Numeric Input Allowed", "Invalid Input", JOptionPane.WARNING_MESSAGE);
         } catch (IndexOutOfBoundsException e) {
@@ -171,21 +176,22 @@ public abstract class SearchingWindow extends JPanel implements DefaultWindowsIn
 
     }
 
+    private void basicDeletion() {
+        try {
+            searchingVisual.removeSelectedNode(selectedNode);
+            toggleFields(false);
+            nodeSelectedLabel.setText(NO_NODE_SELECTED);
+        } catch (NoSuchElementException | CannotProceedException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
     private void setupActionListeners() {
-        valueToAddTextField.addActionListener(e -> {
-            basicInputChecker();
-        });
-        addNodeButton.addActionListener(a -> {
-            basicInputChecker();
-            valueToAddTextField.setText("");
-            toggleFields(false);
-            nodeSelectedLabel.setText(NO_NODE_SELECTED);
-        });
-        deleteNodeButton.addActionListener(a -> {
-            toggleFields(false);
-            nodeSelectedLabel.setText(NO_NODE_SELECTED);
-        });
+        valueToAddTextField.addActionListener(_ -> basicInputChecker());
+        addNodeButton.addActionListener(_ -> basicInputChecker());
+        deleteNodeButton.addActionListener(_ -> basicDeletion());
         setGoalStateButton.addActionListener(a -> {
+            searchingVisual.setGoalState(selectedNode);
             toggleFields(false);
             nodeSelectedLabel.setText(NO_NODE_SELECTED);
         });
