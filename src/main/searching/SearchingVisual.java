@@ -24,6 +24,7 @@ public sealed abstract class SearchingVisual
         BreadthFirstSearchVisual,
         DepthFirstSearchVisual,
         AStarSearchVisual {
+    private static final Random random = new Random();
     protected final Tree tree;
     protected final int MAX_WIDTH = width, MAX_HEIGHT = 3 * height / 4;
     private final List<NodeListener> listenerList = new ArrayList<>();
@@ -32,7 +33,8 @@ public sealed abstract class SearchingVisual
     private TreeInterface.TreeNode target;
     @Getter
     private TreeInterface.TreeNode selectedNode;
-    private static final Random random=new Random();
+    private TreeInterface.TreeNode hoveredNode = null;
+
     protected SearchingVisual(Tree tree, SearchingAlgorithm algorithm) {
         this.tree = tree;
         this.algorithm = algorithm;
@@ -42,18 +44,18 @@ public sealed abstract class SearchingVisual
         setFocusable(true);
         setPreferredSize(new Dimension(MAX_WIDTH, MAX_HEIGHT));
     }
+
     /**
      * Randomizes Tree based on range parameter
      *
      * @param range Range of the random values (-range,range)
-     * @param depth Maximum level of depth Allowed till 3
      *
      */
     public void randomizeTree(int range) throws CannotProceedException {
         tree.treeReset();
         if (range > 999 || range < -999 || range == 0)
             throw new CannotProceedException("Cannot Randomize tree as the inputs are invalid. Kindly provide valid inputs");
-        int depth=random.nextInt(0,3);
+        int depth = random.nextInt(0, 3);
         randomizeHelper(tree.root, range, depth);
         Tree.alignAllTreeNodes(tree);
         repaint();
@@ -63,11 +65,11 @@ public sealed abstract class SearchingVisual
         if (depth == 0) return;
         int rInt = random.nextInt(-range, range);
         int lInt = random.nextInt(-range, range);
-        if(random.nextBoolean()) {
+        if (random.nextBoolean()) {
             node.setRight(new TreeInterface.TreeNode(rInt));
             randomizeHelper(node.getRight(), range, depth - 1);
         }
-        if(random.nextBoolean()) {
+        if (random.nextBoolean()) {
             node.setLeft(new TreeInterface.TreeNode(lInt));
             randomizeHelper(node.getLeft(), range, depth - 1);
         }
@@ -128,10 +130,11 @@ public sealed abstract class SearchingVisual
         goalStateFinder(node.getRight(), target);
     }
 
-    public void updateNode(TreeInterface.TreeNode node,int val){
-        tree.updateNode(node,val);
+    public void updateNode(TreeInterface.TreeNode node, int val) {
+        tree.updateNode(node, val);
         repaint();
     }
+
     @Override
     protected void paintComponent(Graphics g0) {
         super.paintComponent(g0);
@@ -141,6 +144,7 @@ public sealed abstract class SearchingVisual
         drawArrows(g);
         drawText(g);
         drawSearch(g);
+        if (hoveredNode != null) drawTooltip(g, hoveredNode);
     }
 
     protected void drawTree(Graphics2D g) {
@@ -182,7 +186,7 @@ public sealed abstract class SearchingVisual
         g.setColor(Color.YELLOW);
         g.drawOval(drawWithOffsets, node.getYPos(), nodeRadius + 1, nodeRadius + 1);
     }
-
+    public void resetSelectedNode(){selectedNode=null;}
     protected void drawArrowsHelper(Graphics2D g, TreeInterface.TreeNode node) {
         if (node == null) return;
         int parentX = node.getXPos() + nodeRadius - 1, parentY = node.getYPos() + nodeRadius + 1;
@@ -212,23 +216,73 @@ public sealed abstract class SearchingVisual
     public void mouseDragged(MouseEvent e) {
     }
 
-    @Override
     public void mouseMoved(MouseEvent e) {
         int x = e.getX(), y = e.getY();
         TreeInterface.TreeNode node = returnNodeOnCursorIntersectionWithAnyNode(x, y, tree.root);
+
+        if (hoveredNode != null && hoveredNode != selectedNode) {
+            hoveredNode.setNodeColor(backgroundColor);
+            hoveredNode.setTextColor(Color.WHITE);
+        }
+
         if (node != null) {
-            selectedNode = node;
             this.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             node.setNodeColor(Color.YELLOW);
             node.setTextColor(Color.BLACK);
+            hoveredNode = node; // ✅ track it
         } else {
-            if (selectedNode != null) {
-                this.setCursor(Cursor.getDefaultCursor());
-                selectedNode.setNodeColor(backgroundColor);
-                selectedNode.setTextColor(Color.WHITE);
-            }
+            this.setCursor(Cursor.getDefaultCursor());
+            hoveredNode = null;
         }
-        repaint();
+
+        repaint(); // ✅ repaint once, tooltip drawn inside paintComponent
+    }
+
+    private void drawTooltip(Graphics g, TreeInterface.TreeNode node) {
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+        // Tooltip content
+        String[] lines = {
+                "Value:   " + node.data,
+                "Address: " + node.getAddress(),
+                "Is Selected:  " + (node == selectedNode), // replace with your status field
+                "Left:    " + (node.getLeft() != null ? node.getLeft().data : "NULL"),
+                "Right:   " + (node.getRight() != null ? node.getRight().data : "NULL"),
+        };
+
+        Font tooltipFont = new Font("Monospaced", Font.PLAIN, 12);
+        g2d.setFont(tooltipFont);
+        FontMetrics fm = g2d.getFontMetrics();
+
+        int padding = 10;
+        int lineHeight = fm.getHeight();
+        int boxWidth = 0;
+        for (String line : lines) boxWidth = Math.max(boxWidth, fm.stringWidth(line));
+        boxWidth += padding * 2;
+        int boxHeight = lines.length * lineHeight + padding * 2;
+
+        // Position tooltip — shift left if near right edge
+        int tx = node.getXPos() + nodeRadius + 5;
+        int ty = node.getYPos() - boxHeight / 2;
+        if (tx + boxWidth > getWidth()) tx = node.getXPos() - nodeRadius - boxWidth - 5;
+        if (ty + boxHeight > getHeight()) ty = getHeight() - boxHeight - 5;
+        if (ty < 0) ty = 5;
+
+        // ✅ Semi-transparent grey background
+        g2d.setColor(new Color(50, 50, 50, 180)); // grey, ~70% opaque
+        g2d.fillRoundRect(tx, ty, boxWidth, boxHeight, 10, 10);
+
+        // ✅ White border
+        g2d.setColor(new Color(255, 255, 255, 200));
+        g2d.setStroke(new BasicStroke(1.5f));
+        g2d.drawRoundRect(tx, ty, boxWidth, boxHeight, 10, 10);
+
+        // ✅ White text
+        g2d.setColor(Color.WHITE);
+        for (int i = 0; i < lines.length; i++) {
+            g2d.drawString(lines[i], tx + padding, ty + padding + fm.getAscent() + i * lineHeight);
+        }
     }
 
     TreeInterface.TreeNode returnNodeOnCursorIntersectionWithAnyNode(int x, int y, TreeInterface.TreeNode node) {
@@ -250,10 +304,9 @@ public sealed abstract class SearchingVisual
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        if (selectedNode != null && returnNodeOnCursorIntersectionWithAnyNode(e.getX(), e.getY(), tree.root) == selectedNode) {
+        selectedNode = returnNodeOnCursorIntersectionWithAnyNode(e.getX(), e.getY(), tree.root);
+        if (selectedNode != null)
             fireNodeSelected(selectedNode);
-            selectedNode = null;
-        }
     }
 
     @Override

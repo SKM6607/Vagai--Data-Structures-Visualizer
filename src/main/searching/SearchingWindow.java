@@ -260,6 +260,7 @@ public abstract class SearchingWindow extends JPanel implements DefaultWindowsIn
             valueToAddTextField.setText("");
             toggleFields(false);
             nodeSelectedLabel.setText(NO_NODE_SELECTED);
+            searchingVisual.resetSelectedNode();
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(null, "Only Numeric Input Allowed", "Invalid Input", JOptionPane.WARNING_MESSAGE);
         } catch (IndexOutOfBoundsException e) {
@@ -273,6 +274,7 @@ public abstract class SearchingWindow extends JPanel implements DefaultWindowsIn
             searchingVisual.removeSelectedNode(selectedNode);
             toggleFields(false);
             nodeSelectedLabel.setText(NO_NODE_SELECTED);
+            searchingVisual.resetSelectedNode();
         } catch (NoSuchElementException | CannotProceedException e) {
             JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
