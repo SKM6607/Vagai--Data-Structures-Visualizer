@@ -2,6 +2,7 @@ package main.searching;
 
 import main.interfaces.TreeInterface;
 
+import javax.swing.*;
 import java.awt.*;
 
 import static main.interfaces.TreeLightWeightInterface.Tree;
@@ -50,6 +51,11 @@ public final class BreadthFirstSearchWindow extends SearchingWindow {
 
     private BreadthFirstSearchWindow(SearchingVisual searchingVisual) {
         super(searchingVisual);
+    }
+
+    @Override
+    protected JPanel setupDetailsPanel() {
+        return null;
     }
 
     public static BreadthFirstSearchWindow createBreadthFirstSearchWindow() {

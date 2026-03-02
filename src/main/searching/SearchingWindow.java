@@ -12,23 +12,29 @@ import java.util.NoSuchElementException;
 
 public abstract class SearchingWindow extends JPanel implements DefaultWindowsInterface, NodeListener {
     private static final String SELECTED_NODE = "Selected Node: ";
-    private static final String UPDATE_NODE="Update Node";
+    private static final String UPDATE_NODE = "Update Node";
     private static final String ADD_NODE = "Add Node";
     private static final String DELETE_NODE = "Delete Node";
     private static final String GOAL_STATE = "Set Goal State";
     private static final String START_SEARCHING = "Start Searching";
+    private static final String RANGE_VALUES = "Set Range";
+    private static final String RANDOMIZE_TREE = "Randomize Tree";
     private static final String NO_NODE_SELECTED = " NO NODE SELECTED ";
     private final String algorithmTitle;
     private final JLabel nodeSelectedLabel = new JLabel(NO_NODE_SELECTED);
     private final JTextField valueToAddTextField = new JTextField("");
+    private final JTextField setRangeTextField = new JTextField("");
     private final JButton addNodeButton = new JButton(ADD_NODE);
     private final JButton deleteNodeButton = new JButton(DELETE_NODE);
     private final JButton setGoalStateButton = new JButton(GOAL_STATE);
     private final JButton beginSearchButton = new JButton(START_SEARCHING);
-    private final JButton updateNodeButton=new JButton(UPDATE_NODE);
+    private final JButton updateNodeButton = new JButton(UPDATE_NODE);
+    private final JButton randomizeTreeButton = new JButton(RANDOMIZE_TREE);
+    private final JButton setRangeButton = new JButton(RANGE_VALUES);
     protected SearchingVisual searchingVisual;
     protected SearchingAlgorithm searchingAlgorithm;
     protected JPanel controlPanel;
+    protected JPanel floatingPanel;
     Font font = new Font(Font.SANS_SERIF, Font.BOLD, 18);
     private TreeInterface.TreeNode selectedNode;
 
@@ -37,14 +43,60 @@ public abstract class SearchingWindow extends JPanel implements DefaultWindowsIn
         this.searchingAlgorithm = searchingVisual.algorithm;
         this.algorithmTitle = this.searchingAlgorithm.algorithmName;
         setLayout(new BorderLayout());
+        JLayeredPane layeredPane = new JLayeredPane();
         this.controlPanel = setupControlPanel();
+        this.floatingPanel = setupFloatingPanel();
+        int visualWidth = width;
+        int visualHeight = 5 * height / 6;
+        searchingVisual.setBounds(0, 0, visualWidth, visualHeight);
+        layeredPane.add(searchingVisual, JLayeredPane.DEFAULT_LAYER);
+        int floatW = 300, floatH = 150;
+        floatingPanel.setBounds(width / 6 - floatW, 10, floatW, floatH);
+        layeredPane.add(floatingPanel, JLayeredPane.PALETTE_LAYER);
+        layeredPane.setPreferredSize(new Dimension(visualWidth, visualHeight));
         this.searchingVisual.addNodeListener(this);
         this.setupActionListeners();
-        searchingVisual.setPreferredSize(new Dimension(width, 5 * height / 6));
-        add(searchingVisual, BorderLayout.CENTER);
+        add(layeredPane, BorderLayout.CENTER);
         controlPanel.setPreferredSize(new Dimension(width, height / 6));
         add(controlPanel, BorderLayout.SOUTH);
+    }
 
+    //TODO Itha Implement pannitu namma algo's ah ezhutalam as per our wish, itha oru legend mathirunu vechipome?
+    protected abstract JPanel setupDetailsPanel();
+
+    private JPanel setupFloatingPanel() {
+        JPanel floatingPanel = new JPanel(new GridLayout(3, 1, 5, 5));
+        floatingPanel.setBorder(new BevelBorder(BevelBorder.RAISED));
+        JLabel randomizer = new JLabel("Randomizer Panel");
+        randomizer.setFont(menuFont.deriveFont(18.0f));
+        randomizer.setHorizontalAlignment(SwingConstants.CENTER);
+        randomizer.setOpaque(true);
+        randomizer.setBackground(backgroundColor);
+        randomizer.setForeground(Color.WHITE);
+        floatingPanel.add(randomizer);
+        JPanel innerPanel = new JPanel(new GridLayout(1, 2, 5, 5));
+        innerPanel.setBorder(new BevelBorder(BevelBorder.LOWERED));
+        innerPanel.setOpaque(true);
+        innerPanel.setBackground(backgroundColor);
+        innerPanel.add(setRangeTextField);
+        setRangeTextField.setFont(menuFont.deriveFont(18.0f));
+        setRangeTextField.setHorizontalAlignment(SwingConstants.CENTER);
+        setRangeTextField.setBackground(backgroundColor);
+        setRangeTextField.setForeground(Color.WHITE);
+        setRangeTextField.setOpaque(true);
+        innerPanel.add(setRangeButton);
+        setRangeButton.setFont(menuFont.deriveFont(18.0f));
+        setRangeButton.setOpaque(true);
+        setRangeButton.setBackground(Color.BLACK);
+        setRangeButton.setForeground(Color.WHITE);
+        floatingPanel.add(innerPanel);
+        floatingPanel.add(randomizeTreeButton);
+        randomizeTreeButton.setFont(menuFont.deriveFont(18.0f));
+        randomizeTreeButton.setOpaque(true);
+        randomizeTreeButton.setBackground(Color.RED);
+        randomizeTreeButton.setForeground(Color.WHITE);
+        randomizeTreeButton.setEnabled(false);
+        return floatingPanel;
     }
 
     private JPanel setupControlPanel() {
@@ -63,40 +115,70 @@ public abstract class SearchingWindow extends JPanel implements DefaultWindowsIn
 
 // --- Second row panel: labels, text field, add button ---
         JPanel row2 = new JPanel();
-        row2.setLayout(new BoxLayout(row2,BoxLayout.X_AXIS));
-        //new GridLayout(1, 5, 5, 5)
+        row2.setLayout(new GridBagLayout());
         row2.setBackground(backgroundColor);
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.weighty = 1.0;
+        gbc.insets = new Insets(2, 4, 2, 4); // padding between components
+
+// --- Style your components (unchanged) ---
         selectedNode.setFont(font);
         selectedNode.setOpaque(true);
         selectedNode.setBackground(backgroundColor);
         selectedNode.setForeground(Color.WHITE);
-        row2.add(selectedNode);
+
         nodeSelectedLabel.setFont(font);
         nodeSelectedLabel.setHorizontalAlignment(SwingConstants.CENTER);
         nodeSelectedLabel.setOpaque(true);
         nodeSelectedLabel.setBackground(backgroundColor);
         nodeSelectedLabel.setForeground(Color.WHITE);
-        row2.add(nodeSelectedLabel);
-        valueToAddTextField.setSize(new Dimension(25,5));
+
         valueToAddTextField.setFont(font);
         valueToAddTextField.setHorizontalAlignment(SwingConstants.CENTER);
         valueToAddTextField.setBackground(backgroundColor);
         valueToAddTextField.setForeground(Color.WHITE);
         valueToAddTextField.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+        addNodeButton.setFont(font);
+        addNodeButton.setBackground(new Color(20, 82, 5));
+        addNodeButton.setForeground(Color.WHITE);
+        addNodeButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
         updateNodeButton.setFont(font);
         updateNodeButton.setHorizontalAlignment(SwingConstants.CENTER);
         updateNodeButton.setBackground(Color.LIGHT_GRAY);
         updateNodeButton.setEnabled(true);
         updateNodeButton.setForeground(Color.BLACK);
-        row2.add(valueToAddTextField);
-        addNodeButton.setFont(font);
-        addNodeButton.setBackground(new Color(20, 82, 5));
-        addNodeButton.setForeground(Color.WHITE);
-        addNodeButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        row2.add(addNodeButton);
-        row2.add(updateNodeButton);
+
+// --- Add with weights ---
+// selectedNode - medium space
+        gbc.gridx = 0;
+        gbc.weightx = 2.0;
+        row2.add(selectedNode, gbc);
+
+// nodeSelectedLabel - medium space
+        gbc.gridx = 1;
+        gbc.weightx = 2.0;
+        row2.add(nodeSelectedLabel, gbc);
+
+// valueToAddTextField - LESS space
+        gbc.gridx = 2;
+        gbc.weightx = 0.8;
+        row2.add(valueToAddTextField, gbc);
+
+// addNodeButton - more space
+        gbc.gridx = 3;
+        gbc.weightx = 1.5;
+        row2.add(addNodeButton, gbc);
+
+// updateNodeButton - more space
+        gbc.gridx = 4;
+        gbc.weightx = 1.5;
+        row2.add(updateNodeButton, gbc);
+
         controlPanel.add(row2);
-        System.out.println(controlPanel.getLayout());
         JPanel row3 = new JPanel(new GridLayout(1, 4, 5, 5)); // 1 row, 4 columns
         row3.setBackground(backgroundColor);
         deleteNodeButton.setFont(font);
@@ -168,7 +250,7 @@ public abstract class SearchingWindow extends JPanel implements DefaultWindowsIn
     private void basicInputChecker() {
         try {
             int value = Integer.parseInt(valueToAddTextField.getText());
-            if (value < -100 || value > 100) {
+            if (value < -999 || value > 999) {
                 JOptionPane.showMessageDialog(null, "Valid Range (-100,100) - {0}", "Invalid Range", JOptionPane.ERROR_MESSAGE);
                 return;
             }
@@ -196,18 +278,66 @@ public abstract class SearchingWindow extends JPanel implements DefaultWindowsIn
         }
     }
 
+    private void basicRandomisation() {
+        try {
+            int range = Integer.parseInt(setRangeTextField.getText());
+            if (range > 999 || range < -999 || range == 0) {
+                throw new CannotProceedException("Cannot Randomize a tree. Ranges should be within (-999,999) -{0}");
+            }
+            searchingVisual.randomizeTree(range);
+            setRangeTextField.setText("");
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "Invalid Input Provided For Randomization");
+        } catch (CannotProceedException ec) {
+            JOptionPane.showMessageDialog(null, ec.getMessage());
+        }
+    }
+
+    private void toggleRandomizerFields(boolean b) {
+        setRangeTextField.setEnabled(b);
+        setRangeButton.setEnabled(b);
+    }
+
     private void setupActionListeners() {
         valueToAddTextField.addActionListener(_ -> basicInputChecker());
         addNodeButton.addActionListener(_ -> basicInputChecker());
         deleteNodeButton.addActionListener(_ -> basicDeletion());
-        setGoalStateButton.addActionListener(a -> {
+        setGoalStateButton.addActionListener(_ -> {
             searchingVisual.setGoalState(selectedNode);
             toggleFields(false);
             nodeSelectedLabel.setText(NO_NODE_SELECTED);
         });
-        beginSearchButton.addActionListener(a -> {
+        beginSearchButton.addActionListener(_ -> {
             toggleFields(false);
             nodeSelectedLabel.setText(NO_NODE_SELECTED);
+        });
+        setRangeButton.addActionListener(_ -> {
+            randomizeTreeButton.setEnabled(true);
+            toggleRandomizerFields(false);
+        });
+        randomizeTreeButton.addActionListener(_ -> {
+            if (JOptionPane.showConfirmDialog(this, "Are you sure? All your tree data will be erased.") == JOptionPane.YES_OPTION)
+                basicRandomisation();
+            randomizeTreeButton.setEnabled(false);
+
+            toggleRandomizerFields(true);
+        });
+        updateNodeButton.addActionListener(_ -> {
+            try {
+                int value = Integer.parseInt(valueToAddTextField.getText());
+                if (value < -999 || value > 999 || value == 0) {
+                    JOptionPane.showMessageDialog(null, "Valid Range (-100,100) - {0}", "Invalid Range", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                searchingVisual.updateNode(selectedNode, value);
+                valueToAddTextField.setText("");
+                toggleFields(false);
+                nodeSelectedLabel.setText(NO_NODE_SELECTED);
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(null, "Only Numeric Input Allowed", "Invalid Input", JOptionPane.WARNING_MESSAGE);
+            } catch (IndexOutOfBoundsException e) {
+                JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.WARNING_MESSAGE);
+            }
         });
     }
 

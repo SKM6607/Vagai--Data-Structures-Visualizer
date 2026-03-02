@@ -1,5 +1,6 @@
 package main.searching;
 
+import javax.swing.*;
 import java.awt.*;
 
 import static main.interfaces.TreeLightWeightInterface.Tree;
@@ -41,6 +42,11 @@ public final class DepthFirstSearchWindow
 
     private DepthFirstSearchWindow(SearchingVisual searchingVisual) {
         super(searchingVisual);
+    }
+
+    @Override
+    protected JPanel setupDetailsPanel() {
+        return null;
     }
 
     public static DepthFirstSearchWindow createDepthFirstSearchWindow() {

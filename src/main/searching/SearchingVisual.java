@@ -49,13 +49,11 @@ public sealed abstract class SearchingVisual
      * @param depth Maximum level of depth Allowed till 3
      *
      */
-    public void randomizeTree(int range, int depth) throws CannotProceedException {
+    public void randomizeTree(int range) throws CannotProceedException {
         tree.treeReset();
-        if (depth < 0 || depth > 3 || range > 999 || range < -999 || range == 0)
+        if (range > 999 || range < -999 || range == 0)
             throw new CannotProceedException("Cannot Randomize tree as the inputs are invalid. Kindly provide valid inputs");
-        if (depth == 0) {
-            return;
-        }
+        int depth=random.nextInt(0,3);
         randomizeHelper(tree.root, range, depth);
         Tree.alignAllTreeNodes(tree);
         repaint();
@@ -130,7 +128,10 @@ public sealed abstract class SearchingVisual
         goalStateFinder(node.getRight(), target);
     }
 
-
+    public void updateNode(TreeInterface.TreeNode node,int val){
+        tree.updateNode(node,val);
+        repaint();
+    }
     @Override
     protected void paintComponent(Graphics g0) {
         super.paintComponent(g0);

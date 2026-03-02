@@ -1,5 +1,6 @@
 package main.searching;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 
@@ -40,6 +41,11 @@ public class AStarSearchWindow extends SearchingWindow {
     protected AStarSearchWindow(SearchingVisual searchingVisual) {
         super(searchingVisual);
 
+    }
+
+    @Override
+    protected JPanel setupDetailsPanel() {
+        return null;
     }
 
     public static AStarSearchWindow createAStarSearchWindow() {
