@@ -12,6 +12,7 @@ import java.util.NoSuchElementException;
 
 public abstract class SearchingWindow extends JPanel implements DefaultWindowsInterface, NodeListener {
     private static final String SELECTED_NODE = "Selected Node: ";
+    private static final String UPDATE_NODE="Update Node";
     private static final String ADD_NODE = "Add Node";
     private static final String DELETE_NODE = "Delete Node";
     private static final String GOAL_STATE = "Set Goal State";
@@ -24,6 +25,7 @@ public abstract class SearchingWindow extends JPanel implements DefaultWindowsIn
     private final JButton deleteNodeButton = new JButton(DELETE_NODE);
     private final JButton setGoalStateButton = new JButton(GOAL_STATE);
     private final JButton beginSearchButton = new JButton(START_SEARCHING);
+    private final JButton updateNodeButton=new JButton(UPDATE_NODE);
     protected SearchingVisual searchingVisual;
     protected SearchingAlgorithm searchingAlgorithm;
     protected JPanel controlPanel;
@@ -46,7 +48,6 @@ public abstract class SearchingWindow extends JPanel implements DefaultWindowsIn
     }
 
     private JPanel setupControlPanel() {
-
         JLabel selectedNode = new JLabel(SELECTED_NODE, SwingConstants.CENTER);
         // Main control panel
         JLabel title = new JLabel(algorithmTitle, SwingConstants.CENTER);
@@ -61,7 +62,9 @@ public abstract class SearchingWindow extends JPanel implements DefaultWindowsIn
         controlPanel.add(title);
 
 // --- Second row panel: labels, text field, add button ---
-        JPanel row2 = new JPanel(new GridLayout(1, 4, 5, 5)); // 1 row, 4 columns, 5px gap
+        JPanel row2 = new JPanel();
+        row2.setLayout(new BoxLayout(row2,BoxLayout.X_AXIS));
+        //new GridLayout(1, 5, 5, 5)
         row2.setBackground(backgroundColor);
         selectedNode.setFont(font);
         selectedNode.setOpaque(true);
@@ -74,18 +77,26 @@ public abstract class SearchingWindow extends JPanel implements DefaultWindowsIn
         nodeSelectedLabel.setBackground(backgroundColor);
         nodeSelectedLabel.setForeground(Color.WHITE);
         row2.add(nodeSelectedLabel);
+        valueToAddTextField.setSize(new Dimension(25,5));
         valueToAddTextField.setFont(font);
         valueToAddTextField.setHorizontalAlignment(SwingConstants.CENTER);
         valueToAddTextField.setBackground(backgroundColor);
         valueToAddTextField.setForeground(Color.WHITE);
         valueToAddTextField.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        updateNodeButton.setFont(font);
+        updateNodeButton.setHorizontalAlignment(SwingConstants.CENTER);
+        updateNodeButton.setBackground(Color.LIGHT_GRAY);
+        updateNodeButton.setEnabled(true);
+        updateNodeButton.setForeground(Color.BLACK);
         row2.add(valueToAddTextField);
         addNodeButton.setFont(font);
         addNodeButton.setBackground(new Color(20, 82, 5));
         addNodeButton.setForeground(Color.WHITE);
         addNodeButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         row2.add(addNodeButton);
+        row2.add(updateNodeButton);
         controlPanel.add(row2);
+        System.out.println(controlPanel.getLayout());
         JPanel row3 = new JPanel(new GridLayout(1, 4, 5, 5)); // 1 row, 4 columns
         row3.setBackground(backgroundColor);
         deleteNodeButton.setFont(font);
@@ -145,7 +156,6 @@ public abstract class SearchingWindow extends JPanel implements DefaultWindowsIn
         selectedNode = node;
         toggleFields(true);
     }
-
 
     private void toggleFields(boolean b) {
         valueToAddTextField.setEnabled(b);

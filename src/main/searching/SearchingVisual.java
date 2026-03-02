@@ -12,7 +12,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.Random;
 
 import static main.interfaces.TreeInterface.nodeRadius;
 import static main.interfaces.TreeLightWeightInterface.Tree;
@@ -32,7 +32,7 @@ public sealed abstract class SearchingVisual
     private TreeInterface.TreeNode target;
     @Getter
     private TreeInterface.TreeNode selectedNode;
-
+    private static final Random random=new Random();
     protected SearchingVisual(Tree tree, SearchingAlgorithm algorithm) {
         this.tree = tree;
         this.algorithm = algorithm;
@@ -41,6 +41,38 @@ public sealed abstract class SearchingVisual
         addMouseMotionListener(this);
         setFocusable(true);
         setPreferredSize(new Dimension(MAX_WIDTH, MAX_HEIGHT));
+    }
+    /**
+     * Randomizes Tree based on range parameter
+     *
+     * @param range Range of the random values (-range,range)
+     * @param depth Maximum level of depth Allowed till 3
+     *
+     */
+    public void randomizeTree(int range, int depth) throws CannotProceedException {
+        tree.treeReset();
+        if (depth < 0 || depth > 3 || range > 999 || range < -999 || range == 0)
+            throw new CannotProceedException("Cannot Randomize tree as the inputs are invalid. Kindly provide valid inputs");
+        if (depth == 0) {
+            return;
+        }
+        randomizeHelper(tree.root, range, depth);
+        Tree.alignAllTreeNodes(tree);
+        repaint();
+    }
+
+    private void randomizeHelper(TreeInterface.TreeNode node, int range, int depth) {
+        if (depth == 0) return;
+        int rInt = random.nextInt(-range, range);
+        int lInt = random.nextInt(-range, range);
+        if(random.nextBoolean()) {
+            node.setRight(new TreeInterface.TreeNode(rInt));
+            randomizeHelper(node.getRight(), range, depth - 1);
+        }
+        if(random.nextBoolean()) {
+            node.setLeft(new TreeInterface.TreeNode(lInt));
+            randomizeHelper(node.getLeft(), range, depth - 1);
+        }
     }
 
     public void addNodeListener(NodeListener listener) {
@@ -64,7 +96,6 @@ public sealed abstract class SearchingVisual
         } else {
             tree.extendTree(node, child, TreeInterface.TreeNode.NodeDirection.RIGHT);
         }
-
         repaint();
     }
 
@@ -72,9 +103,8 @@ public sealed abstract class SearchingVisual
         if (node == tree.root) {
             throw new CannotProceedException("Cannot delete Root Node");
         }
-        if (removeHelper(tree.root, node)) {
-            repaint();
-        } else throw new NoSuchElementException("No such Node Found");
+        tree.removeNode(node);
+        repaint();
     }
 
     public void setGoalState(TreeInterface.TreeNode node) {
@@ -100,24 +130,6 @@ public sealed abstract class SearchingVisual
         goalStateFinder(node.getRight(), target);
     }
 
-    private boolean removeHelper(TreeInterface.TreeNode current, TreeInterface.TreeNode target) {
-        if (current == null) {
-            return false;
-        }
-        if (current.getRight() == target || current.getLeft() == target) {
-            //TODO Remove Node
-            if (current.getRight() == target) {
-                current.setRight(null);
-            }
-            if (current.getLeft() == target) {
-                current.setLeft(null);
-            }
-            return true;
-        }
-        boolean l = removeHelper(current.getLeft(), target);
-        boolean r = removeHelper(current.getRight(), target);
-        return l || r;
-    }
 
     @Override
     protected void paintComponent(Graphics g0) {
@@ -147,7 +159,7 @@ public sealed abstract class SearchingVisual
     }
 
     protected void drawArrows(Graphics2D g) {
-        //TODO DEFAULT DRAWING FOR ARROWS
+        //TODO TRY MAKING THEM ARROWS IF U PREFER
         var oldColor = g.getColor();
         var oldStroke = g.getStroke();
         g.setStroke(new BasicStroke(4));
@@ -172,15 +184,15 @@ public sealed abstract class SearchingVisual
 
     protected void drawArrowsHelper(Graphics2D g, TreeInterface.TreeNode node) {
         if (node == null) return;
-        int parentX = node.getXPos() + fontOffset, parentY = node.getYPos() + nodeRadius;
+        int parentX = node.getXPos() + nodeRadius - 1, parentY = node.getYPos() + nodeRadius + 1;
         if (!node.isLastNode()) {
             TreeInterface.TreeNode right = node.getRight();
             TreeInterface.TreeNode left = node.getLeft();
             if (left != null) {
-                g.drawLine(parentX, parentY, left.getXPos() + nodeRadius, left.getYPos());
+                g.drawLine(parentX, parentY, left.getXPos() + nodeRadius - 1, left.getYPos());
             }
             if (right != null) {
-                g.drawLine(parentX, parentY, right.getXPos() + nodeRadius, right.getYPos());
+                g.drawLine(parentX, parentY, right.getXPos() + nodeRadius - 1, right.getYPos());
             }
         }
         drawArrowsHelper(g, node.getLeft());

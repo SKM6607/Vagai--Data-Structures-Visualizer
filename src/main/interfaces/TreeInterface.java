@@ -40,11 +40,5 @@ public interface TreeInterface extends DefaultWindowsInterface {
             return this.left == null && this.right == null;
         }
 
-        public int getChildrenCount() {
-            int n = 0;
-            if (right != null) n++;
-            if (left != null) n++;
-            return n;
-        }
     }
 }
