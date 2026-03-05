@@ -14,7 +14,7 @@ public final class MainWindow extends JFrame {
         super(WINDOW_TITLE);
         setSize(width, height);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        backgroundMusicThread.start();
+//TODO VERA NALLA MUSIC        backgroundMusicThread.start();
         setBackground(backgroundColor);
         setForeground(foregroundColor);
         MainCardPanel mainPanel = MainCardPanel.getInstance();

@@ -4,10 +4,15 @@ import main.interfaces.DefaultWindowsInterface;
 import main.interfaces.NodeListener;
 import main.interfaces.TreeInterface;
 
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
 import javax.naming.CannotProceedException;
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
+import javax.swing.text.IconView;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.*;
 import java.util.NoSuchElementException;
 
 public abstract class SearchingWindow extends JPanel implements DefaultWindowsInterface, NodeListener {
@@ -20,6 +25,8 @@ public abstract class SearchingWindow extends JPanel implements DefaultWindowsIn
     private static final String RANGE_VALUES = "Set Range";
     private static final String RANDOMIZE_TREE = "Randomize Tree";
     private static final String NO_NODE_SELECTED = " NO NODE SELECTED ";
+    private static final String BINARY_TREE="Binary Tree";
+    private static final String BINARY_SEARCH_TREE="Binary Search Tree";
     private final String algorithmTitle;
     private final JLabel nodeSelectedLabel = new JLabel(NO_NODE_SELECTED);
     private final JTextField valueToAddTextField = new JTextField("");
@@ -31,13 +38,49 @@ public abstract class SearchingWindow extends JPanel implements DefaultWindowsIn
     private final JButton updateNodeButton = new JButton(UPDATE_NODE);
     private final JButton randomizeTreeButton = new JButton(RANDOMIZE_TREE);
     private final JButton setRangeButton = new JButton(RANGE_VALUES);
+    private final JLabel depthTextLabel=new JLabel();
+    private final JLabel totalNodesTextLabel=new JLabel();
+    private final ImageIcon iconImageForToggleButtonDefault=new ImageIcon(readImageIntoArray("src/resources/pictures/ArrowLeft.png"));
+    private final ImageIcon iconImageForToggleButtonPressed=new ImageIcon(readImageIntoArray("src/resources/pictures/ArrowRight.png"));
     protected SearchingVisual searchingVisual;
     protected SearchingAlgorithm searchingAlgorithm;
     protected JPanel controlPanel;
     protected JPanel floatingPanel;
+    protected final JLabel binaryTreeLabel=new JLabel(BINARY_TREE);
+    protected final JLabel binarySearchTreeLabel=new JLabel(BINARY_SEARCH_TREE);
+    protected JToggleButton toggleButton=new JToggleButton(iconImageForToggleButtonDefault);
     Font font = new Font(Font.SANS_SERIF, Font.BOLD, 18);
     private TreeInterface.TreeNode selectedNode;
-
+    private byte[] readImageIntoArray(final String filePath) {
+        try {
+            BufferedImage reader = ImageIO.read(new File(filePath));
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            ImageIO.write(reader, "png", byteArrayOutputStream);
+            return byteArrayOutputStream.toByteArray();
+        }catch (IOException e){
+            return null;
+        }
+    }
+    private JPanel setupTreeOrder(){
+        JPanel treeTogglePanel=new JPanel(new GridLayout(1,3,5,5));
+        treeTogglePanel.add(binaryTreeLabel);
+        binaryTreeLabel.setFont(menuFont.deriveFont(18.0f));
+        binaryTreeLabel.setBackground(backgroundColor);
+        binaryTreeLabel.setForeground(Color.WHITE);
+        binaryTreeLabel.setOpaque(true);
+        binaryTreeLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        treeTogglePanel.add(toggleButton);
+        treeTogglePanel.add(binarySearchTreeLabel);
+        binarySearchTreeLabel.setFont(menuFont.deriveFont(18.0f));
+        binarySearchTreeLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        binarySearchTreeLabel.setForeground(Color.WHITE);
+        binarySearchTreeLabel.setBackground(backgroundColor);
+        binarySearchTreeLabel.setOpaque(true);
+        toggleButton.setOpaque(true);
+        toggleButton.setBackground(Color.WHITE);
+        toggleButton.setSelectedIcon(iconImageForToggleButtonPressed);
+        return treeTogglePanel;
+    }
     protected SearchingWindow(SearchingVisual searchingVisual) {
         this.searchingVisual = searchingVisual;
         this.searchingAlgorithm = searchingVisual.algorithm;
@@ -50,8 +93,8 @@ public abstract class SearchingWindow extends JPanel implements DefaultWindowsIn
         int visualHeight = 5 * height / 6;
         searchingVisual.setBounds(0, 0, visualWidth, visualHeight);
         layeredPane.add(searchingVisual, JLayeredPane.DEFAULT_LAYER);
-        int floatW = 300, floatH = 150;
-        floatingPanel.setBounds(width / 6 - floatW, 10, floatW, floatH);
+        int floatW = 600, floatH = 150;
+        floatingPanel.setBounds(width/2 - 3*floatW/2, 10, floatW, floatH);
         layeredPane.add(floatingPanel, JLayeredPane.PALETTE_LAYER);
         layeredPane.setPreferredSize(new Dimension(visualWidth, visualHeight));
         this.searchingVisual.addNodeListener(this);
@@ -62,10 +105,20 @@ public abstract class SearchingWindow extends JPanel implements DefaultWindowsIn
     }
 
     //TODO Itha Implement pannitu namma algo's ah ezhutalam as per our wish, itha oru legend mathirunu vechipome?
-    protected abstract JPanel setupDetailsPanel();
-
+    protected JPanel setupDetailsPanel(){
+        JPanel detailsPanel=new JPanel(new GridLayout(2,2,5,5));
+        JLabel depthLabel=new JLabel("Tree Depth: ");
+        JLabel totalNumberOfNodes=new JLabel("Total Number of Nodes");
+        detailsPanel.add(depthLabel);
+        detailsPanel.add(depthTextLabel);
+        detailsPanel.add(totalNumberOfNodes);
+        detailsPanel.add(totalNodesTextLabel);
+        depthLabel.setBorder(new BevelBorder(BevelBorder.RAISED));
+        return detailsPanel;
+    }
+    protected abstract JPanel setupLegendPanel();
     private JPanel setupFloatingPanel() {
-        JPanel floatingPanel = new JPanel(new GridLayout(3, 1, 5, 5));
+        JPanel floatingPanel = new JPanel(new GridLayout(4, 1, 5, 5));
         floatingPanel.setBorder(new BevelBorder(BevelBorder.RAISED));
         JLabel randomizer = new JLabel("Randomizer Panel");
         randomizer.setFont(menuFont.deriveFont(18.0f));
@@ -79,26 +132,29 @@ public abstract class SearchingWindow extends JPanel implements DefaultWindowsIn
         innerPanel.setOpaque(true);
         innerPanel.setBackground(backgroundColor);
         innerPanel.add(setRangeTextField);
-        setRangeTextField.setFont(menuFont.deriveFont(18.0f));
         setRangeTextField.setHorizontalAlignment(SwingConstants.CENTER);
         setRangeTextField.setBackground(backgroundColor);
+        setRangeTextField.setFont(menuFont.deriveFont(18.0f));
         setRangeTextField.setForeground(Color.WHITE);
+        setRangeTextField.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         setRangeTextField.setOpaque(true);
         innerPanel.add(setRangeButton);
         setRangeButton.setFont(menuFont.deriveFont(18.0f));
+        setRangeButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         setRangeButton.setOpaque(true);
         setRangeButton.setBackground(Color.BLACK);
         setRangeButton.setForeground(Color.WHITE);
         floatingPanel.add(innerPanel);
         floatingPanel.add(randomizeTreeButton);
+        randomizeTreeButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         randomizeTreeButton.setFont(menuFont.deriveFont(18.0f));
         randomizeTreeButton.setOpaque(true);
         randomizeTreeButton.setBackground(Color.RED);
         randomizeTreeButton.setForeground(Color.WHITE);
         randomizeTreeButton.setEnabled(false);
+        floatingPanel.add(setupTreeOrder());
         return floatingPanel;
     }
-
     private JPanel setupControlPanel() {
         JLabel selectedNode = new JLabel(SELECTED_NODE, SwingConstants.CENTER);
         // Main control panel
@@ -321,7 +377,6 @@ public abstract class SearchingWindow extends JPanel implements DefaultWindowsIn
             if (JOptionPane.showConfirmDialog(this, "Are you sure? All your tree data will be erased.") == JOptionPane.YES_OPTION)
                 basicRandomisation();
             randomizeTreeButton.setEnabled(false);
-
             toggleRandomizerFields(true);
         });
         updateNodeButton.addActionListener(_ -> {

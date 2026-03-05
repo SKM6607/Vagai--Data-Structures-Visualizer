@@ -49,6 +49,11 @@ public final class DepthFirstSearchWindow
         return null;
     }
 
+    @Override
+    protected JPanel setupLegendPanel() {
+        return null;
+    }
+
     public static DepthFirstSearchWindow createDepthFirstSearchWindow() {
         return (singleton == null) ?
                 singleton = new DepthFirstSearchWindow(

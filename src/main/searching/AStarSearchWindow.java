@@ -48,6 +48,11 @@ public class AStarSearchWindow extends SearchingWindow {
         return null;
     }
 
+    @Override
+    protected JPanel setupLegendPanel() {
+        return null;
+    }
+
     public static AStarSearchWindow createAStarSearchWindow() {
         return (singleton == null) ? singleton = new AStarSearchWindow(AStarSearchVisual.initialize()) : singleton;
     }

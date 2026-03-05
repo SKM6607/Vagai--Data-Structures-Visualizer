@@ -58,6 +58,11 @@ public final class BreadthFirstSearchWindow extends SearchingWindow {
         return null;
     }
 
+    @Override
+    protected JPanel setupLegendPanel() {
+        return null;
+    }
+
     public static BreadthFirstSearchWindow createBreadthFirstSearchWindow() {
         return (singleton == null) ? singleton = new BreadthFirstSearchWindow(BreadthFirstSearchVisual.initialize()) : singleton;
     }
