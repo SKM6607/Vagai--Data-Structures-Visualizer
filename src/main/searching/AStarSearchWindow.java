@@ -5,16 +5,16 @@ import main.interfaces.TreeInterface;
 import javax.swing.*;
 import java.awt.*;
 
+import static main.interfaces.MacroInterface.A_STAR_ALGORITHM;
 import static main.interfaces.TreeLightWeightInterface.Tree;
 
-import static main.interfaces.MacroInterface.*;
 final class AStarSearchAlgorithm extends SearchingAlgorithm {
-    AStarSearchAlgorithm(Tree tree) {
-        super(tree,A_STAR_ALGORITHM);
+    AStarSearchAlgorithm(Tree tree, TreeInterface.TreeNode target) {
+        super(tree, A_STAR_ALGORITHM, target);
     }
 
     @Override
-    protected SwingWorker<TreeInterface.TreeNode, TreeInterface.TreeNode> returnSwingWorker() {
+    protected TreeInterface.TreeNode search(TreeInterface.TreeNode node) {
         return null;
     }
 }
@@ -23,16 +23,23 @@ final class AStarSearchVisual extends SearchingVisual {
     private static AStarSearchVisual singleton;
 
     private AStarSearchVisual(Tree tree) {
-        super(tree, new AStarSearchAlgorithm(tree));
+        super(tree, new AStarSearchAlgorithm(tree, null));
     }
 
     public static AStarSearchVisual initialize() {
         return (singleton == null) ? singleton = new AStarSearchVisual(new Tree()) : singleton;
     }
-    @Override
-    protected void drawSearch(Graphics2D g) {
+
+    protected void drawTree(Graphics2D g) {
 
     }
+
+    @Override
+    protected void searchForNode(TreeInterface.TreeNode node) {
+        algorithm = new AStarSearchAlgorithm(tree, node);
+        algorithm.execute();
+    }
+
 
 
 }
@@ -45,6 +52,10 @@ public class AStarSearchWindow extends SearchingWindow {
 
     }
 
+    public static AStarSearchWindow createAStarSearchWindow() {
+        return (singleton == null) ? singleton = new AStarSearchWindow(AStarSearchVisual.initialize()) : singleton;
+    }
+
     @Override
     protected JPanel setupDetailsPanel() {
         return null;
@@ -53,9 +64,5 @@ public class AStarSearchWindow extends SearchingWindow {
     @Override
     protected JPanel setupLegendPanel() {
         return null;
-    }
-
-    public static AStarSearchWindow createAStarSearchWindow() {
-        return (singleton == null) ? singleton = new AStarSearchWindow(AStarSearchVisual.initialize()) : singleton;
     }
 }

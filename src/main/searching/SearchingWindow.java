@@ -5,14 +5,14 @@ import main.interfaces.NodeListener;
 import main.interfaces.TreeInterface;
 
 import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
 import javax.naming.CannotProceedException;
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
-import javax.swing.text.IconView;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.util.NoSuchElementException;
 
 public abstract class SearchingWindow extends JPanel implements DefaultWindowsInterface, NodeListener {
@@ -25,8 +25,10 @@ public abstract class SearchingWindow extends JPanel implements DefaultWindowsIn
     private static final String RANGE_VALUES = "Set Range";
     private static final String RANDOMIZE_TREE = "Randomize Tree";
     private static final String NO_NODE_SELECTED = " NO NODE SELECTED ";
-    private static final String BINARY_TREE="Binary Tree";
-    private static final String BINARY_SEARCH_TREE="Binary Search Tree";
+    private static final String BINARY_TREE = "Binary Tree";
+    private static final String BINARY_SEARCH_TREE = "Binary Search Tree";
+    protected final JLabel binaryTreeLabel = new JLabel(BINARY_TREE);
+    protected final JLabel binarySearchTreeLabel = new JLabel(BINARY_SEARCH_TREE);
     private final String algorithmTitle;
     private final JLabel nodeSelectedLabel = new JLabel(NO_NODE_SELECTED);
     private final JTextField valueToAddTextField = new JTextField("");
@@ -38,31 +40,56 @@ public abstract class SearchingWindow extends JPanel implements DefaultWindowsIn
     private final JButton updateNodeButton = new JButton(UPDATE_NODE);
     private final JButton randomizeTreeButton = new JButton(RANDOMIZE_TREE);
     private final JButton setRangeButton = new JButton(RANGE_VALUES);
-    private final JLabel depthTextLabel=new JLabel();
-    private final JLabel totalNodesTextLabel=new JLabel();
-    private final ImageIcon iconImageForToggleButtonDefault=new ImageIcon(readImageIntoArray("src/resources/pictures/ArrowLeft.png"));
-    private final ImageIcon iconImageForToggleButtonPressed=new ImageIcon(readImageIntoArray("src/resources/pictures/ArrowRight.png"));
+    private final JLabel depthTextLabel = new JLabel();
+    private final JLabel totalNodesTextLabel = new JLabel();
+    private final ImageIcon iconImageForToggleButtonDefault = new ImageIcon(readImageIntoArray("src/resources/pictures/ArrowLeft.png"));
+    private final ImageIcon iconImageForToggleButtonPressed = new ImageIcon(readImageIntoArray("src/resources/pictures/ArrowRight.png"));
     protected SearchingVisual searchingVisual;
     protected SearchingAlgorithm searchingAlgorithm;
     protected JPanel controlPanel;
     protected JPanel floatingPanel;
-    protected final JLabel binaryTreeLabel=new JLabel(BINARY_TREE);
-    protected final JLabel binarySearchTreeLabel=new JLabel(BINARY_SEARCH_TREE);
-    protected JToggleButton toggleButton=new JToggleButton(iconImageForToggleButtonDefault);
+    protected JToggleButton toggleButton = new JToggleButton(iconImageForToggleButtonDefault);
     Font font = new Font(Font.SANS_SERIF, Font.BOLD, 18);
+    private TreeInterface.TreeNode target;
     private TreeInterface.TreeNode selectedNode;
+    private boolean onCancellationMode;
+
+    protected SearchingWindow(SearchingVisual searchingVisual) {
+        this.searchingVisual = searchingVisual;
+        this.searchingAlgorithm = searchingVisual.algorithm;
+        this.algorithmTitle = this.searchingAlgorithm.algorithmName;
+        setLayout(new BorderLayout());
+        JLayeredPane layeredPane = new JLayeredPane();
+        this.controlPanel = setupControlPanel();
+        this.floatingPanel = setupFloatingPanel();
+        int visualWidth = width;
+        int visualHeight = 5 * height / 6;
+        searchingVisual.setBounds(0, 0, visualWidth, visualHeight);
+        layeredPane.add(searchingVisual, JLayeredPane.DEFAULT_LAYER);
+        int floatW = 600, floatH = 150;
+        floatingPanel.setBounds(width / 2 - 3 * floatW / 2, 10, floatW, floatH);
+        layeredPane.add(floatingPanel, JLayeredPane.PALETTE_LAYER);
+        layeredPane.setPreferredSize(new Dimension(visualWidth, visualHeight));
+        this.searchingVisual.addNodeListener(this);
+        this.setupActionListeners();
+        add(layeredPane, BorderLayout.CENTER);
+        controlPanel.setPreferredSize(new Dimension(width, height / 6));
+        add(controlPanel, BorderLayout.SOUTH);
+    }
+
     private byte[] readImageIntoArray(final String filePath) {
         try {
             BufferedImage reader = ImageIO.read(new File(filePath));
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             ImageIO.write(reader, "png", byteArrayOutputStream);
             return byteArrayOutputStream.toByteArray();
-        }catch (IOException e){
+        } catch (IOException e) {
             return null;
         }
     }
-    private JPanel setupTreeOrder(){
-        JPanel treeTogglePanel=new JPanel(new GridLayout(1,3,5,5));
+
+    private JPanel setupTreeOrder() {
+        JPanel treeTogglePanel = new JPanel(new GridLayout(1, 3, 5, 5));
         treeTogglePanel.add(binaryTreeLabel);
         binaryTreeLabel.setFont(menuFont.deriveFont(18.0f));
         binaryTreeLabel.setBackground(backgroundColor);
@@ -81,34 +108,12 @@ public abstract class SearchingWindow extends JPanel implements DefaultWindowsIn
         toggleButton.setSelectedIcon(iconImageForToggleButtonPressed);
         return treeTogglePanel;
     }
-    protected SearchingWindow(SearchingVisual searchingVisual) {
-        this.searchingVisual = searchingVisual;
-        this.searchingAlgorithm = searchingVisual.algorithm;
-        this.algorithmTitle = this.searchingAlgorithm.algorithmName;
-        setLayout(new BorderLayout());
-        JLayeredPane layeredPane = new JLayeredPane();
-        this.controlPanel = setupControlPanel();
-        this.floatingPanel = setupFloatingPanel();
-        int visualWidth = width;
-        int visualHeight = 5 * height / 6;
-        searchingVisual.setBounds(0, 0, visualWidth, visualHeight);
-        layeredPane.add(searchingVisual, JLayeredPane.DEFAULT_LAYER);
-        int floatW = 600, floatH = 150;
-        floatingPanel.setBounds(width/2 - 3*floatW/2, 10, floatW, floatH);
-        layeredPane.add(floatingPanel, JLayeredPane.PALETTE_LAYER);
-        layeredPane.setPreferredSize(new Dimension(visualWidth, visualHeight));
-        this.searchingVisual.addNodeListener(this);
-        this.setupActionListeners();
-        add(layeredPane, BorderLayout.CENTER);
-        controlPanel.setPreferredSize(new Dimension(width, height / 6));
-        add(controlPanel, BorderLayout.SOUTH);
-    }
 
     //TODO Itha Implement pannitu namma algo's ah ezhutalam as per our wish, itha oru legend mathirunu vechipome?
-    protected JPanel setupDetailsPanel(){
-        JPanel detailsPanel=new JPanel(new GridLayout(2,2,5,5));
-        JLabel depthLabel=new JLabel("Tree Depth: ");
-        JLabel totalNumberOfNodes=new JLabel("Total Number of Nodes");
+    protected JPanel setupDetailsPanel() {
+        JPanel detailsPanel = new JPanel(new GridLayout(2, 2, 5, 5));
+        JLabel depthLabel = new JLabel("Tree Depth: ");
+        JLabel totalNumberOfNodes = new JLabel("Total Number of Nodes");
         detailsPanel.add(depthLabel);
         detailsPanel.add(depthTextLabel);
         detailsPanel.add(totalNumberOfNodes);
@@ -116,7 +121,9 @@ public abstract class SearchingWindow extends JPanel implements DefaultWindowsIn
         depthLabel.setBorder(new BevelBorder(BevelBorder.RAISED));
         return detailsPanel;
     }
+
     protected abstract JPanel setupLegendPanel();
+
     private JPanel setupFloatingPanel() {
         JPanel floatingPanel = new JPanel(new GridLayout(4, 1, 5, 5));
         floatingPanel.setBorder(new BevelBorder(BevelBorder.RAISED));
@@ -155,6 +162,7 @@ public abstract class SearchingWindow extends JPanel implements DefaultWindowsIn
         floatingPanel.add(setupTreeOrder());
         return floatingPanel;
     }
+
     private JPanel setupControlPanel() {
         JLabel selectedNode = new JLabel(SELECTED_NODE, SwingConstants.CENTER);
         // Main control panel
@@ -286,13 +294,38 @@ public abstract class SearchingWindow extends JPanel implements DefaultWindowsIn
         return controlPanel;
     }
 
+    private void resetSelected(){
+        nodeSelectedLabel.setText(NO_NODE_SELECTED);
+        valueToAddTextField.setText("");
+        toggleFields(false);
+    }
     @Override
     public void onSelected(TreeInterface.TreeNode node) {
+        if(node==null){
+            resetSelected();
+            return;
+        }
         String nodeData = (node.data == 0) ? "ROOT" : String.valueOf(node.data);
         String nodeAddress = "Address: " + node.getAddress();
         nodeSelectedLabel.setText(String.format("[Value: %s, %s]", nodeData, nodeAddress));
         selectedNode = node;
+            if (target != null && selectedNode == target) {
+                onCancellationMode = true;
+                changeToCancellationMode();
+            }
         toggleFields(true);
+    }
+
+    private void changeToCancellationMode() {
+        setGoalStateButton.setBackground(new Color(126, 8, 8));
+        setGoalStateButton.setForeground(Color.WHITE);
+        setGoalStateButton.setText("Cancel Selected Goal State Node");
+    }
+
+    private void changeToNormalMode() {
+        setGoalStateButton.setBackground(Color.YELLOW);
+        setGoalStateButton.setForeground(Color.BLACK);
+        setGoalStateButton.setText(GOAL_STATE);
     }
 
     private void toggleFields(boolean b) {
@@ -307,20 +340,18 @@ public abstract class SearchingWindow extends JPanel implements DefaultWindowsIn
         try {
             int value = Integer.parseInt(valueToAddTextField.getText());
             if (value < -999 || value > 999) {
-                JOptionPane.showMessageDialog(null, "Valid Range (-100,100) - {0}", "Invalid Range", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Valid Range (-100,100) - {0}", "Invalid Range", JOptionPane.ERROR_MESSAGE);
                 return;
             }
             if (value != 0) {
                 searchingVisual.extendTreeAtSelectedNode(selectedNode, value);
             }
-            valueToAddTextField.setText("");
-            toggleFields(false);
-            nodeSelectedLabel.setText(NO_NODE_SELECTED);
+            resetSelected();
             searchingVisual.resetSelectedNode();
         } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(null, "Only Numeric Input Allowed", "Invalid Input", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Only Numeric Input Allowed", "Invalid Input", JOptionPane.WARNING_MESSAGE);
         } catch (IndexOutOfBoundsException e) {
-            JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.WARNING_MESSAGE);
         }
 
     }
@@ -361,15 +392,22 @@ public abstract class SearchingWindow extends JPanel implements DefaultWindowsIn
         addNodeButton.addActionListener(_ -> basicInputChecker());
         deleteNodeButton.addActionListener(_ -> basicDeletion());
         setGoalStateButton.addActionListener(_ -> {
+            if (onCancellationMode) {
+                onCancellationMode = false;
+                target = null;
+                changeToNormalMode();
+                return;
+            }
             searchingVisual.setGoalState(selectedNode);
+            target = selectedNode;
             toggleFields(false);
             nodeSelectedLabel.setText(NO_NODE_SELECTED);
         });
         beginSearchButton.addActionListener(_ -> {
             try {
                 searchingVisual.searchForNode();
-            } catch (NoSuchElementException e) {
-                JOptionPane.showMessageDialog(this,e.getMessage());
+            } catch (NoSuchElementException | InterruptedException e) {
+                JOptionPane.showMessageDialog(this, e.getMessage());
             }
             toggleFields(false);
             nodeSelectedLabel.setText(NO_NODE_SELECTED);

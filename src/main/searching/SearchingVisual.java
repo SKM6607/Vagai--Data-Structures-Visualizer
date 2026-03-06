@@ -30,13 +30,14 @@ public sealed abstract class SearchingVisual
     protected final int MAX_WIDTH = width, MAX_HEIGHT = 3 * height / 4;
     private final List<NodeListener> listenerList = new ArrayList<>();
     public SearchingAlgorithm algorithm;
+    protected TreeType treeType = TreeType.BINARY_TREE;
+    protected boolean search;
     private int fontOffset;
     private TreeInterface.TreeNode target;
-    protected TreeType treeType=TreeType.BINARY_TREE;
     @Getter
     private TreeInterface.TreeNode selectedNode;
     private TreeInterface.TreeNode hoveredNode = null;
-    protected boolean search;
+
     protected SearchingVisual(Tree tree, SearchingAlgorithm algorithm) {
         this.tree = tree;
         this.algorithm = algorithm;
@@ -46,6 +47,8 @@ public sealed abstract class SearchingVisual
         setFocusable(true);
         setPreferredSize(new Dimension(MAX_WIDTH, MAX_HEIGHT));
     }
+
+    protected abstract void searchForNode(TreeInterface.TreeNode node);
 
     /**
      * Randomizes Tree based on range parameter
@@ -145,8 +148,11 @@ public sealed abstract class SearchingVisual
         drawTree(g);
         drawArrows(g);
         drawText(g);
-        drawSearch(g);
-        if (hoveredNode != null) drawTooltip(g, hoveredNode);
+        drawTooltip(g);
+        drawExtras(g);
+    }
+
+    protected void drawExtras(Graphics2D g) {
     }
 
     protected void drawTree(Graphics2D g) {
@@ -191,6 +197,7 @@ public sealed abstract class SearchingVisual
 
     public void resetSelectedNode() {
         selectedNode = null;
+        repaint();
     }
 
     protected void drawArrowsHelper(Graphics2D g, TreeInterface.TreeNode node) {
@@ -244,17 +251,18 @@ public sealed abstract class SearchingVisual
         repaint(); // ✅ repaint once, tooltip drawn inside paintComponent
     }
 
-    private void drawTooltip(Graphics g, TreeInterface.TreeNode node) {
+    private void drawTooltip(Graphics g) {
+        if (hoveredNode == null) return;
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         // Tooltip content
         String[] lines = {
-                "Value:   " + node.data,
-                "Address: " + node.getAddress(),
-                "Is Selected:  " + (node == selectedNode), // replace with your status field
-                "Left:    " + (node.getLeft() != null ? node.getLeft().data : "NULL"),
-                "Right:   " + (node.getRight() != null ? node.getRight().data : "NULL"),
+                "Value:   " + hoveredNode.data,
+                "Address: " + hoveredNode.getAddress(),
+                "Is Target?:  " + ((hoveredNode == target) ? "Yes" : "No"),
+                "Left:    " + (hoveredNode.getLeft() != null ? hoveredNode.getLeft().data : "NULL"),
+                "Right:   " + (hoveredNode.getRight() != null ? hoveredNode.getRight().data : "NULL"),
         };
 
         Font tooltipFont = new Font("Monospaced", Font.PLAIN, 12);
@@ -269,9 +277,9 @@ public sealed abstract class SearchingVisual
         int boxHeight = lines.length * lineHeight + padding * 2;
 
         // Position tooltip — shift left if near right edge
-        int tx = node.getXPos() + nodeRadius + 5;
-        int ty = node.getYPos() - boxHeight / 2;
-        if (tx + boxWidth > getWidth()) tx = node.getXPos() - nodeRadius - boxWidth - 5;
+        int tx = hoveredNode.getXPos() + nodeRadius + 5;
+        int ty = hoveredNode.getYPos() - boxHeight / 2;
+        if (tx + boxWidth > getWidth()) tx = hoveredNode.getXPos() - nodeRadius - boxWidth - 5;
         if (ty + boxHeight > getHeight()) ty = getHeight() - boxHeight - 5;
         if (ty < 0) ty = 5;
 
@@ -306,20 +314,21 @@ public sealed abstract class SearchingVisual
         return (intersectsInLeft != null) ? intersectsInLeft : intersectsInRight;
     }
 
-    protected abstract void drawSearch(Graphics2D g);
 
-    public void searchForNode() throws NoSuchElementException {
+    public void searchForNode() throws NoSuchElementException, InterruptedException {
         if (this.target == null) {
             throw new NoSuchElementException("No Goal State Found");
         }
-        search=true;
+        algorithm.search(target);
+        search = true;
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
         selectedNode = returnNodeOnCursorIntersectionWithAnyNode(e.getX(), e.getY(), tree.root);
-        if (selectedNode != null)
+//        if (selectedNode != null && selectedNode!=target)
             fireNodeSelected(selectedNode);
+
     }
 
     @Override
