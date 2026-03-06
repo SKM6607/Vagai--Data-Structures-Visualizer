@@ -366,6 +366,11 @@ public abstract class SearchingWindow extends JPanel implements DefaultWindowsIn
             nodeSelectedLabel.setText(NO_NODE_SELECTED);
         });
         beginSearchButton.addActionListener(_ -> {
+            try {
+                searchingVisual.searchForNode();
+            } catch (NoSuchElementException e) {
+                JOptionPane.showMessageDialog(this,e.getMessage());
+            }
             toggleFields(false);
             nodeSelectedLabel.setText(NO_NODE_SELECTED);
         });
@@ -383,7 +388,7 @@ public abstract class SearchingWindow extends JPanel implements DefaultWindowsIn
             try {
                 int value = Integer.parseInt(valueToAddTextField.getText());
                 if (value < -999 || value > 999 || value == 0) {
-                    JOptionPane.showMessageDialog(null, "Valid Range (-100,100) - {0}", "Invalid Range", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Valid Range (-999,999) - {0}", "Invalid Range", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
                 searchingVisual.updateNode(selectedNode, value);

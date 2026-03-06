@@ -12,6 +12,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Random;
 
 import static main.interfaces.TreeInterface.nodeRadius;
@@ -31,10 +32,11 @@ public sealed abstract class SearchingVisual
     public SearchingAlgorithm algorithm;
     private int fontOffset;
     private TreeInterface.TreeNode target;
+    protected TreeType treeType=TreeType.BINARY_TREE;
     @Getter
     private TreeInterface.TreeNode selectedNode;
     private TreeInterface.TreeNode hoveredNode = null;
-
+    protected boolean search;
     protected SearchingVisual(Tree tree, SearchingAlgorithm algorithm) {
         this.tree = tree;
         this.algorithm = algorithm;
@@ -186,7 +188,11 @@ public sealed abstract class SearchingVisual
         g.setColor(Color.YELLOW);
         g.drawOval(drawWithOffsets, node.getYPos(), nodeRadius + 1, nodeRadius + 1);
     }
-    public void resetSelectedNode(){selectedNode=null;}
+
+    public void resetSelectedNode() {
+        selectedNode = null;
+    }
+
     protected void drawArrowsHelper(Graphics2D g, TreeInterface.TreeNode node) {
         if (node == null) return;
         int parentX = node.getXPos() + nodeRadius - 1, parentY = node.getYPos() + nodeRadius + 1;
@@ -302,6 +308,13 @@ public sealed abstract class SearchingVisual
 
     protected abstract void drawSearch(Graphics2D g);
 
+    public void searchForNode() throws NoSuchElementException {
+        if (this.target == null) {
+            throw new NoSuchElementException("No Goal State Found");
+        }
+        search=true;
+    }
+
     @Override
     public void mouseClicked(MouseEvent e) {
         selectedNode = returnNodeOnCursorIntersectionWithAnyNode(e.getX(), e.getY(), tree.root);
@@ -323,5 +336,14 @@ public sealed abstract class SearchingVisual
 
     @Override
     public void mouseExited(MouseEvent e) {
+    }
+
+    public enum TreeType {
+        BINARY_TREE("Binary Tree"), BINARY_SEARCH_TREE("Binary Search Tree");
+        final String treeType;
+
+        TreeType(String treeType) {
+            this.treeType = treeType;
+        }
     }
 }

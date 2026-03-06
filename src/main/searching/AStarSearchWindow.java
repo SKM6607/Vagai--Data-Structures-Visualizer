@@ -1,8 +1,9 @@
 package main.searching;
 
+import main.interfaces.TreeInterface;
+
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseEvent;
 
 import static main.interfaces.TreeLightWeightInterface.Tree;
 
@@ -11,9 +12,10 @@ final class AStarSearchAlgorithm extends SearchingAlgorithm {
     AStarSearchAlgorithm(Tree tree) {
         super(tree,A_STAR_ALGORITHM);
     }
+
     @Override
-    int search(int value) {
-        return 0;
+    protected SwingWorker<TreeInterface.TreeNode, TreeInterface.TreeNode> returnSwingWorker() {
+        return null;
     }
 }
 

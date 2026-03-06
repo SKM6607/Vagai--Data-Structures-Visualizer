@@ -1,5 +1,7 @@
 package main.searching;
 
+import main.interfaces.TreeInterface;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -13,8 +15,8 @@ final class DepthFirstSearch extends SearchingAlgorithm {
     }
 
     @Override
-    int search(int value) {
-        return 0;
+    protected SwingWorker<TreeInterface.TreeNode, TreeInterface.TreeNode> returnSwingWorker() {
+        return null;
     }
 }
 
