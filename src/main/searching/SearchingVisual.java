@@ -30,7 +30,7 @@ public sealed abstract class SearchingVisual
     protected final int MAX_WIDTH = width, MAX_HEIGHT = 3 * height / 4;
     private final List<NodeListener> listenerList = new ArrayList<>();
     public SearchingAlgorithm algorithm;
-    protected TreeType treeType = TreeType.BINARY_TREE;
+    protected TreeType typeOfTree;
     protected boolean search;
     private int fontOffset;
     private TreeInterface.TreeNode target;
@@ -38,8 +38,9 @@ public sealed abstract class SearchingVisual
     private TreeInterface.TreeNode selectedNode;
     private TreeInterface.TreeNode hoveredNode = null;
 
-    protected SearchingVisual(Tree tree, SearchingAlgorithm algorithm) {
+    protected SearchingVisual(Tree tree, SearchingAlgorithm algorithm, TreeType treeType) {
         this.tree = tree;
+        this.typeOfTree = (treeType == null) ? TreeType.BINARY_TREE : treeType;
         this.algorithm = algorithm;
         setBackground(defaultBackgroundColor);
         addMouseListener(this);
@@ -59,25 +60,36 @@ public sealed abstract class SearchingVisual
     public void randomizeTree(int range) throws CannotProceedException {
         tree.treeReset();
         if (range > 999 || range < -999 || range == 0)
-            throw new CannotProceedException("Cannot Randomize tree as the inputs are invalid. Kindly provide valid inputs");
-        int depth = random.nextInt(0, 3);
-        randomizeHelper(tree.root, range, depth);
+            throw new CannotProceedException("Cannot Randomize tree as the inputs are invalid. Kindly provide valid inputs (-999,999) - {0}");
+        int depth = random.nextInt(1, 6);
+        randomizeHelper(tree.root, range - 1, depth);
+        System.out.println("Depth: " + depth);
         Tree.alignAllTreeNodes(tree);
         repaint();
     }
 
     private void randomizeHelper(TreeInterface.TreeNode node, int range, int depth) {
         if (depth == 0) return;
-        int rInt = random.nextInt(-range, range);
-        int lInt = random.nextInt(-range, range);
-        if (random.nextBoolean()) {
+        int rInt = random.nextInt(-range, range) + 1;
+        int lInt = random.nextInt(-range, range) + 1;
+        boolean right = random.nextDouble() < 0.7;
+        boolean left = random.nextDouble() < 0.7;
+        if (right) {
             node.setRight(new TreeInterface.TreeNode(rInt));
             randomizeHelper(node.getRight(), range, depth - 1);
         }
-        if (random.nextBoolean()) {
+        if (left) {
             node.setLeft(new TreeInterface.TreeNode(lInt));
             randomizeHelper(node.getLeft(), range, depth - 1);
         }
+    }
+
+    public void toggleTreeType() {
+        if (typeOfTree == TreeType.BINARY_TREE)
+            this.typeOfTree = TreeType.BINARY_SEARCH_TREE;
+        else typeOfTree = TreeType.BINARY_TREE;
+        tree.treeReset();
+        repaint();
     }
 
     public void addNodeListener(NodeListener listener) {
@@ -96,10 +108,15 @@ public sealed abstract class SearchingVisual
         if (node.getRight() != null && node.getLeft() != null) {
             throw new IndexOutOfBoundsException("The Selected Node is Full");
         }
-        if (right != null) {
-            tree.extendTree(node, child, TreeInterface.TreeNode.NodeDirection.LEFT);
+        if (typeOfTree == TreeType.BINARY_TREE) {
+            if (right != null) {
+                tree.extendTree(node, child, TreeInterface.TreeNode.NodeDirection.LEFT);
+            } else {
+                tree.extendTree(node, child, TreeInterface.TreeNode.NodeDirection.RIGHT);
+            }
         } else {
-            tree.extendTree(node, child, TreeInterface.TreeNode.NodeDirection.RIGHT);
+            tree.extendTreeAsBinarySearchTree(tree.root, new TreeInterface.TreeNode(val));
+            Tree.alignAllTreeNodes(tree);
         }
         repaint();
     }
@@ -221,7 +238,7 @@ public sealed abstract class SearchingVisual
         var oldColor = g.getColor();
         g.setColor(Color.WHITE);
         g.setFont(menuFont.deriveFont(22.0f));
-        g.drawString("Binary Tree", width / 2 - fontOffset, 25);
+        g.drawString(typeOfTree.treeType, width / 2 - fontOffset, 25);
         g.setColor(oldColor);
     }
 
@@ -327,7 +344,7 @@ public sealed abstract class SearchingVisual
     public void mouseClicked(MouseEvent e) {
         selectedNode = returnNodeOnCursorIntersectionWithAnyNode(e.getX(), e.getY(), tree.root);
 //        if (selectedNode != null && selectedNode!=target)
-            fireNodeSelected(selectedNode);
+        fireNodeSelected(selectedNode);
 
     }
 

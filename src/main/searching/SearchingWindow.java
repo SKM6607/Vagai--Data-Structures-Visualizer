@@ -48,7 +48,7 @@ public abstract class SearchingWindow extends JPanel implements DefaultWindowsIn
     protected SearchingAlgorithm searchingAlgorithm;
     protected JPanel controlPanel;
     protected JPanel floatingPanel;
-    protected JToggleButton toggleButton = new JToggleButton(iconImageForToggleButtonDefault);
+    protected JToggleButton swapTheTypeOfTreeToggleButton = new JToggleButton(iconImageForToggleButtonDefault);
     Font font = new Font(Font.SANS_SERIF, Font.BOLD, 18);
     private TreeInterface.TreeNode target;
     private TreeInterface.TreeNode selectedNode;
@@ -96,16 +96,16 @@ public abstract class SearchingWindow extends JPanel implements DefaultWindowsIn
         binaryTreeLabel.setForeground(Color.WHITE);
         binaryTreeLabel.setOpaque(true);
         binaryTreeLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        treeTogglePanel.add(toggleButton);
+        treeTogglePanel.add(swapTheTypeOfTreeToggleButton);
         treeTogglePanel.add(binarySearchTreeLabel);
         binarySearchTreeLabel.setFont(menuFont.deriveFont(18.0f));
         binarySearchTreeLabel.setHorizontalAlignment(SwingConstants.CENTER);
         binarySearchTreeLabel.setForeground(Color.WHITE);
         binarySearchTreeLabel.setBackground(backgroundColor);
         binarySearchTreeLabel.setOpaque(true);
-        toggleButton.setOpaque(true);
-        toggleButton.setBackground(Color.WHITE);
-        toggleButton.setSelectedIcon(iconImageForToggleButtonPressed);
+        swapTheTypeOfTreeToggleButton.setOpaque(true);
+        swapTheTypeOfTreeToggleButton.setBackground(Color.WHITE);
+        swapTheTypeOfTreeToggleButton.setSelectedIcon(iconImageForToggleButtonPressed);
         return treeTogglePanel;
     }
 
@@ -376,9 +376,9 @@ public abstract class SearchingWindow extends JPanel implements DefaultWindowsIn
             searchingVisual.randomizeTree(range);
             setRangeTextField.setText("");
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(null, "Invalid Input Provided For Randomization");
+            JOptionPane.showMessageDialog(this, "Invalid Input Provided For Randomization");
         } catch (CannotProceedException ec) {
-            JOptionPane.showMessageDialog(null, ec.getMessage());
+            JOptionPane.showMessageDialog(this, ec.getMessage());
         }
     }
 
@@ -439,6 +439,7 @@ public abstract class SearchingWindow extends JPanel implements DefaultWindowsIn
                 JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.WARNING_MESSAGE);
             }
         });
+        swapTheTypeOfTreeToggleButton.addActionListener(_->searchingVisual.toggleTreeType());
     }
 
 

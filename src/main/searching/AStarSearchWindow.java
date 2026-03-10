@@ -23,7 +23,7 @@ final class AStarSearchVisual extends SearchingVisual {
     private static AStarSearchVisual singleton;
 
     private AStarSearchVisual(Tree tree) {
-        super(tree, new AStarSearchAlgorithm(tree, null));
+        super(tree, new AStarSearchAlgorithm(tree, null),null);
     }
 
     public static AStarSearchVisual initialize() {

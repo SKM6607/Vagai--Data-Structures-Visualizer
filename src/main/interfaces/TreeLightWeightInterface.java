@@ -11,13 +11,13 @@ public interface TreeLightWeightInterface extends TreeInterface {
     class Tree implements TreeLightWeightInterface {
         @Getter
         public final TreeNode root;
+        @Getter
+        private final int maxPossibleNodes = 17;
         //TODO IMPLEMENT NODES AT EACH LEVEL
         @Getter
         private int depth;
         @Getter
         private int totalNodes;
-        @Getter
-        private final int maxPossibleNodes=17;
 
         public Tree() {
             this.root = new TreeNode(0, width / 2 - nodeRadius, 100);
@@ -31,14 +31,18 @@ public interface TreeLightWeightInterface extends TreeInterface {
 
         private static void alignAllTreeNodesHelper(int depth, TreeNode current) {
             if (current == null) return;
-            int gap = width / (int) Math.pow(2, depth + 1);
-            if (current.getRight() != null) {
-                current.getRight().setXPos(current.getXPos() + gap);
-                current.getRight().setYPos(current.getYPos() + 2 * nodeRadius);
+            int gap = width / (1 << (depth + 1));
+            TreeNode right = current.getRight();
+            TreeNode left = current.getLeft();
+            if (right != null) {
+                right.setYPos(current.getYPos() + 2 * nodeRadius);
+                if (left == null) right.setXPos(current.getXPos());
+                else right.setXPos(current.getXPos() + gap);
             }
-            if (current.getLeft() != null) {
-                current.getLeft().setXPos(current.getXPos() - gap);
-                current.getLeft().setYPos(current.getYPos() + 2 * nodeRadius);
+            if (left != null) {
+                left.setYPos(current.getYPos() + 2 * nodeRadius);
+                if (right == null) left.setXPos(current.getXPos());
+                else left.setXPos(current.getXPos() - gap);
             }
             alignAllTreeNodesHelper(depth + 1, current.getRight());
             alignAllTreeNodesHelper(depth + 1, current.getLeft());
@@ -76,6 +80,18 @@ public interface TreeLightWeightInterface extends TreeInterface {
             }
         }
 
+        public void extendTreeAsBinarySearchTree(TreeNode node, TreeNode target) {
+            if (node == null)
+                return;
+            if (node.data < target.data) {
+                if (node.getLeft() == null) node.setLeft(target);
+                else extendTreeAsBinarySearchTree(node.getLeft(), target);
+            } else {
+                if (node.getRight() == null) node.setRight(target);
+                else extendTreeAsBinarySearchTree(node.getRight(), target);
+            }
+        }
+
         public void extendTree(TreeNode parentNode, TreeNode node, TreeNode.NodeDirection direction) {
             setChildren(parentNode, node, direction);
             this.depth = calculateDepth(this.root);
@@ -85,10 +101,6 @@ public interface TreeLightWeightInterface extends TreeInterface {
         private int calculateDepth(TreeNode node) {
             if (node == null) return -1;
             return 1 + Math.max(calculateDepth(node.getLeft()), calculateDepth(node.getRight()));
-        }
-
-        public void updateSpecificNode(TreeNode node, int val) {
-            updateNode(node, val);
         }
 
         public void removeNode(TreeNode target) {

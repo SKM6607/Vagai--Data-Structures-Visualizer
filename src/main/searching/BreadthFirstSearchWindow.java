@@ -24,8 +24,8 @@ final class BreadthFirstSearchAlgorithm extends SearchingAlgorithm {
     protected TreeInterface.TreeNode search(TreeInterface.TreeNode node) throws InterruptedException {
         if (node == target || node == null) return node;
         publish(queue.poll());
-        queue.add(node);
         Thread.sleep(400);
+        queue.add(node);
         if (node.getLeft() != null) return search(node.getLeft());
         if (node.getRight() != null) return search(node.getRight());
         return node;
@@ -50,7 +50,7 @@ final class BreadthFirstSearchVisual extends SearchingVisual {
 
     //TODO ALGO AH MATTUM MATHIDU
     private BreadthFirstSearchVisual(Tree tree) {
-        super(tree, new BreadthFirstSearchAlgorithm(tree, null));
+        super(tree, new BreadthFirstSearchAlgorithm(tree, null),null);
     }
 
     public static BreadthFirstSearchVisual initialize() {

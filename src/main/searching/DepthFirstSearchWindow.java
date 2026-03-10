@@ -29,7 +29,7 @@ final class DepthFirstSearchVisual
     private static DepthFirstSearchVisual singleton;
 
     private DepthFirstSearchVisual(Tree tree) {
-        super(tree, new DepthFirstSearch(tree, null));
+        super(tree, new DepthFirstSearch(tree, null),null);
     }
 
     public static DepthFirstSearchVisual initialize() {
